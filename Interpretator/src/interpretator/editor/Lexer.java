@@ -133,6 +133,7 @@ public class Lexer {
                             if (state == State.INIT) {
                                 return token(TokenKind.Unknown, start, offset);
                             }
+                            offset = start + 1;
                         }
                     } else {
                         if (state == State.INIT) {
