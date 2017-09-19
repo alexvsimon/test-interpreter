@@ -244,7 +244,7 @@ public class Lexer {
                             return token(TokenKind.Identifier, start, offset);
                         }
                     } else {
-                        return token(TokenKind.Unknown, offset-1, offset);
+                        return token(TokenKind.Unknown, start, offset);
                     }
                 }
             }
