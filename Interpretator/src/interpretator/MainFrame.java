@@ -3,6 +3,9 @@ package interpretator;
 import interpretator.editor.DocumentContext;
 import interpretator.output.Output;
 import interpretator.parser.RunAction;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.text.BadLocationException;
 
 /**
  *
@@ -29,6 +32,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jToolBar1 = new javax.swing.JToolBar();
         runButton = new javax.swing.JButton();
+        clearButton = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         editorPane = new javax.swing.JEditorPane();
@@ -40,8 +44,6 @@ public class MainFrame extends javax.swing.JFrame {
         fileMenu = new javax.swing.JMenu();
         loadItem = new javax.swing.JMenuItem();
         saveItem = new javax.swing.JMenuItem();
-        runMenu = new javax.swing.JMenu();
-        runItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -57,6 +59,17 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(runButton);
+
+        clearButton.setText("Clear");
+        clearButton.setFocusable(false);
+        clearButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        clearButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        clearButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearButtonActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(clearButton);
 
         getContentPane().add(jToolBar1, java.awt.BorderLayout.NORTH);
 
@@ -91,30 +104,22 @@ public class MainFrame extends javax.swing.JFrame {
 
         mainMenuBar.add(fileMenu);
 
-        runMenu.setText("Run");
-
-        runItem.setText("Run");
-        runItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                runItemActionPerformed(evt);
-            }
-        });
-        runMenu.add(runItem);
-
-        mainMenuBar.add(runMenu);
-
         setJMenuBar(mainMenuBar);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void runItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runItemActionPerformed
-        new RunAction(new DocumentContext(editorPane.getText())).run();
-    }//GEN-LAST:event_runItemActionPerformed
-
     private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButtonActionPerformed
         new RunAction(new DocumentContext(editorPane.getText())).run();
     }//GEN-LAST:event_runButtonActionPerformed
+
+    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
+        try {
+            outputPane.getDocument().remove(0, outputPane.getDocument().getLength());
+        } catch (BadLocationException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_clearButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -153,6 +158,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton clearButton;
     private javax.swing.JEditorPane editorPane;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JPanel jPanel1;
@@ -164,8 +170,6 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuBar mainMenuBar;
     private javax.swing.JTextPane outputPane;
     private javax.swing.JButton runButton;
-    private javax.swing.JMenuItem runItem;
-    private javax.swing.JMenu runMenu;
     private javax.swing.JMenuItem saveItem;
     private javax.swing.JButton statusLine;
     // End of variables declaration//GEN-END:variables
