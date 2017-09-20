@@ -60,6 +60,26 @@ public class ParserTest {
     }    
 
     @Test
+    public void varMapStream() {
+        Lexer lexer = new Lexer(new DocumentContext("var sequence = map({0, n}, i -> (-1)^i / (2.0 * i + 1))\n"));
+        Parser parser = new Parser(lexer);
+        ProgrammAST programm = parser.parse();
+        List<AST> statements = programm.getStatements();
+        assertEquals(1, statements.size());
+        assertEquals(ASTKind.Var, statements.get(0).getKind());
+    }    
+
+    @Test
+    public void varReduceStream() {
+        Lexer lexer = new Lexer(new DocumentContext("var pi = 4 * reduce(sequence, 0, x y -> x + y)\n"));
+        Parser parser = new Parser(lexer);
+        ProgrammAST programm = parser.parse();
+        List<AST> statements = programm.getStatements();
+        assertEquals(1, statements.size());
+        assertEquals(ASTKind.Var, statements.get(0).getKind());
+    }    
+
+    @Test
     public void complicatedStream() {
         Lexer lexer = new Lexer(new DocumentContext(
                 "var n = 500\n" +

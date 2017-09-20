@@ -10,7 +10,7 @@ public class PrintAST implements AST {
     private final Token stringToken;
     private final Token printToken;
 
-    public PrintAST(Token start, Token stringToken){
+    PrintAST(Token start, Token stringToken){
         printToken = start;
         this.stringToken = stringToken;
     }

@@ -11,7 +11,7 @@ public class VarAST implements AST {
     private final Token id;
     private final AST expression;
             
-    public VarAST(Token start, Token id, AST expression){
+    VarAST(Token start, Token id, AST expression){
         varToken = start;
         this.id = id;
         this.expression = expression;
