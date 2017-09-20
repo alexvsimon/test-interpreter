@@ -101,6 +101,84 @@ public class LexerTest {
         assertEquals(TokenKind.EOF, tokens.get(3).getKind());
     }
 
+    @Test
+    public void expressionStream() {
+        Lexer lexer = new Lexer(new DocumentContext("(-1)^i / (2.0 * i + 1)"));
+        List<Token> tokens = getTokens(lexer);
+        assertEquals(20, tokens.size());
+        assertEquals(TokenKind.LParen, tokens.get(0).getKind());
+        assertEquals(TokenKind.Number, tokens.get(1).getKind());
+        assertEquals("-1", tokens.get(1).getText());
+        assertEquals(TokenKind.RParen, tokens.get(2).getKind());
+        assertEquals(TokenKind.Pow, tokens.get(3).getKind());
+        assertEquals(TokenKind.Identifier, tokens.get(4).getKind());
+        assertEquals("i", tokens.get(4).getText());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(5).getKind());
+        assertEquals(TokenKind.Div, tokens.get(6).getKind());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(7).getKind());
+        assertEquals(TokenKind.LParen, tokens.get(8).getKind());
+        assertEquals(TokenKind.Number, tokens.get(9).getKind());
+        assertEquals("2.0", tokens.get(9).getText());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(10).getKind());
+        assertEquals(TokenKind.Mul, tokens.get(11).getKind());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(12).getKind());
+        assertEquals(TokenKind.Identifier, tokens.get(13).getKind());
+        assertEquals("i", tokens.get(13).getText());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(14).getKind());
+        assertEquals(TokenKind.Plus, tokens.get(15).getKind());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(16).getKind());
+        assertEquals(TokenKind.Number, tokens.get(17).getKind());
+        assertEquals("1", tokens.get(17).getText());
+        assertEquals(TokenKind.RParen, tokens.get(18).getKind());
+        assertEquals(TokenKind.EOF, tokens.get(19).getKind());
+    }
+    
+    @Test
+    public void expressionLabdaStream() {
+        Lexer lexer = new Lexer(new DocumentContext("4*reduce(sequence,0,x y->x+y)"));
+        List<Token> tokens = getTokens(lexer);
+        assertEquals(17, tokens.size());
+        assertEquals(TokenKind.Number, tokens.get(0).getKind());
+        assertEquals("4", tokens.get(0).getText());
+        assertEquals(TokenKind.Mul, tokens.get(1).getKind());
+        assertEquals(TokenKind.Reduce, tokens.get(2).getKind());
+        assertEquals(TokenKind.LParen, tokens.get(3).getKind());
+        assertEquals(TokenKind.Identifier, tokens.get(4).getKind());
+        assertEquals("sequence", tokens.get(4).getText());
+        assertEquals(TokenKind.Comma, tokens.get(5).getKind());
+        assertEquals(TokenKind.Number, tokens.get(6).getKind());
+        assertEquals("0", tokens.get(6).getText());
+        assertEquals(TokenKind.Comma, tokens.get(7).getKind());
+        assertEquals(TokenKind.Identifier, tokens.get(8).getKind());
+        assertEquals("x", tokens.get(8).getText());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(9).getKind());
+        assertEquals(TokenKind.Identifier, tokens.get(10).getKind());
+        assertEquals("y", tokens.get(10).getText());
+        assertEquals(TokenKind.Arrow, tokens.get(11).getKind());
+        assertEquals(TokenKind.Identifier, tokens.get(12).getKind());
+        assertEquals("x", tokens.get(12).getText());
+        assertEquals(TokenKind.Plus, tokens.get(13).getKind());
+        assertEquals(TokenKind.Identifier, tokens.get(14).getKind());
+        assertEquals("y", tokens.get(14).getText());
+        assertEquals(TokenKind.RParen, tokens.get(15).getKind());
+        assertEquals(TokenKind.EOF, tokens.get(16).getKind());
+    }
+
+    @Test
+    public void expressionSequenceStream() {
+        Lexer lexer = new Lexer(new DocumentContext("{0,n}"));
+        List<Token> tokens = getTokens(lexer);
+        assertEquals(6, tokens.size());
+        assertEquals(TokenKind.LBrace, tokens.get(0).getKind());
+        assertEquals(TokenKind.Number, tokens.get(1).getKind());
+        assertEquals("0", tokens.get(1).getText());
+        assertEquals(TokenKind.Comma, tokens.get(2).getKind());
+        assertEquals(TokenKind.Identifier, tokens.get(3).getKind());
+        assertEquals("n", tokens.get(3).getText());
+        assertEquals(TokenKind.RBrace, tokens.get(4).getKind());
+        assertEquals(TokenKind.EOF, tokens.get(5).getKind());
+    }
+
     private List<Token> getTokens(Lexer lexer) {
         List<Token> res = new ArrayList<>();
         while(true) {

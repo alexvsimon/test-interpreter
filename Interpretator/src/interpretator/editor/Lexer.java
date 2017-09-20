@@ -17,54 +17,32 @@ public class Lexer {
     private final DocumentContext doc;
     private int offset;
     private State state;
+    private char c;
+    private boolean allowUnaryMinus;
 
     public Lexer(DocumentContext doc) {
         this.doc = doc;
         state = State.INIT;
+        read();
     }
 
-    private char read() {
+    private void read() {
         if (offset < doc.getText().length()) {
-            return doc.getText().charAt(offset++);
+            c = doc.getText().charAt(offset++);
         } else {
-            return 0;
+            offset++;
+            c = 0;
         }
     }
 
-    private void unread() {
-        if (offset > 0) {
-            offset--;
-        } else {
-            throw new IllegalStateException();
-        }
-    }
-    
     private Token token(TokenKind kind, int start, int end){
         return new Token(kind, start, end, doc);
     }
     
-    private String readWord(char c) {
-        StringBuilder buf = new StringBuilder();
-        buf.append(c);
+    private void readNumber() {
+        boolean hasPoint = false;
         while (true) {
-            c = read();
-            if (c == 0) {
-                break;
-            }
-            if (Character.isJavaIdentifierPart(c)) {
-                buf.append(c);
-            } else {
-                unread();
-                break;
-            }
-        }
-        return buf.toString();
-    }
-
-    private void readNumber(char c) {
-        boolean hasPoint = c == '.';
-        loop:while (true) {
-            c = read();
+            read();
             switch(c) {
                 case '0':
                 case '1':
@@ -76,179 +54,182 @@ public class Lexer {
                 case '7':
                 case '8':
                 case '9':
-                    continue loop;
+                    continue;
                 case '.':
                     if (hasPoint) {
-                        unread();
-                        break loop;
+                        return;
                     } else {
                         hasPoint = true;
-                        continue loop;
+                        continue;
                     }
-                case 0:
-                    break loop;
                 default:
-                    unread();
-                    break loop;
+                    return;
             }
         }
+    }
+    
+    private boolean isWiteSpace(){
+        return c == ' ' || c == '\t' || c == '\n';
+    }
+
+    private boolean isIdentifier(){
+        char cUpper = Character.toUpperCase(c);
+        return "ABCDEFGHIJKLMNOPQRSTUVWXYZ_".indexOf(cUpper) != -1;
+    }
+
+    private boolean isDigit(){
+        return "1234567890".indexOf(c) != -1;
     }
     
     public Token nextToken() {
-        while(true) {
-            char c = read();
-            if (c == 0) {
-                return token(TokenKind.EOF, offset, offset);
+        int start = offset-1;
+        if (c == 0) {
+            return token(TokenKind.EOF, start, start);
+        }
+        if (isWiteSpace()) {
+            read();
+            while(isWiteSpace()) {
+                read();
             }
-            if (c == ' ' || c == '\t' || c == '\n') {
-                int start = offset-1;
-                while (true) {
-                    c = read();
-                    if (c == ' ' || c == '\t' || c == '\n') {
-                       continue; 
-                    }
-                    if (c != 0) {
-                        unread();
-                    }
-                    return token(TokenKind.WhiteSpace, start, offset);
-                }
+            return token(TokenKind.WhiteSpace, start, offset-1);
+        }
+        if (isIdentifier()) {
+            read();
+            while(isIdentifier() || isDigit()) {
+                read();
             }
-            switch (state) {
-                case EXPR:
-                case INIT:
-                {
-                    int start = offset-1;
-                    if (c == 'v' || c == 'o' || c == 'p') {
-                        String word = readWord(c);
-                        if ("var".equals(word)) {
-                            state = State.VAR;
-                            return token(TokenKind.Var, start, offset);
-                        } else if ("out".equals(word)) {
-                            state = State.EXPR;
-                            return token(TokenKind.Out, start, offset);
-                        } else if ("print".equals(word)) {
-                            state = State.PRINT;
-                            return token(TokenKind.Print, start, offset);
-                        } else {
-                            if (state == State.INIT) {
-                                return token(TokenKind.Unknown, start, offset);
-                            }
-                            offset = start + 1;
-                        }
-                    } else {
-                        if (state == State.INIT) {
-                            return token(TokenKind.Unknown, start, offset);
-                        }
-                    }
-                    break;
-                }
-                case VAR:
-                {
-                    int start = offset-1;
-                    if (Character.isJavaIdentifierStart(c)){
-                        String word = readWord(c);
-                        state = State.VAR_INIT;
-                        return token(TokenKind.Identifier, start, offset);
-                    } else {
-                        return token(TokenKind.Unknown, start, offset);
-                    }
-                }
-                case VAR_INIT:
-                {
-                    if (c == '=') {
-                        state = State.EXPR;
-                        return token(TokenKind.Eq, offset-1, offset);
-                    } else {
-                        return token(TokenKind.Unknown, offset-1, offset);
-                    }
-                }
-                case PRINT:
-                {
-                    int start = offset-1;
-                    if (c == '"') {
-                        while (true) {
-                            c = read();
-                            if (c == 0) {
-                                return token(TokenKind.Unknown, start, offset);
-                            }
-                            if (c == '"') {
-                                state = State.INIT;
-                                return token(TokenKind.String, start, offset);
-                            }
-                        }
-                    } else {
-                        return token(TokenKind.Unknown, start, offset);
-                    }
-                }
-            }
-            assert state == State.EXPR;
-            //case EXPR:
-            switch(c) {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                case '.':
-                {
-                    int start = offset-1;
-                    readNumber(c);
-                    return token(TokenKind.Number, start, offset);
-                }
-                case '(':
-                    return token(TokenKind.LParen, offset-1, offset);
-                case ')':
-                    return token(TokenKind.RParen,offset-1, offset);
-                case '{':
-                    return token(TokenKind.LBrace, offset-1, offset);
-                case '}':
-                    return token(TokenKind.RBrace, offset-1, offset);
-                case '+':
-                    return token(TokenKind.Plus, offset-1, offset);
-                case '-':
-                {
-                    int start = offset-1;
-                    c = read();
-                    if (c == '>') {
-                        return token(TokenKind.Arrow, start, offset);
-                    } else {
-                        if (c != 0) { 
-                            unread();
-                        }
-                        return token(TokenKind.Minus, start, offset);
-                    }
-                }
-                case '*':
-                    return token(TokenKind.Mul, offset-1, offset);
-                case '/':
-                    return token(TokenKind.Div, offset-1, offset);
-                case '^':
-                    return token(TokenKind.Pow, offset-1, offset);
-                case ',':
-                    return token(TokenKind.Comma, offset-1, offset);
-                default:
-                {
-                    int start = offset-1;
-                    if (Character.isJavaIdentifierStart(c)) {
-                        String word = readWord(c);
-                        if ("map".equals(word)) {
-                            return token(TokenKind.Map, start, offset);
-                        } else if ("reduce".equals(word)) {
-                            return token(TokenKind.Reduce, start, offset);
-                        } else {
-                            return token(TokenKind.Identifier, start, offset);
-                        }
-                    } else {
-                        return token(TokenKind.Unknown, start, offset);
-                    }
+            String id = doc.getText().subSequence(start, offset-1).toString();
+            if ("var".equals(id)) {
+                state = State.VAR;
+                allowUnaryMinus = false;
+                return token(TokenKind.Var, start, offset-1);
+            } else if("out".equals(id)) {
+                state = State.EXPR;
+                allowUnaryMinus = true;
+                return token(TokenKind.Out, start, offset-1);
+            } else if ("print".equals(id)) {
+                state = State.PRINT;
+                allowUnaryMinus = false;
+                return token(TokenKind.Print, start, offset-1);
+            } else if ("map".equals(id)) {
+                state = State.EXPR;
+                allowUnaryMinus = false;
+                return token(TokenKind.Map, start, offset-1);
+            } else if ("reduce".equals(id)) {
+                state = State.EXPR;
+                allowUnaryMinus = false;
+                return token(TokenKind.Reduce, start, offset-1);
+            } else {
+                if (state == State.VAR) {
+                    allowUnaryMinus = false;
+                    state = State.VAR_INIT;
+                    return token(TokenKind.Identifier, start, offset-1);
+                } else {
+                    allowUnaryMinus = false;
+                    state = State.EXPR;
+                    return token(TokenKind.Identifier, start, offset-1);
                 }
             }
         }
-    }
-    
+        if (state == State.VAR_INIT) {
+            if (c == '=') {
+                read();
+                allowUnaryMinus = true;
+                state = State.EXPR;
+                return token(TokenKind.Eq, start, offset-1);
+            } else {
+                read();
+                return token(TokenKind.Unknown, start, offset-1);
+            }
+        }
+        if (state == State.PRINT) {
+            if (c == '"') {
+                while (true) {
+                    read();
+                    if (c == 0) {
+                        return token(TokenKind.Unknown, start, offset-1);
+                    }
+                    if (c == '"') {
+                        state = State.INIT;
+                        read();
+                        return token(TokenKind.String, start, offset-1);
+                    }
+                }
+            } else {
+                read();
+                return token(TokenKind.Unknown, start, offset-1);
+            }
+        }
+        switch(c) {
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+            {
+                readNumber();
+                allowUnaryMinus = false;
+                return token(TokenKind.Number, start, offset-1);
+            }
+            case '(':
+                read();
+                allowUnaryMinus = true;
+                return token(TokenKind.LParen, start, offset-1);
+            case ')':
+                read();
+                allowUnaryMinus = false;
+                return token(TokenKind.RParen, start, offset-1);
+            case '{':
+                read();
+                allowUnaryMinus = true;
+                return token(TokenKind.LBrace, start, offset-1);
+            case '}':
+                read();
+                allowUnaryMinus = false;
+                return token(TokenKind.RBrace, start, offset-1);
+            case '+':
+                read();
+                allowUnaryMinus = false;
+                return token(TokenKind.Plus, start, offset-1);
+            case '-':
+            {
+                read();
+                if (c == '>') {
+                    read();
+                    allowUnaryMinus = true;
+                    return token(TokenKind.Arrow, start, offset-1);
+                } else if (allowUnaryMinus && isDigit()){
+                    readNumber();
+                    allowUnaryMinus = false;
+                    return token(TokenKind.Number, start, offset-1);
+                } else {
+                    allowUnaryMinus = false;
+                    return token(TokenKind.Minus, start, offset-1);
+                }
+            }
+            case '*':
+                read();
+                allowUnaryMinus = false;
+                return token(TokenKind.Mul, start, offset-1);
+            case '/':
+                read();
+                allowUnaryMinus = false;
+                return token(TokenKind.Div, start, offset-1);
+            case '^':
+                read();
+                allowUnaryMinus = false;
+                return token(TokenKind.Pow, start, offset-1);
+            case ',':
+                read();
+                allowUnaryMinus = true;
+                return token(TokenKind.Comma, start, offset-1);
+        }
+        read();
+        return token(TokenKind.Unknown, start, offset-1);
+    }    
 }
