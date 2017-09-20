@@ -1,4 +1,4 @@
-package interpretator.parser;
+package interpretator.actions;
 
 import interpretator.editor.DocumentContext;
 import interpretator.editor.Lexer;

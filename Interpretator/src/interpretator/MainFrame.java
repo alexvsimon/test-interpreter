@@ -2,7 +2,7 @@ package interpretator;
 
 import interpretator.editor.DocumentContext;
 import interpretator.output.Output;
-import interpretator.parser.RunAction;
+import interpretator.actions.RunAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.text.BadLocationException;
