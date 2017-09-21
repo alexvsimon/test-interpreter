@@ -132,7 +132,7 @@ public class ASTDump {
     }
     
     private void dumpLambda(LambdaAST ast) {
-        StringBuffer tmp = new StringBuffer(ast.getKind().name());
+        StringBuilder tmp = new StringBuilder(ast.getKind().name());
         for(int i = 0; i < ast.getParametersSize(); i++) {
             tmp.append(' ').append(ast.getParameter(i));
         }
