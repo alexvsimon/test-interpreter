@@ -179,6 +179,43 @@ public class LexerTest {
         assertEquals(TokenKind.EOF, tokens.get(5).getKind());
     }
 
+    /**
+     * Test checks that lexer does not throw exceptions and does not have infinite loop on partly typed txt
+     */
+    @Test 
+    public void typing() {
+        String source = "var n = 500\n" +
+                        "var sequence = map({0, n}, i -> (-1)^i / (2.0 * i + 1))\n" +
+                        "var pi = 4 * reduce(sequence, 0, x y -> x + y)\n" +
+                        "print \"pi = \"\n" +
+                        "out pi\n";
+        // type at the end of file
+        for(int i = 0; i < source.length(); i++) {
+            Lexer lexer = new Lexer(new DocumentContext(source.substring(0, i)));
+            List<Token> tokens = getTokens(lexer);
+            //System.err.println("Source length="+i+" token stream size="+tokens.size());
+        }
+        // type line inside of file
+        String[] lines = source.split("\n");
+        StringBuilder buf = new StringBuilder();
+        for(int i = 1; i < lines.length -1; i++) {
+            String line = lines[i];
+            for(int j = 0; j < line.length(); j++) {
+                buf.setLength(0);
+                for(int k = 0; k < i; k++) {
+                    buf.append(lines[k]).append('\n');
+                }
+                buf.append(line.substring(0, j)).append('\n');
+                for(int k = i + 1; k < lines.length; k++) {
+                    buf.append(lines[k]).append('\n');
+                }
+                Lexer lexer = new Lexer(new DocumentContext(buf.toString()));
+                List<Token> tokens = getTokens(lexer);
+                //System.err.println("Source length="+buf.length()+" token stream size="+tokens.size());
+            }
+        }
+    }
+
     private List<Token> getTokens(Lexer lexer) {
         List<Token> res = new ArrayList<>();
         while(true) {
