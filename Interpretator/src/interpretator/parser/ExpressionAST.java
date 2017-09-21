@@ -15,6 +15,14 @@ public class ExpressionAST implements AST {
         this.kind = kind;
     }
 
+    public AST getLeftExpression() {
+        return lh;
+    }
+
+    public AST getRightExpression() {
+        return rh;
+    }
+    
     @Override
     public ASTKind getKind() {
         return kind;

@@ -13,6 +13,13 @@ public class SequenceAST implements AST {
         this.arg2 = arg2;
     }
 
+    public AST getStartExpression(){
+        return arg1;
+    }
+
+    public AST getEndExpression(){
+        return arg2;
+    }
 
     @Override
     public ASTKind getKind() {

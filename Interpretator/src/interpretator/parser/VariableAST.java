@@ -13,6 +13,10 @@ public class VariableAST implements AST {
         this.id = id;
     }
 
+    public String getName() {
+        return id.getText();
+    }
+    
     @Override
     public ASTKind getKind() {
         return ASTKind.Variable;

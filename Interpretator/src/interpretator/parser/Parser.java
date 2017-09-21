@@ -221,6 +221,7 @@ public class Parser {
             next();
             AST arg1 = expression();
             if (t.getKind() == TokenKind.Comma) {
+                next();
                 AST arg2 = expression();
                 if (t.getKind() == TokenKind.Comma) {
                     next();

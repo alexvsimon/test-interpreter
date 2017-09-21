@@ -15,6 +15,10 @@ public class OutAST implements AST {
         this.expression = expression;
     }
 
+    public AST getExpression() {
+        return expression;
+    }
+    
     @Override
     public ASTKind getKind() {
         return ASTKind.Out;

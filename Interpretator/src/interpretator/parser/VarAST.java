@@ -17,6 +17,14 @@ public class VarAST implements AST {
         this.expression = expression;
     }
 
+    public String getName() {
+        return id.getText();
+    }
+    
+    public AST getExpression() {
+        return expression;
+    }
+    
     @Override
     public ASTKind getKind() {
         return ASTKind.Var;

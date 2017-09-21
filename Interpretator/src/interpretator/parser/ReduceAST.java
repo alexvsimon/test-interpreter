@@ -15,6 +15,18 @@ public class ReduceAST implements AST{
         this.lambda = lambda;
     }
 
+    public AST getInputExpression() {
+        return arg1;
+    }
+
+    public AST getStartExpression() {
+        return arg2;
+    }
+    
+    public AST getLambda(){
+        return lambda;
+    }
+    
     @Override
     public ASTKind getKind() {
         return ASTKind.Reduce;

@@ -13,6 +13,10 @@ public class NumberAST implements AST {
         this.number = number;
     }
 
+    public String getValue() {
+        return number.getText();
+    }
+
     @Override
     public ASTKind getKind() {
         return ASTKind.Number;
