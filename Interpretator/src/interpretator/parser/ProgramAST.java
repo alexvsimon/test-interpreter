@@ -7,10 +7,10 @@ import java.util.List;
  *
  * @author alex
  */
-public class ProgrammAST implements AST {
+public class ProgramAST implements AST {
     private final List<AST> statements = new ArrayList<>();
 
-    ProgrammAST() {
+    ProgramAST() {
     }
     
     void add(AST statement) {
@@ -23,7 +23,7 @@ public class ProgrammAST implements AST {
 
     @Override
     public ASTKind getKind() {
-        return ASTKind.Programm;
+        return ASTKind.Program;
     }
 
     @Override

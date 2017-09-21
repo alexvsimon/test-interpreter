@@ -5,7 +5,7 @@ package interpretator.parser;
  * @author alex
  */
 public enum ASTKind {
-    Programm,
+    Program,
 
     Print,
     Out,

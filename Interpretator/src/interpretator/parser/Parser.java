@@ -14,7 +14,7 @@ public class Parser {
     private final List<Token> ts;
     private int index;
     private Token t;
-    private final ProgrammAST programm;
+    private final ProgramAST program;
 
     public Parser(Lexer lexer) {
         ts = new ArrayList<>();
@@ -33,7 +33,7 @@ public class Parser {
             }
         }
         next();
-        programm = new ProgrammAST();
+        program = new ProgramAST();
     }
     
     private void next() {
@@ -42,11 +42,11 @@ public class Parser {
         }
     }
     
-    public ProgrammAST parse() {
+    public ProgramAST parse() {
         while(true) {
             switch(t.getKind()) {
                 case EOF:
-                    return programm;
+                    return program;
                 case Var:
                     var();
                     break;
@@ -73,7 +73,7 @@ public class Parser {
             if (t.getKind() == TokenKind.Eq) {
                 next();
                 AST expr = expression();
-                programm.add(new VarAST(startToken, id, expr));
+                program.add(new VarAST(startToken, id, expr));
             } else {
                 //TODO: error
             }
@@ -86,7 +86,7 @@ public class Parser {
         Token startToken = t;
         next();
         if (t.getKind() == TokenKind.String) {
-            programm.add(new PrintAST(startToken, t));
+            program.add(new PrintAST(startToken, t));
         } else {
             //TODO: error
         }
@@ -97,7 +97,7 @@ public class Parser {
         Token startToken = t;
         next();
         AST expr = expression();
-        programm.add(new OutAST(startToken, expr));
+        program.add(new OutAST(startToken, expr));
     }
 
     private AST expression() {

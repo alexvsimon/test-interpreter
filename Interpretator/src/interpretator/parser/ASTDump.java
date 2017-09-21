@@ -21,8 +21,8 @@ public class ASTDump {
     
     private void dump(AST ast) {
         switch(ast.getKind()) {
-            case Programm:
-                dumpProgramm((ProgrammAST) ast);
+            case Program:
+                dumpProgram((ProgramAST) ast);
                 break;
             case Print:
                 dumpPrint((PrintAST) ast);
@@ -61,7 +61,7 @@ public class ASTDump {
         }
     }
     
-    private void dumpProgramm(ProgrammAST ast) {
+    private void dumpProgram(ProgramAST ast) {
         for(AST statement : ast.getStatements()) {
             dump(statement);
         }

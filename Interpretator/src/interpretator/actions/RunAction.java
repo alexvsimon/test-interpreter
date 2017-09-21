@@ -7,7 +7,7 @@ import interpretator.editor.TokenKind;
 import interpretator.output.Output;
 import interpretator.parser.ASTDump;
 import interpretator.parser.Parser;
-import interpretator.parser.ProgrammAST;
+import interpretator.parser.ProgramAST;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
@@ -35,8 +35,8 @@ public class RunAction {
                 //    }
                 //}
                 Parser parser = new Parser(lexer);
-                ProgrammAST programm = parser.parse();
-                ASTDump visitor = new ASTDump(programm);
+                ProgramAST program = parser.parse();
+                ASTDump visitor = new ASTDump(program);
                 visitor.dump();
                 Output.getInstance().out(visitor.dump());
                 Output.getInstance().out("\n");

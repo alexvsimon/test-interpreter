@@ -7,7 +7,7 @@ import interpretator.parser.ASTKind;
 import interpretator.parser.ASTDump;
 import interpretator.parser.Parser;
 import interpretator.parser.PrintAST;
-import interpretator.parser.ProgrammAST;
+import interpretator.parser.ProgramAST;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -44,8 +44,8 @@ public class ParserTest {
     public void emptyStream() {
         Lexer lexer = new Lexer(new DocumentContext(""));
         Parser parser = new Parser(lexer);
-        ProgrammAST programm = parser.parse();
-        List<AST> statements = programm.getStatements();
+        ProgramAST program = parser.parse();
+        List<AST> statements = program.getStatements();
         assertEquals(0, statements.size());
     }    
 
@@ -53,20 +53,20 @@ public class ParserTest {
     public void printStream() {
         Lexer lexer = new Lexer(new DocumentContext("print \"pi = \""));
         Parser parser = new Parser(lexer);
-        ProgrammAST programm = parser.parse();
-        List<AST> statements = programm.getStatements();
+        ProgramAST program = parser.parse();
+        List<AST> statements = program.getStatements();
         assertEquals(1, statements.size());
         assertEquals(ASTKind.Print, statements.get(0).getKind());
         assertEquals("pi = ", ((PrintAST)statements.get(0)).getString());
-        assertEquals("Print pi = \n", new ASTDump(programm).dump());
+        assertEquals("Print pi = \n", new ASTDump(program).dump());
     }    
 
     @Test
     public void varMapStream() {
         Lexer lexer = new Lexer(new DocumentContext("var sequence = map({0, n}, i -> (-1)^i / (2.0 * i + 1))\n"));
         Parser parser = new Parser(lexer);
-        ProgrammAST programm = parser.parse();
-        List<AST> statements = programm.getStatements();
+        ProgramAST program = parser.parse();
+        List<AST> statements = program.getStatements();
         assertEquals(1, statements.size());
         assertEquals(ASTKind.Var, statements.get(0).getKind());
         assertEquals("Var sequence\n" +
@@ -83,15 +83,15 @@ public class ParserTest {
                      "     Mul\n" +
                      "      Number 2.0\n" +
                      "      Variable i\n" +
-                     "     Number 1\n", new ASTDump(programm).dump());
+                     "     Number 1\n", new ASTDump(program).dump());
     }    
 
     @Test
     public void varReduceStream() {
         Lexer lexer = new Lexer(new DocumentContext("var pi = 4 * reduce(sequence, 0, x y -> x + y)\n"));
         Parser parser = new Parser(lexer);
-        ProgrammAST programm = parser.parse();
-        List<AST> statements = programm.getStatements();
+        ProgramAST program = parser.parse();
+        List<AST> statements = program.getStatements();
         assertEquals(1, statements.size());
         assertEquals(ASTKind.Var, statements.get(0).getKind());
         assertEquals("Var pi\n" +
@@ -103,7 +103,7 @@ public class ParserTest {
                      "   Lambda x y\n" +
                      "    Plus\n" +
                      "     Variable x\n" +
-                     "     Variable y\n", new ASTDump(programm).dump());
+                     "     Variable y\n", new ASTDump(program).dump());
     }    
 
     @Test
@@ -115,8 +115,8 @@ public class ParserTest {
                 "print \"pi = \"\n" +
                 "out pi"));
         Parser parser = new Parser(lexer);
-        ProgrammAST programm = parser.parse();
-        List<AST> statements = programm.getStatements();
+        ProgramAST program = parser.parse();
+        List<AST> statements = program.getStatements();
         assertEquals(5, statements.size());
         assertEquals(ASTKind.Var, statements.get(0).getKind());
         assertEquals(ASTKind.Var, statements.get(1).getKind());
@@ -152,6 +152,6 @@ public class ParserTest {
                      "     Variable y\n" +
                      "Print pi = \n" +
                      "Out\n" +
-                     " Variable pi\n", new ASTDump(programm).dump());
+                     " Variable pi\n", new ASTDump(program).dump());
     }    
 }
