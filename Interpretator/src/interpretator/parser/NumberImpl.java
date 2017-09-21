@@ -1,18 +1,21 @@
 package interpretator.parser;
 
+import interpretator.api.ast.ASTKind;
 import interpretator.editor.Token;
+import interpretator.api.ast.NumberAST;
 
 /**
  *
  * @author alex
  */
-public class NumberAST implements AST {
+/*package-local*/ class NumberImpl implements NumberAST {
     private final Token number;
 
-    NumberAST(Token number) {
+    NumberImpl(Token number) {
         this.number = number;
     }
 
+    @Override
     public String getValue() {
         return number.getText();
     }

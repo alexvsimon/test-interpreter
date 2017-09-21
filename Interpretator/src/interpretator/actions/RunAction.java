@@ -1,13 +1,11 @@
 package interpretator.actions;
 
+import interpretator.api.ast.ProgramAST;
 import interpretator.editor.DocumentContext;
 import interpretator.editor.Lexer;
-import interpretator.editor.Token;
-import interpretator.editor.TokenKind;
 import interpretator.output.Output;
 import interpretator.parser.ASTDump;
 import interpretator.parser.Parser;
-import interpretator.parser.ProgramAST;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**

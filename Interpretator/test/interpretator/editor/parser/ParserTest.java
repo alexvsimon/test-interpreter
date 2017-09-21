@@ -2,12 +2,12 @@ package interpretator.editor.parser;
 
 import interpretator.editor.DocumentContext;
 import interpretator.editor.Lexer;
-import interpretator.parser.AST;
-import interpretator.parser.ASTKind;
+import interpretator.api.ast.ASTKind;
+import interpretator.api.ast.PrintAST;
+import interpretator.api.ast.ProgramAST;
+import interpretator.api.ast.StatementAST;
 import interpretator.parser.ASTDump;
 import interpretator.parser.Parser;
-import interpretator.parser.PrintAST;
-import interpretator.parser.ProgramAST;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -45,7 +45,7 @@ public class ParserTest {
         Lexer lexer = new Lexer(new DocumentContext(""));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
-        List<AST> statements = program.getStatements();
+        List<StatementAST> statements = program.getStatements();
         assertEquals(0, statements.size());
     }    
 
@@ -54,7 +54,7 @@ public class ParserTest {
         Lexer lexer = new Lexer(new DocumentContext("print \"pi = \""));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
-        List<AST> statements = program.getStatements();
+        List<StatementAST> statements = program.getStatements();
         assertEquals(1, statements.size());
         assertEquals(ASTKind.Print, statements.get(0).getKind());
         assertEquals("pi = ", ((PrintAST)statements.get(0)).getString());
@@ -66,7 +66,7 @@ public class ParserTest {
         Lexer lexer = new Lexer(new DocumentContext("var sequence = map({0, n}, i -> (-1)^i / (2.0 * i + 1))\n"));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
-        List<AST> statements = program.getStatements();
+        List<StatementAST> statements = program.getStatements();
         assertEquals(1, statements.size());
         assertEquals(ASTKind.Var, statements.get(0).getKind());
         assertEquals("Var sequence\n" +
@@ -91,7 +91,7 @@ public class ParserTest {
         Lexer lexer = new Lexer(new DocumentContext("var pi = 4 * reduce(sequence, 0, x y -> x + y)\n"));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
-        List<AST> statements = program.getStatements();
+        List<StatementAST> statements = program.getStatements();
         assertEquals(1, statements.size());
         assertEquals(ASTKind.Var, statements.get(0).getKind());
         assertEquals("Var pi\n" +
@@ -116,7 +116,7 @@ public class ParserTest {
                 "out pi"));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
-        List<AST> statements = program.getStatements();
+        List<StatementAST> statements = program.getStatements();
         assertEquals(5, statements.size());
         assertEquals(ASTKind.Var, statements.get(0).getKind());
         assertEquals(ASTKind.Var, statements.get(1).getKind());

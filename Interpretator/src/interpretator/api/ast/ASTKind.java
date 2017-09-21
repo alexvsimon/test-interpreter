@@ -1,4 +1,4 @@
-package interpretator.parser;
+package interpretator.api.ast;
 
 /**
  *

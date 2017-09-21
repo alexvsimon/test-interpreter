@@ -1,20 +1,23 @@
 package interpretator.parser;
 
+import interpretator.api.ast.ASTKind;
 import interpretator.editor.Token;
+import interpretator.api.ast.PrintAST;
 
 /**
  *
  * @author alex
  */
-public class PrintAST implements AST {
+/*package-local*/ class PrintImpl implements PrintAST {
     private final Token stringToken;
     private final Token printToken;
 
-    PrintAST(Token start, Token stringToken){
+    PrintImpl(Token start, Token stringToken){
         printToken = start;
         this.stringToken = stringToken;
     }
 
+    @Override
     public String getString() {
         return stringToken.getText().substring(1, stringToken.getText().length()-1);
     }

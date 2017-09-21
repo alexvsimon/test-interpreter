@@ -1,23 +1,27 @@
 package interpretator.parser;
 
+import interpretator.api.ast.ASTKind;
+import interpretator.api.ast.StatementAST;
 import java.util.ArrayList;
 import java.util.List;
+import interpretator.api.ast.ProgramAST;
 
 /**
  *
  * @author alex
  */
-public class ProgramAST implements AST {
-    private final List<AST> statements = new ArrayList<>();
+/*package-local*/ class ProgramImpl implements ProgramAST {
+    private final List<StatementAST> statements = new ArrayList<>();
 
-    ProgramAST() {
+    ProgramImpl() {
     }
     
-    void add(AST statement) {
+    void add(StatementAST statement) {
         statements.add(statement);
     }
     
-    public List<AST> getStatements(){
+    @Override
+    public List<StatementAST> getStatements(){
         return new ArrayList<>(statements);
     }
 

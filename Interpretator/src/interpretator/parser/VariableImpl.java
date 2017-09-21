@@ -1,18 +1,21 @@
 package interpretator.parser;
 
+import interpretator.api.ast.ASTKind;
 import interpretator.editor.Token;
+import interpretator.api.ast.VariableAST;
 
 /**
  *
  * @author alex
  */
-public class VariableAST implements AST {
+/*package-local*/ class VariableImpl implements VariableAST {
     private final Token id;
 
-    VariableAST(Token id) {
+    VariableImpl(Token id) {
         this.id = id;
     }
 
+    @Override
     public String getName() {
         return id.getText();
     }

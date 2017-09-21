@@ -1,5 +1,10 @@
 package interpretator.parser;
 
+import interpretator.api.ast.ASTKind;
+import interpretator.api.ast.ExpressionAST;
+import interpretator.api.ast.AST;
+import interpretator.api.ast.LambdaAST;
+import interpretator.api.ast.ProgramAST;
 import interpretator.editor.Lexer;
 import interpretator.editor.Token;
 import interpretator.editor.TokenKind;
@@ -14,7 +19,7 @@ public class Parser {
     private final List<Token> ts;
     private int index;
     private Token t;
-    private final ProgramAST program;
+    private final ProgramImpl program;
 
     public Parser(Lexer lexer) {
         ts = new ArrayList<>();
@@ -33,7 +38,7 @@ public class Parser {
             }
         }
         next();
-        program = new ProgramAST();
+        program = new ProgramImpl();
     }
     
     private void next() {
@@ -72,8 +77,8 @@ public class Parser {
             next();
             if (t.getKind() == TokenKind.Eq) {
                 next();
-                AST expr = expression();
-                program.add(new VarAST(startToken, id, expr));
+                ExpressionAST expr = expression();
+                program.add(new VarImpl(startToken, id, expr));
             } else {
                 //TODO: error
             }
@@ -86,7 +91,7 @@ public class Parser {
         Token startToken = t;
         next();
         if (t.getKind() == TokenKind.String) {
-            program.add(new PrintAST(startToken, t));
+            program.add(new PrintImpl(startToken, t));
         } else {
             //TODO: error
         }
@@ -97,47 +102,47 @@ public class Parser {
         Token startToken = t;
         next();
         AST expr = expression();
-        program.add(new OutAST(startToken, expr));
+        program.add(new OutImpl(startToken, expr));
     }
 
-    private AST expression() {
+    private ExpressionAST expression() {
         return parsePlusMinus();
     }
 
-    private AST parsePlusMinus() {
-        AST lh = parseMulDiv();
+    private ExpressionAST parsePlusMinus() {
+        ExpressionAST lh = parseMulDiv();
         while(t.getKind() == TokenKind.Plus || t.getKind() == TokenKind.Minus) {
             Token op = t;
             next();
-            AST rh = parseMulDiv();
-            lh = new ExpressionAST(lh, rh, op.getKind() == TokenKind.Plus ? ASTKind.Plus : ASTKind.Minus);
+            ExpressionAST rh = parseMulDiv();
+            lh = new BinaryExpressionImpl(lh, rh, op.getKind() == TokenKind.Plus ? ASTKind.Plus : ASTKind.Minus);
         }
         return lh;
     }
 
-    private AST parseMulDiv() {
-        AST lh = parsePow();
+    private ExpressionAST parseMulDiv() {
+        ExpressionAST lh = parsePow();
         while(t.getKind() == TokenKind.Mul || t.getKind() == TokenKind.Div) {
             Token op = t;
             next();
-            AST rh = parsePow();
-            lh = new ExpressionAST(lh, rh, op.getKind() == TokenKind.Mul ? ASTKind.Mul : ASTKind.Div);
+            ExpressionAST rh = parsePow();
+            lh = new BinaryExpressionImpl(lh, rh, op.getKind() == TokenKind.Mul ? ASTKind.Mul : ASTKind.Div);
         }
         return lh;
     }
     
-    private AST parsePow() {
-        AST lh = parseFunction();
+    private ExpressionAST parsePow() {
+        ExpressionAST lh = parseFunction();
         while(t.getKind() == TokenKind.Pow) {
             next();
-            AST rh = parseFunction();
-            lh = new ExpressionAST(lh, rh, ASTKind.Pow);
+            ExpressionAST rh = parseFunction();
+            lh = new BinaryExpressionImpl(lh, rh, ASTKind.Pow);
         }
         return lh;
         
     }
     
-    private AST parseFunction() {
+    private ExpressionAST parseFunction() {
         switch(t.getKind()) {
             case Map:
                 return parseMap();
@@ -146,7 +151,7 @@ public class Parser {
             case LParen:
             {
                 next();
-                AST expr = expression();
+                ExpressionAST expr = expression();
                 if (t.getKind() == TokenKind.RParen) {
                     next();
                     return expr;
@@ -158,13 +163,13 @@ public class Parser {
             case LBrace:
             {
                 next();
-                AST arg1 = expression();
+                ExpressionAST arg1 = expression();
                 if (t.getKind() == TokenKind.Comma) {
                     next();
-                    AST arg2 = expression();
+                    ExpressionAST arg2 = expression();
                     if (t.getKind() == TokenKind.RBrace) {
                         next();
-                        return new SequenceAST(arg1, arg2);
+                        return new SequenceImpl(arg1, arg2);
                     } else {
                     // TODO: error
                     }
@@ -177,13 +182,13 @@ public class Parser {
             {
                 Token id = t;
                 next();
-                return new VariableAST(id);
+                return new VariableImpl(id);
             }
             case Number:
             {
                 Token number = t;
                 next();
-                return new NumberAST(number);
+                return new NumberImpl(number);
             }
             default: 
             {
@@ -194,17 +199,17 @@ public class Parser {
         return null;
     }
 
-    private AST parseMap() {
+    private ExpressionAST parseMap() {
         next();
         if (t.getKind() == TokenKind.LParen) {
             next();
-            AST arg1 = expression();
+            ExpressionAST arg1 = expression();
             if (t.getKind() == TokenKind.Comma) {
                 next();
-                AST lambda = parseLambda();
+                LambdaAST lambda = parseLambda();
                 if (t.getKind() == TokenKind.RParen) {
                     next();
-                    return new MapAST(arg1, lambda);
+                    return new MapImpl(arg1, lambda);
                 }
             } else {
                 // TODO: error
@@ -215,20 +220,20 @@ public class Parser {
         return null;
     }
     
-    private AST parseReduce() {
+    private ExpressionAST parseReduce() {
         next();
         if (t.getKind() == TokenKind.LParen) {
             next();
-            AST arg1 = expression();
+            ExpressionAST arg1 = expression();
             if (t.getKind() == TokenKind.Comma) {
                 next();
-                AST arg2 = expression();
+                ExpressionAST arg2 = expression();
                 if (t.getKind() == TokenKind.Comma) {
                     next();
-                    AST lambda = parseLambda();
+                    LambdaAST lambda = parseLambda();
                     if (t.getKind() == TokenKind.RParen) {
                         next();
-                        return new ReduceAST(arg1, arg2, lambda);
+                        return new ReduceImpl(arg1, arg2, lambda);
                     }
                 } else {
                 // TODO: error
@@ -242,7 +247,7 @@ public class Parser {
         return null;
     }
 
-    private AST parseLambda() {
+    private LambdaImpl parseLambda() {
         Token v1 = null;
         Token v2 = null;
         if (t.getKind() == TokenKind.Identifier) {
@@ -254,8 +259,8 @@ public class Parser {
             }
             if (t.getKind() == TokenKind.Arrow) {
                 next();
-                AST function = expression();
-                return new LambdaAST(v1, v2, function);
+                ExpressionAST function = expression();
+                return new LambdaImpl(v1, v2, function);
             } else {
                 // TODO: error
             }

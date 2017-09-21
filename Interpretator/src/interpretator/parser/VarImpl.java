@@ -1,27 +1,32 @@
 package interpretator.parser;
 
+import interpretator.api.ast.ASTKind;
+import interpretator.api.ast.ExpressionAST;
 import interpretator.editor.Token;
+import interpretator.api.ast.VarAST;
 
 /**
  *
  * @author alex
  */
-public class VarAST implements AST {
+/*package-local*/ class VarImpl implements VarAST {
     private final Token varToken;
     private final Token id;
-    private final AST expression;
+    private final ExpressionAST expression;
             
-    VarAST(Token start, Token id, AST expression){
+    VarImpl(Token start, Token id, ExpressionAST expression){
         varToken = start;
         this.id = id;
         this.expression = expression;
     }
 
+    @Override
     public String getName() {
         return id.getText();
     }
     
-    public AST getExpression() {
+    @Override
+    public ExpressionAST getExpression() {
         return expression;
     }
     

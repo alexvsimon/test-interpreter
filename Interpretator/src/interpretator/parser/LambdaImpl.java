@@ -1,26 +1,31 @@
 package interpretator.parser;
 
+import interpretator.api.ast.ASTKind;
+import interpretator.api.ast.ExpressionAST;
 import interpretator.editor.Token;
+import interpretator.api.ast.LambdaAST;
 
 /**
  *
  * @author alex
  */
-public class LambdaAST implements AST {
+/*package-local*/ class LambdaImpl implements LambdaAST {
     private final Token v1;
     private final Token v2;
-    private final AST function;
+    private final ExpressionAST function;
 
-    LambdaAST(Token v1, Token v2, AST function) {
+    LambdaImpl(Token v1, Token v2, ExpressionAST function) {
         this.v1 = v1;
         this.v2 = v2;
         this.function = function;
     }
 
+    @Override
     public int getParametersSize() {
         return v2 != null ? 2 : 1;
     }
 
+    @Override
     public String getParameter(int i) {
         switch(i) {
             case 0:
@@ -33,7 +38,8 @@ public class LambdaAST implements AST {
         }
     }
     
-    public AST getBody(){
+    @Override
+    public ExpressionAST getBody(){
         return function;
     }
     

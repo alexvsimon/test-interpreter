@@ -1,5 +1,18 @@
 package interpretator.parser;
 
+import interpretator.api.ast.AST;
+import interpretator.api.ast.BinaryExpressionAST;
+import interpretator.api.ast.LambdaAST;
+import interpretator.api.ast.MapAST;
+import interpretator.api.ast.NumberAST;
+import interpretator.api.ast.OutAST;
+import interpretator.api.ast.PrintAST;
+import interpretator.api.ast.ProgramAST;
+import interpretator.api.ast.ReduceAST;
+import interpretator.api.ast.SequenceAST;
+import interpretator.api.ast.VarAST;
+import interpretator.api.ast.VariableAST;
+
 /**
  *
  * @author alex
@@ -38,7 +51,7 @@ public class ASTDump {
             case Mul:
             case Div:
             case Pow:
-                dumpExpression((ExpressionAST) ast);
+                dumpExpression((BinaryExpressionAST) ast);
                 break;
             case Map:
                 dumpMap((MapAST) ast);
@@ -85,7 +98,7 @@ public class ASTDump {
         shift--;
     }
     
-    private void dumpExpression(ExpressionAST ast) {
+    private void dumpExpression(BinaryExpressionAST ast) {
         print(ast.getKind().name());
         shift++;
         dump(ast.getLeftExpression());
