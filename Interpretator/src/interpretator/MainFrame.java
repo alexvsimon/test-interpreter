@@ -3,6 +3,7 @@ package interpretator;
 import interpretator.editor.DocumentContext;
 import interpretator.output.Output;
 import interpretator.actions.RunAction;
+import interpretator.editor.MyEditorKit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.text.BadLocationException;
@@ -18,6 +19,7 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public MainFrame() {
         initComponents();
+        this.editorPane.setEditorKit(new MyEditorKit());
         Output.getInstance().setOutputPane(outputPane);
     }
 
