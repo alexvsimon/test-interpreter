@@ -105,32 +105,33 @@ public class LexerTest {
     public void expressionStream() {
         Lexer lexer = new Lexer(new DocumentContext("(-1)^i / (2.0 * i + 1)"));
         List<Token> tokens = getTokens(lexer);
-        assertEquals(20, tokens.size());
+        assertEquals(21, tokens.size());
         assertEquals(TokenKind.LParen, tokens.get(0).getKind());
-        assertEquals(TokenKind.Number, tokens.get(1).getKind());
-        assertEquals("-1", tokens.get(1).getText());
-        assertEquals(TokenKind.RParen, tokens.get(2).getKind());
-        assertEquals(TokenKind.Pow, tokens.get(3).getKind());
-        assertEquals(TokenKind.Identifier, tokens.get(4).getKind());
-        assertEquals("i", tokens.get(4).getText());
-        assertEquals(TokenKind.WhiteSpace, tokens.get(5).getKind());
-        assertEquals(TokenKind.Div, tokens.get(6).getKind());
-        assertEquals(TokenKind.WhiteSpace, tokens.get(7).getKind());
-        assertEquals(TokenKind.LParen, tokens.get(8).getKind());
-        assertEquals(TokenKind.Number, tokens.get(9).getKind());
-        assertEquals("2.0", tokens.get(9).getText());
-        assertEquals(TokenKind.WhiteSpace, tokens.get(10).getKind());
-        assertEquals(TokenKind.Mul, tokens.get(11).getKind());
-        assertEquals(TokenKind.WhiteSpace, tokens.get(12).getKind());
-        assertEquals(TokenKind.Identifier, tokens.get(13).getKind());
-        assertEquals("i", tokens.get(13).getText());
-        assertEquals(TokenKind.WhiteSpace, tokens.get(14).getKind());
-        assertEquals(TokenKind.Plus, tokens.get(15).getKind());
-        assertEquals(TokenKind.WhiteSpace, tokens.get(16).getKind());
-        assertEquals(TokenKind.Number, tokens.get(17).getKind());
-        assertEquals("1", tokens.get(17).getText());
-        assertEquals(TokenKind.RParen, tokens.get(18).getKind());
-        assertEquals(TokenKind.EOF, tokens.get(19).getKind());
+        assertEquals(TokenKind.Minus, tokens.get(1).getKind());
+        assertEquals(TokenKind.Number, tokens.get(2).getKind());
+        assertEquals("1", tokens.get(2).getText());
+        assertEquals(TokenKind.RParen, tokens.get(3).getKind());
+        assertEquals(TokenKind.Pow, tokens.get(4).getKind());
+        assertEquals(TokenKind.Identifier, tokens.get(5).getKind());
+        assertEquals("i", tokens.get(5).getText());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(6).getKind());
+        assertEquals(TokenKind.Div, tokens.get(7).getKind());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(8).getKind());
+        assertEquals(TokenKind.LParen, tokens.get(9).getKind());
+        assertEquals(TokenKind.Number, tokens.get(10).getKind());
+        assertEquals("2.0", tokens.get(10).getText());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(11).getKind());
+        assertEquals(TokenKind.Mul, tokens.get(12).getKind());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(13).getKind());
+        assertEquals(TokenKind.Identifier, tokens.get(14).getKind());
+        assertEquals("i", tokens.get(14).getText());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(15).getKind());
+        assertEquals(TokenKind.Plus, tokens.get(16).getKind());
+        assertEquals(TokenKind.WhiteSpace, tokens.get(17).getKind());
+        assertEquals(TokenKind.Number, tokens.get(18).getKind());
+        assertEquals("1", tokens.get(18).getText());
+        assertEquals(TokenKind.RParen, tokens.get(19).getKind());
+        assertEquals(TokenKind.EOF, tokens.get(20).getKind());
     }
     
     @Test

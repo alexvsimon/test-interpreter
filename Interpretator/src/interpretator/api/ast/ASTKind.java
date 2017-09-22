@@ -11,6 +11,8 @@ public enum ASTKind {
     Out,
     Var,
     
+    UnaryMinus,
+
     Plus,
     Minus,
 

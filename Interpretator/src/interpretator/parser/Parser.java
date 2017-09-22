@@ -16,6 +16,7 @@ import java.util.List;
  * @author alex
  */
 public class Parser {
+
     private final List<Token> ts;
     private int index;
     private Token t;
@@ -23,9 +24,9 @@ public class Parser {
 
     public Parser(Lexer lexer) {
         ts = new ArrayList<>();
-        while(true) {
+        while (true) {
             Token token = lexer.nextToken();
-            switch(token.getKind()) {
+            switch (token.getKind()) {
                 case Unknown:
                     //TODO: error
                     continue;
@@ -40,16 +41,16 @@ public class Parser {
         next();
         program = new ProgramImpl();
     }
-    
+
     private void next() {
         if (index < ts.size()) {
             t = ts.get(index++);
         }
     }
-    
+
     public ProgramAST parse() {
-        while(true) {
-            switch(t.getKind()) {
+        while (true) {
+            switch (t.getKind()) {
                 case EOF:
                     return program;
                 case Var:
@@ -68,7 +69,7 @@ public class Parser {
             }
         }
     }
-    
+
     private void var() {
         Token startToken = t;
         next();
@@ -111,7 +112,7 @@ public class Parser {
 
     private ExpressionAST parsePlusMinus() {
         ExpressionAST lh = parseMulDiv();
-        while(t.getKind() == TokenKind.Plus || t.getKind() == TokenKind.Minus) {
+        while (t.getKind() == TokenKind.Plus || t.getKind() == TokenKind.Minus) {
             Token op = t;
             next();
             ExpressionAST rh = parseMulDiv();
@@ -122,7 +123,7 @@ public class Parser {
 
     private ExpressionAST parseMulDiv() {
         ExpressionAST lh = parsePow();
-        while(t.getKind() == TokenKind.Mul || t.getKind() == TokenKind.Div) {
+        while (t.getKind() == TokenKind.Mul || t.getKind() == TokenKind.Div) {
             Token op = t;
             next();
             ExpressionAST rh = parsePow();
@@ -130,26 +131,35 @@ public class Parser {
         }
         return lh;
     }
-    
+
     private ExpressionAST parsePow() {
-        ExpressionAST lh = parseFunction();
-        while(t.getKind() == TokenKind.Pow) {
+        ExpressionAST lh = parseUnaryMinus();
+        while (t.getKind() == TokenKind.Pow) {
             next();
-            ExpressionAST rh = parseFunction();
+            ExpressionAST rh = parseUnaryMinus();
             lh = new BinaryExpressionImpl(lh, rh, ASTKind.Pow);
         }
         return lh;
-        
+
     }
     
+    private ExpressionAST parseUnaryMinus() {
+        if (t.getKind() == TokenKind.Minus) {
+            Token op = t;
+            next();
+            ExpressionAST rh = parseFunction();
+            return new UnaryExpressionImpl(rh, ASTKind.UnaryMinus);
+        }
+        return parseFunction();
+    }
+
     private ExpressionAST parseFunction() {
-        switch(t.getKind()) {
+        switch (t.getKind()) {
             case Map:
                 return parseMap();
             case Reduce:
                 return parseReduce();
-            case LParen:
-            {
+            case LParen: {
                 next();
                 ExpressionAST expr = expression();
                 if (t.getKind() == TokenKind.RParen) {
@@ -160,8 +170,7 @@ public class Parser {
                 }
                 break;
             }
-            case LBrace:
-            {
+            case LBrace: {
                 next();
                 ExpressionAST arg1 = expression();
                 if (t.getKind() == TokenKind.Comma) {
@@ -171,27 +180,24 @@ public class Parser {
                         next();
                         return new SequenceImpl(arg1, arg2);
                     } else {
-                    // TODO: error
+                        // TODO: error
                     }
                 } else {
                     // TODO: error
                 }
                 break;
             }
-            case Identifier:
-            {
+            case Identifier: {
                 Token id = t;
                 next();
                 return new VariableImpl(id);
             }
-            case Number:
-            {
+            case Number: {
                 Token number = t;
                 next();
                 return new NumberImpl(number);
             }
-            default: 
-            {
+            default: {
                 next();
                 // TODO: error
             }
@@ -219,7 +225,7 @@ public class Parser {
         }
         return null;
     }
-    
+
     private ExpressionAST parseReduce() {
         next();
         if (t.getKind() == TokenKind.LParen) {
@@ -236,7 +242,7 @@ public class Parser {
                         return new ReduceImpl(arg1, arg2, lambda);
                     }
                 } else {
-                // TODO: error
+                    // TODO: error
                 }
             } else {
                 // TODO: error

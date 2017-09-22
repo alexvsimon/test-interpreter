@@ -10,6 +10,7 @@ import interpretator.api.ast.PrintAST;
 import interpretator.api.ast.ProgramAST;
 import interpretator.api.ast.ReduceAST;
 import interpretator.api.ast.SequenceAST;
+import interpretator.api.ast.UnaryExpressionAST;
 import interpretator.api.ast.VarAST;
 import interpretator.api.ast.VariableAST;
 
@@ -45,6 +46,9 @@ public class ASTDump {
                 break;
             case Var:
                 dumpVar((VarAST) ast);
+                break;
+            case UnaryMinus:
+                dumpUnaryExpression((UnaryExpressionAST) ast);
                 break;
             case Plus:
             case Minus:
@@ -97,7 +101,14 @@ public class ASTDump {
         dump(ast.getExpression());
         shift--;
     }
-    
+
+    private void dumpUnaryExpression(UnaryExpressionAST ast) {
+        print(ast.getKind().name());
+        shift++;
+        dump(ast.getExpression());
+        shift--;
+    }
+
     private void dumpExpression(BinaryExpressionAST ast) {
         print(ast.getKind().name());
         shift++;

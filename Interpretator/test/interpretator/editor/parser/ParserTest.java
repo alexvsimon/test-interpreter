@@ -77,7 +77,8 @@ public class ParserTest {
                      "  Lambda i\n" +
                      "   Div\n" +
                      "    Pow\n" +
-                     "     Number -1\n" +
+                     "     UnaryMinus\n" +
+                     "      Number 1\n" +
                      "     Variable i\n" +
                      "    Plus\n" +
                      "     Mul\n" +
@@ -86,6 +87,25 @@ public class ParserTest {
                      "     Number 1\n", new ASTDump(program).dump());
     }    
 
+    @Test
+    public void unaryMinus(){
+                Lexer lexer = new Lexer(new DocumentContext("var n = -6*2-5*2\n"));
+        Parser parser = new Parser(lexer);
+        ProgramAST program = parser.parse();
+        List<StatementAST> statements = program.getStatements();
+        assertEquals(1, statements.size());
+        assertEquals(ASTKind.Var, statements.get(0).getKind());
+        assertEquals("Var n\n" +
+                     " Minus\n" +
+                     "  Mul\n" +
+                     "   UnaryMinus\n" +
+                     "    Number 6\n" +
+                     "   Number 2\n" +
+                     "  Mul\n" +
+                     "   Number 5\n" +
+                     "   Number 2\n", new ASTDump(program).dump());
+    }
+    
     @Test
     public void varReduceStream() {
         Lexer lexer = new Lexer(new DocumentContext("var pi = 4 * reduce(sequence, 0, x y -> x + y)\n"));
@@ -133,7 +153,8 @@ public class ParserTest {
                      "  Lambda i\n" +
                      "   Div\n" +
                      "    Pow\n" +
-                     "     Number -1\n" +
+                     "     UnaryMinus\n" +
+                     "      Number 1\n" +
                      "     Variable i\n" +
                      "    Plus\n" +
                      "     Mul\n" +
