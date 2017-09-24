@@ -6,6 +6,7 @@ import interpretator.editor.Lexer;
 import interpretator.output.Output;
 import interpretator.parser.ASTDump;
 import interpretator.parser.Parser;
+import interpretator.run.ASTEval;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 /**
@@ -34,10 +35,12 @@ public class RunAction {
                 //}
                 Parser parser = new Parser(lexer);
                 ProgramAST program = parser.parse();
-                ASTDump visitor = new ASTDump(program);
-                visitor.dump();
-                Output.getInstance().out(visitor.dump());
+                //ASTDump visitor = new ASTDump(program);
+                //visitor.dump();
+                //Output.getInstance().out(visitor.dump());
+                //Output.getInstance().out("\n");
                 Output.getInstance().out("\n");
+                new ASTEval(program).run();
             } catch (Throwable th) {
                 th.printStackTrace();
             }
