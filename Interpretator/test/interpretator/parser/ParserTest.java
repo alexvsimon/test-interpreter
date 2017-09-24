@@ -1,4 +1,4 @@
-package interpretator.editor.parser;
+package interpretator.parser;
 
 import interpretator.editor.DocumentContext;
 import interpretator.editor.Lexer;
@@ -6,8 +6,6 @@ import interpretator.api.ast.ASTKind;
 import interpretator.api.ast.PrintAST;
 import interpretator.api.ast.ProgramAST;
 import interpretator.api.ast.StatementAST;
-import interpretator.parser.ASTDump;
-import interpretator.parser.Parser;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -89,7 +87,7 @@ public class ParserTest {
 
     @Test
     public void unaryMinus(){
-                Lexer lexer = new Lexer(new DocumentContext("var n = -6*2-5*2\n"));
+        Lexer lexer = new Lexer(new DocumentContext("var n = -6*2-5*2\n"));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
         List<StatementAST> statements = program.getStatements();
