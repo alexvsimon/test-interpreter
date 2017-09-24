@@ -35,4 +35,9 @@ public class MappedSequenceImpl implements SequenceValue {
         return new ASTEval(lambda).evalLambda(args);
     }
 
+    @Override
+    public String toString() {
+        return "MappedSequence of " + getSize() + " values";
+    }
+
 }

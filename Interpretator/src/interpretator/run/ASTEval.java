@@ -245,8 +245,8 @@ public class ASTEval {
     private Value evalSequence(SequenceAST ast) {
         Value start = eval(ast.getStartExpression());
         Value end = eval(ast.getEndExpression());
-        if ((start instanceof IntegerValue)
-                && (end instanceof IntegerValue)) {
+        if ((start instanceof IntegerValue) &&
+            (end instanceof IntegerValue)) {
             return new SequenceImpl(((IntegerValue) start).getInteger(), ((IntegerValue) end).getInteger());
         }
         throw new IllegalArgumentException();

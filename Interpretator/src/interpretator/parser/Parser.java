@@ -21,6 +21,7 @@ public class Parser {
     private int index;
     private Token t;
     private final ProgramImpl program;
+    private List<ParserError> errors = new ArrayList<>();
 
     public Parser(Lexer lexer) {
         ts = new ArrayList<>();
@@ -28,7 +29,7 @@ public class Parser {
             Token token = lexer.nextToken();
             switch (token.getKind()) {
                 case Unknown:
-                    //TODO: error
+                    addError("Unexpected token", token);
                     continue;
                 case WhiteSpace:
                     continue;
@@ -42,6 +43,14 @@ public class Parser {
         program = new ProgramImpl();
     }
 
+    private void addError(String message, Token token) {
+        errors.add(new ParserError(message, token.getTokenLine(), token.getStartRowCol()));
+    }
+    
+    public  List<ParserError> getErrors() {
+        return errors;
+    }
+    
     private void next() {
         if (index < ts.size()) {
             t = ts.get(index++);
@@ -63,7 +72,7 @@ public class Parser {
                     out();
                     break;
                 default:
-                    // TODO: error
+                    addError("Unexpected token", t);
                     next();
                     break;
             }
@@ -81,9 +90,10 @@ public class Parser {
                 ExpressionAST expr = expression();
                 program.add(new VarImpl(startToken, id, expr));
             } else {
-                //TODO: error
+                addError("Expected '='", t);
             }
         } else {
+            addError("Expected identifier", t);
             //TODO: error
         }
     }
@@ -94,7 +104,7 @@ public class Parser {
         if (t.getKind() == TokenKind.String) {
             program.add(new PrintImpl(startToken, t));
         } else {
-            //TODO: error
+            addError("Expected string", t);
         }
         next();
     }
@@ -166,7 +176,7 @@ public class Parser {
                     next();
                     return expr;
                 } else {
-                    // TODO: error
+                    addError("Expected ')'", t);
                 }
                 break;
             }
@@ -180,10 +190,10 @@ public class Parser {
                         next();
                         return new SequenceImpl(arg1, arg2);
                     } else {
-                        // TODO: error
+                        addError("Expected '}'", t);
                     }
                 } else {
-                    // TODO: error
+                    addError("Expected ','", t);
                 }
                 break;
             }
@@ -198,8 +208,8 @@ public class Parser {
                 return new NumberImpl(number);
             }
             default: {
+                addError("Unexpected token", t);
                 next();
-                // TODO: error
             }
         }
         return null;
@@ -218,10 +228,10 @@ public class Parser {
                     return new MapImpl(arg1, lambda);
                 }
             } else {
-                // TODO: error
+                addError("Expected ','", t);
             }
         } else {
-            // TODO: error
+            addError("Expected '('", t);
         }
         return null;
     }
@@ -240,15 +250,17 @@ public class Parser {
                     if (t.getKind() == TokenKind.RParen) {
                         next();
                         return new ReduceImpl(arg1, arg2, lambda);
+                    } else {
+                        addError("Expected ')'", t);
                     }
                 } else {
-                    // TODO: error
+                    addError("Expected ','", t);
                 }
             } else {
-                // TODO: error
+                addError("Expected ','", t);
             }
         } else {
-            // TODO: error
+            addError("Expected '('", t);
         }
         return null;
     }
@@ -268,10 +280,10 @@ public class Parser {
                 ExpressionAST function = expression();
                 return new LambdaImpl(v1, v2, function);
             } else {
-                // TODO: error
+                addError("Expected '->'", t);
             }
         } else {
-            // TODO: error
+            addError("Expected identifier", t);
         }
         return null;
     }

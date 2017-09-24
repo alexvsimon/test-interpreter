@@ -30,4 +30,9 @@ public class SequenceImpl implements SequenceValue {
         return new IntegerImpl(i + startIndex);
     }
 
+    @Override
+    public String toString() {
+        return "Sequence of " + getSize() + " values";
+    }
+
 }

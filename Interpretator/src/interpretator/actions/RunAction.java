@@ -6,6 +6,7 @@ import interpretator.editor.Lexer;
 import interpretator.output.Output;
 import interpretator.parser.ASTDump;
 import interpretator.parser.Parser;
+import interpretator.parser.ParserError;
 import interpretator.run.ASTEval;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -39,6 +40,19 @@ public class RunAction {
                 //visitor.dump();
                 //Output.getInstance().out(visitor.dump());
                 //Output.getInstance().out("\n");
+                if (parser.getErrors().size() > 0) {
+                    ParserError error = parser.getErrors().get(0);
+                    int[] rowCol = error.getRowCol();
+                    Output.getInstance().out("\n"+rowCol[0]+":"+rowCol[1]+": "+error.getMessage());
+                    Output.getInstance().out("\n"+error.getContext());
+                    StringBuilder buf = new StringBuilder();
+                    for(int i = 0; i < rowCol[1] - 2; i++){
+                        buf.append(' ');
+                    }
+                    buf.append('^');
+                    Output.getInstance().out("\n"+buf.toString());
+                    return;
+                }
                 Output.getInstance().out("\n");
                 new ASTEval(program).run();
             } catch (Throwable th) {

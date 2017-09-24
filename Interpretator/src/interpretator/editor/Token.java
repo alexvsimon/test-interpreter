@@ -25,6 +25,26 @@ public class Token {
         return doc.getText().subSequence(startOffset, endOffset).toString();
     }
 
+    public int getStartOffset() {
+        return startOffset;
+    }
+
+    public int getEndOffset() {
+        return endOffset;
+    }
+    
+    public int[] getStartRowCol() {
+        return doc.getRowCol(startOffset);
+    }
+
+    public int[] getEndRowCol() {
+        return doc.getRowCol(endOffset);
+    }
+    
+    public String getTokenLine() {
+        return doc.getLine(getStartRowCol()[0]);
+    }
+
     @Override
     public String toString() {
         if (kind == TokenKind.EOF) {

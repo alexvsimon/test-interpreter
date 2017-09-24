@@ -19,4 +19,9 @@ public class IntegerImpl implements IntegerValue {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return ""+value;
+    }
+
 }

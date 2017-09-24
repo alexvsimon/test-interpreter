@@ -79,10 +79,12 @@ public class MainFrame extends javax.swing.JFrame {
         jSplitPane1.setResizeWeight(0.5);
         jSplitPane1.setPreferredSize(new java.awt.Dimension(600, 400));
 
+        editorPane.setFont(new java.awt.Font("Monospaced", 0, 15)); // NOI18N
         jScrollPane1.setViewportView(editorPane);
 
         jSplitPane1.setTopComponent(jScrollPane1);
 
+        outputPane.setFont(new java.awt.Font("Monospaced", 0, 15)); // NOI18N
         jScrollPane2.setViewportView(outputPane);
 
         jSplitPane1.setRightComponent(jScrollPane2);
