@@ -19,7 +19,7 @@ import interpretator.api.ast.PrintAST;
 
     @Override
     public String getString() {
-        return stringToken.getText().substring(1, stringToken.getText().length()-1);
+        return stringToken.getText().substring(1, stringToken.getText().length()-1).replace("\\n", "\n");
     }
     
     @Override
