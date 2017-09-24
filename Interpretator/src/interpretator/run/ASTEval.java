@@ -101,24 +101,24 @@ public class ASTEval {
     }
 
     private void runOut(OutAST ast) {
-        Value value = eval(ast.getExpression());
+        outValue(eval(ast.getExpression()));
+    }
+    
+    private void outValue(Value value) {
         if (value instanceof IntegerValue) {
             Output.getInstance().out("" + ((IntegerValue) value).getInteger());
         } else if (value instanceof DoubleValue) {
             Output.getInstance().out("" + ((DoubleValue) value).getDouble());
         } else if (value instanceof SequenceValue) {
+            Output.getInstance().out("{");
             SequenceValue v = (SequenceValue) value;
             for (int i = 0; i < v.getSize(); i++) {
-                if (i > 0) {
-                    Output.getInstance().out(" ");
-                }
-                Value element = v.getValueAt(i);
-                if (element instanceof IntegerValue) {
-                    Output.getInstance().out("" + ((IntegerValue) element).getInteger());
-                } else if (element instanceof DoubleValue) {
-                    Output.getInstance().out("" + ((DoubleValue) element).getDouble());
+                outValue(v.getValueAt(i));
+                if (i < v.getSize() - 1) {
+                    Output.getInstance().out(",");
                 }
             }
+            Output.getInstance().out("}");
         }
     }
 
