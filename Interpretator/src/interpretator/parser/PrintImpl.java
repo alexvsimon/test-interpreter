@@ -28,7 +28,13 @@ import interpretator.api.ast.PrintAST;
     }
 
     @Override
+    public Token getFistToken() {
+        return printToken;
+    }
+
+    @Override
     public String toString() {
         return getKind().name();
     }
+
 }

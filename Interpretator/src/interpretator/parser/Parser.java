@@ -126,7 +126,7 @@ public class Parser {
             Token op = t;
             next();
             ExpressionAST rh = parseMulDiv();
-            lh = new BinaryExpressionImpl(lh, rh, op.getKind() == TokenKind.Plus ? ASTKind.Plus : ASTKind.Minus);
+            lh = new BinaryExpressionImpl(lh, rh, op, op.getKind() == TokenKind.Plus ? ASTKind.Plus : ASTKind.Minus);
         }
         return lh;
     }
@@ -137,7 +137,7 @@ public class Parser {
             Token op = t;
             next();
             ExpressionAST rh = parsePow();
-            lh = new BinaryExpressionImpl(lh, rh, op.getKind() == TokenKind.Mul ? ASTKind.Mul : ASTKind.Div);
+            lh = new BinaryExpressionImpl(lh, rh, op, op.getKind() == TokenKind.Mul ? ASTKind.Mul : ASTKind.Div);
         }
         return lh;
     }
@@ -145,9 +145,10 @@ public class Parser {
     private ExpressionAST parsePow() {
         ExpressionAST lh = parseUnaryMinus();
         while (t.getKind() == TokenKind.Pow) {
+            Token op = t;
             next();
             ExpressionAST rh = parseUnaryMinus();
-            lh = new BinaryExpressionImpl(lh, rh, ASTKind.Pow);
+            lh = new BinaryExpressionImpl(lh, rh, op, ASTKind.Pow);
         }
         return lh;
 
@@ -158,7 +159,7 @@ public class Parser {
             Token op = t;
             next();
             ExpressionAST rh = parseFunction();
-            return new UnaryExpressionImpl(rh, ASTKind.UnaryMinus);
+            return new UnaryExpressionImpl(rh, op, ASTKind.UnaryMinus);
         }
         return parseFunction();
     }
@@ -181,6 +182,7 @@ public class Parser {
                 break;
             }
             case LBrace: {
+                Token startToken = t;
                 next();
                 ExpressionAST arg1 = expression();
                 if (t.getKind() == TokenKind.Comma) {
@@ -188,7 +190,7 @@ public class Parser {
                     ExpressionAST arg2 = expression();
                     if (t.getKind() == TokenKind.RBrace) {
                         next();
-                        return new SequenceImpl(arg1, arg2);
+                        return new SequenceImpl(startToken, arg1, arg2);
                     } else {
                         addError("Expected '}'", t);
                     }
@@ -216,6 +218,7 @@ public class Parser {
     }
 
     private ExpressionAST parseMap() {
+        Token map = t;
         next();
         if (t.getKind() == TokenKind.LParen) {
             next();
@@ -225,7 +228,7 @@ public class Parser {
                 LambdaAST lambda = parseLambda();
                 if (t.getKind() == TokenKind.RParen) {
                     next();
-                    return new MapImpl(arg1, lambda);
+                    return new MapImpl(map, arg1, lambda);
                 }
             } else {
                 addError("Expected ','", t);
@@ -237,6 +240,7 @@ public class Parser {
     }
 
     private ExpressionAST parseReduce() {
+        Token reduce = t;
         next();
         if (t.getKind() == TokenKind.LParen) {
             next();
@@ -249,7 +253,7 @@ public class Parser {
                     LambdaAST lambda = parseLambda();
                     if (t.getKind() == TokenKind.RParen) {
                         next();
-                        return new ReduceImpl(arg1, arg2, lambda);
+                        return new ReduceImpl(reduce, arg1, arg2, lambda);
                     } else {
                         addError("Expected ')'", t);
                     }

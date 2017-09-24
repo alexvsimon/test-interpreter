@@ -36,6 +36,11 @@ import interpretator.api.ast.VarAST;
     }
 
     @Override
+    public Token getFistToken() {
+        return varToken;
+    }
+
+    @Override
     public String toString() {
         return getKind().name() + " " + id.getText();
     }

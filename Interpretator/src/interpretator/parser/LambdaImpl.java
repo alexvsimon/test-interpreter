@@ -47,6 +47,11 @@ import interpretator.api.ast.LambdaAST;
     public ASTKind getKind() {
         return ASTKind.Lambda;
     }
+
+    @Override
+    public Token getFistToken() {
+        return v1;
+    }
     
     @Override
     public String toString() {

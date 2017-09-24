@@ -24,6 +24,11 @@ import interpretator.api.ast.NumberAST;
     public ASTKind getKind() {
         return ASTKind.Number;
     }
+
+    @Override
+    public Token getFistToken() {
+        return number;
+    }
     
     @Override
     public String toString() {

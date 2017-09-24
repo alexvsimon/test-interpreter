@@ -129,24 +129,32 @@ public class ASTEval {
     }
 
     private Value evalUnaryExpression(UnaryExpressionAST ast) {
-        if (ast.getKind() == ASTKind.UnaryMinus) {
-            Value eval = eval(ast.getExpression());
-            if (eval instanceof IntegerValue) {
-                return new IntegerImpl(-((IntegerValue) eval).getInteger());
-            } else if (eval instanceof DoubleValue) {
-                return new DoubleImpl(-((DoubleValue) eval).getDouble());
-            }
+        assert ast.getKind() == ASTKind.UnaryMinus;
+        Value eval = eval(ast.getExpression());
+        if (eval instanceof IntegerValue) {
+            return new IntegerImpl(-((IntegerValue) eval).getInteger());
+        } else if (eval instanceof DoubleValue) {
+            return new DoubleImpl(-((DoubleValue) eval).getDouble());
+        } else {
+            throw new InterpreterRuntimeError("Unsupported unary minus for sequence", ast);
         }
-        throw new IllegalArgumentException();
     }
 
     private Value evalExpression(BinaryExpressionAST ast) {
         Value lh = eval(ast.getLeftExpression());
+        if (!((lh instanceof IntegerValue) ||
+              (lh instanceof DoubleValue))) {
+            throw new InterpreterRuntimeError("Unsupported binary operation for sequence", ast.getLeftExpression());
+        }
         Value rh = eval(ast.getRightExpression());
+        if (!((rh instanceof IntegerValue) ||
+              (rh instanceof DoubleValue))) {
+            throw new InterpreterRuntimeError("Unsupported binary operation for sequence", ast.getRightExpression());
+        }
         switch (ast.getKind()) {
             case Plus: {
-                if ((lh instanceof IntegerValue)
-                        && (rh instanceof IntegerValue)) {
+                if ((lh instanceof IntegerValue) &&
+                    (rh instanceof IntegerValue)) {
                     return new IntegerImpl(
                             ((IntegerValue) lh).getInteger()
                             + ((IntegerValue) rh).getInteger());
@@ -158,8 +166,8 @@ public class ASTEval {
                 return new DoubleImpl(ldh + rdh);
             }
             case Minus: {
-                if ((lh instanceof IntegerValue)
-                        && (rh instanceof IntegerValue)) {
+                if ((lh instanceof IntegerValue) &&
+                    (rh instanceof IntegerValue)) {
                     return new IntegerImpl(
                             ((IntegerValue) lh).getInteger()
                             - ((IntegerValue) rh).getInteger());
@@ -171,8 +179,8 @@ public class ASTEval {
                 return new DoubleImpl(ldh - rdh);
             }
             case Mul: {
-                if ((lh instanceof IntegerValue)
-                        && (rh instanceof IntegerValue)) {
+                if ((lh instanceof IntegerValue) &&
+                    (rh instanceof IntegerValue)) {
                     return new IntegerImpl(
                             ((IntegerValue) lh).getInteger()
                             * ((IntegerValue) rh).getInteger());
@@ -229,8 +237,9 @@ public class ASTEval {
                     }
                 }
             }
+            default:
+                throw new InterpreterRuntimeError("Unsupported binary operation", ast);
         }
-        throw new IllegalArgumentException();
     }
 
     private Value evalMap(MapAST ast) {
@@ -239,7 +248,7 @@ public class ASTEval {
             SequenceValue seq = (SequenceValue) arg;
             return new MappedSequenceImpl(seq, ast.getLambda());
         }
-        throw new IllegalArgumentException();
+        throw new InterpreterRuntimeError("Operator map defined for sequence only", ast);
     }
 
     private Value evalSequence(SequenceAST ast) {
@@ -249,7 +258,7 @@ public class ASTEval {
             (end instanceof IntegerValue)) {
             return new SequenceImpl(((IntegerValue) start).getInteger(), ((IntegerValue) end).getInteger());
         }
-        throw new IllegalArgumentException();
+        throw new InterpreterRuntimeError("Sequence defined for integer operands", ast);
     }
 
     private Value evalReduce(ReduceAST ast) {
@@ -257,7 +266,9 @@ public class ASTEval {
         Value start = eval(ast.getStartExpression());
         if (seq instanceof SequenceValue) {
             LambdaAST lambda = ast.getLambda();
-            assert lambda.getParametersSize() == 2;
+            if (lambda.getParametersSize() != 2) {
+                throw new InterpreterRuntimeError("Labda of operator reduse must have 2 parameters", ast);
+            }
             String arg1 = lambda.getParameter(0);
             String arg2 = lambda.getParameter(1);
             for (int i = 0; i < ((SequenceValue) seq).getSize(); i++) {
@@ -268,7 +279,7 @@ public class ASTEval {
             }
             return start;
         }
-        throw new IllegalArgumentException();
+        throw new InterpreterRuntimeError("First argument of operator reduce must be sequence", ast);
     }
 
     public ASTEval() {
@@ -278,7 +289,7 @@ public class ASTEval {
     private Value evalVariable(VariableAST ast) {
         Value value = vars.get(ast.getName());
         if (value == null) {
-            throw new IllegalArgumentException();
+            throw new InterpreterRuntimeError("Variable '"+ast.getName()+"' is not declared", ast);
         }
         return value;
     }

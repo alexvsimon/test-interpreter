@@ -3,6 +3,7 @@ package interpretator.parser;
 import interpretator.api.ast.ASTKind;
 import interpretator.api.ast.ExpressionAST;
 import interpretator.api.ast.SequenceAST;
+import interpretator.editor.Token;
 
 /**
  *
@@ -11,10 +12,12 @@ import interpretator.api.ast.SequenceAST;
 /*package-local*/ class SequenceImpl implements SequenceAST {
     private final ExpressionAST arg1;
     private final ExpressionAST arg2;
+    private final Token startToken;
 
-    SequenceImpl(ExpressionAST arg1, ExpressionAST arg2) {
+    SequenceImpl(Token startToken, ExpressionAST arg1, ExpressionAST arg2) {
         this.arg1 = arg1;
         this.arg2 = arg2;
+        this.startToken = startToken;
     }
 
     @Override
@@ -30,6 +33,11 @@ import interpretator.api.ast.SequenceAST;
     @Override
     public ASTKind getKind() {
         return ASTKind.Sequence;
+    }
+
+    @Override
+    public Token getFistToken() {
+        return startToken;
     }
     
     @Override

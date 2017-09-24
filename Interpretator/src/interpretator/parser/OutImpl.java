@@ -29,6 +29,11 @@ import interpretator.api.ast.OutAST;
     }
 
     @Override
+    public Token getFistToken() {
+        return outToken;
+    }
+
+    @Override
     public String toString() {
         return getKind().name();
     }

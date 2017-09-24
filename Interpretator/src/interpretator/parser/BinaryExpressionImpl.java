@@ -3,6 +3,8 @@ package interpretator.parser;
 import interpretator.api.ast.ASTKind;
 import interpretator.api.ast.ExpressionAST;
 import interpretator.api.ast.BinaryExpressionAST;
+import interpretator.editor.Token;
+import interpretator.editor.TokenKind;
 
 /**
  *
@@ -12,11 +14,13 @@ import interpretator.api.ast.BinaryExpressionAST;
     private final ExpressionAST lh;
     private final ExpressionAST rh;
     private final ASTKind kind;
+    private final Token op;
 
-    BinaryExpressionImpl(ExpressionAST lh, ExpressionAST rh, ASTKind kind) {
+    BinaryExpressionImpl(ExpressionAST lh, ExpressionAST rh, Token op, ASTKind kind) {
         this.lh = lh;
         this.rh = rh;
         this.kind = kind;
+        this.op = op;
     }
 
     @Override
@@ -32,6 +36,11 @@ import interpretator.api.ast.BinaryExpressionAST;
     @Override
     public ASTKind getKind() {
         return kind;
+    }
+
+    @Override
+    public Token getFistToken() {
+        return op;
     }
 
     @Override

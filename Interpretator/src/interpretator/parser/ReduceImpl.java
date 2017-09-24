@@ -4,6 +4,7 @@ import interpretator.api.ast.ASTKind;
 import interpretator.api.ast.ExpressionAST;
 import interpretator.api.ast.LambdaAST;
 import interpretator.api.ast.ReduceAST;
+import interpretator.editor.Token;
 
 /**
  *
@@ -13,8 +14,10 @@ import interpretator.api.ast.ReduceAST;
     private final ExpressionAST arg1;
     private final ExpressionAST arg2;
     private final LambdaAST lambda;
+    private final Token reduce;
 
-    ReduceImpl(ExpressionAST arg1, ExpressionAST arg2, LambdaAST lambda) {
+    ReduceImpl(Token reduce, ExpressionAST arg1, ExpressionAST arg2, LambdaAST lambda) {
+        this.reduce = reduce;
         this.arg1 = arg1;
         this.arg2 = arg2;
         this.lambda = lambda;
@@ -38,6 +41,11 @@ import interpretator.api.ast.ReduceAST;
     @Override
     public ASTKind getKind() {
         return ASTKind.Reduce;
+    }
+
+    @Override
+    public Token getFistToken() {
+        return reduce;
     }
     
     @Override

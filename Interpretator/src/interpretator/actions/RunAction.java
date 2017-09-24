@@ -54,7 +54,11 @@ public class RunAction {
                     return;
                 }
                 Output.getInstance().out("\n");
-                new ASTEval(program).run();
+                try {
+                    new ASTEval(program).run();
+                } catch (Throwable t) {
+                    Output.getInstance().out("\n"+t.getMessage()+"\n");
+                }
             } catch (Throwable th) {
                 th.printStackTrace();
             }

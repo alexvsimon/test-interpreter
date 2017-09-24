@@ -24,6 +24,11 @@ import interpretator.api.ast.VariableAST;
     public ASTKind getKind() {
         return ASTKind.Variable;
     }
+
+    @Override
+    public Token getFistToken() {
+        return id;
+    }
     
     @Override
     public String toString() {

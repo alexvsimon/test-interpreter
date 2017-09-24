@@ -5,6 +5,7 @@ import interpretator.api.ast.StatementAST;
 import java.util.ArrayList;
 import java.util.List;
 import interpretator.api.ast.ProgramAST;
+import interpretator.editor.Token;
 
 /**
  *
@@ -28,6 +29,11 @@ import interpretator.api.ast.ProgramAST;
     @Override
     public ASTKind getKind() {
         return ASTKind.Program;
+    }
+
+    @Override
+    public Token getFistToken() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
