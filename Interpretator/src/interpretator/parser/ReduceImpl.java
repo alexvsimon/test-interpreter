@@ -16,7 +16,7 @@ import interpretator.api.lexer.Token;
     private final LambdaAST lambda;
     private final Token reduce;
 
-    ReduceImpl(Token reduce, ExpressionAST arg1, ExpressionAST arg2, LambdaAST lambda) {
+    /*package-local*/ ReduceImpl(Token reduce, ExpressionAST arg1, ExpressionAST arg2, LambdaAST lambda) {
         this.reduce = reduce;
         this.arg1 = arg1;
         this.arg2 = arg2;

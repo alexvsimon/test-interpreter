@@ -18,16 +18,16 @@ import interpretator.api.ast.VariableAST;
  *
  * @author alex
  */
-public class ASTDump {
+/*package-local*/ class ASTDump {
     private final AST root;
     private final StringBuilder buf = new StringBuilder();
     private int shift;
 
-    public ASTDump(AST root) {
+    /*package-local*/ ASTDump(AST root) {
         this.root = root;
     }
     
-    public String dump() {
+    /*package-local*/ String dump() {
         buf.setLength(0);
         dump(root);
         return buf.toString();

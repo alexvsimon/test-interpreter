@@ -14,7 +14,7 @@ import interpretator.api.lexer.Token;
     private final ExpressionAST arg2;
     private final Token startToken;
 
-    SequenceImpl(Token startToken, ExpressionAST arg1, ExpressionAST arg2) {
+    /*package-local*/ SequenceImpl(Token startToken, ExpressionAST arg1, ExpressionAST arg2) {
         this.arg1 = arg1;
         this.arg2 = arg2;
         this.startToken = startToken;

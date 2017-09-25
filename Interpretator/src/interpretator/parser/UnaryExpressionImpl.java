@@ -7,15 +7,15 @@ import interpretator.api.lexer.Token;
 
 /**
  *
- * @author as204739
+ * @author alex
  */
-public class UnaryExpressionImpl implements UnaryExpressionAST {
+/*package-local*/  class UnaryExpressionImpl implements UnaryExpressionAST {
 
     private final ExpressionAST rh;
     private final ASTKind kind;
     private final Token op;
 
-    UnaryExpressionImpl(ExpressionAST rh, Token op, ASTKind kind) {
+    /*package-local*/ UnaryExpressionImpl(ExpressionAST rh, Token op, ASTKind kind) {
         this.rh = rh;
         this.kind = kind;
         this.op = op;

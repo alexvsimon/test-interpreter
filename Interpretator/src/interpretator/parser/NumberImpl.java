@@ -11,7 +11,7 @@ import interpretator.api.lexer.Token;
 /*package-local*/ class NumberImpl implements NumberAST {
     private final Token number;
 
-    NumberImpl(Token number) {
+    /*package-local*/ NumberImpl(Token number) {
         this.number = number;
     }
 

@@ -15,7 +15,7 @@ import interpretator.api.lexer.Token;
     private final ASTKind kind;
     private final Token op;
 
-    BinaryExpressionImpl(ExpressionAST lh, ExpressionAST rh, Token op, ASTKind kind) {
+    /*package-local*/ BinaryExpressionImpl(ExpressionAST lh, ExpressionAST rh, Token op, ASTKind kind) {
         this.lh = lh;
         this.rh = rh;
         this.kind = kind;

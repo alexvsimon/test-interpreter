@@ -12,7 +12,7 @@ import interpretator.api.lexer.Token;
     private final Token stringToken;
     private final Token printToken;
 
-    PrintImpl(Token start, Token stringToken){
+    /*package-local*/ PrintImpl(Token start, Token stringToken){
         printToken = start;
         this.stringToken = stringToken;
     }

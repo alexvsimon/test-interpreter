@@ -14,7 +14,7 @@ import interpretator.api.lexer.Token;
     private final Token id;
     private final ExpressionAST expression;
             
-    VarImpl(Token start, Token id, ExpressionAST expression){
+    /*package-local*/ VarImpl(Token start, Token id, ExpressionAST expression){
         varToken = start;
         this.id = id;
         this.expression = expression;

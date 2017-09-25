@@ -14,7 +14,7 @@ import interpretator.api.lexer.Token;
     private final Token v2;
     private final ExpressionAST function;
 
-    LambdaImpl(Token v1, Token v2, ExpressionAST function) {
+    /*package-local*/ LambdaImpl(Token v1, Token v2, ExpressionAST function) {
         this.v1 = v1;
         this.v2 = v2;
         this.function = function;

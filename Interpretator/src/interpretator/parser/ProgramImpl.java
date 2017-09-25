@@ -14,7 +14,7 @@ import interpretator.api.lexer.Token;
 /*package-local*/ class ProgramImpl implements ProgramAST {
     private final List<StatementAST> statements = new ArrayList<>();
 
-    ProgramImpl() {
+    /*package-local*/ ProgramImpl() {
     }
     
     void add(StatementAST statement) {

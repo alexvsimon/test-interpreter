@@ -15,7 +15,7 @@ import interpretator.api.lexer.Token;
     private final LambdaAST lambda;
     private final Token map;
 
-    MapImpl(Token map, ExpressionAST arg1, LambdaAST lambda) {
+    /*package-local*/ MapImpl(Token map, ExpressionAST arg1, LambdaAST lambda) {
         this.map = map;
         this.arg1 = arg1;
         this.lambda = lambda;

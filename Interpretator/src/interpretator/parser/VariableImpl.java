@@ -11,7 +11,7 @@ import interpretator.api.lexer.Token;
 /*package-local*/ class VariableImpl implements VariableAST {
     private final Token id;
 
-    VariableImpl(Token id) {
+    /*package-local*/ VariableImpl(Token id) {
         this.id = id;
     }
 

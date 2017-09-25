@@ -13,7 +13,7 @@ import interpretator.api.lexer.Token;
     private final Token outToken;
     private final AST expression;
     
-    OutImpl(Token start, AST expression){
+    /*package-local*/ OutImpl(Token start, AST expression){
         outToken = start;
         this.expression = expression;
     }
