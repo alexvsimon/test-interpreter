@@ -1,6 +1,5 @@
 package interpretator.output;
 
-import interpretator.editor.DocumentListenerImpl;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
@@ -51,7 +50,7 @@ public class ErrorHighlighter {
                             h.removeAllHighlights();
                             h.addHighlight(start, end, new ErrorHighlightPainter(editor));
                         } catch (BadLocationException ex) {
-                            Logger.getLogger(DocumentListenerImpl.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(ErrorHighlighter.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 });
@@ -93,7 +92,7 @@ public class ErrorHighlighter {
                     g.drawPolyline(xArray, yArray, waveLength);
                 }
             } catch (BadLocationException ex) {
-                Logger.getLogger(DocumentListenerImpl.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ErrorHighlighter.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }

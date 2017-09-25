@@ -1,6 +1,7 @@
-package interpretator.editor;
+package interpretator;
 
 import interpretator.actions.RunAction;
+import interpretator.editor.DocumentContext;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextPane;
@@ -14,11 +15,11 @@ import javax.swing.text.Highlighter;
  *
  * @author alex
  */
-public class DocumentListenerImpl implements DocumentListener {
+/*package-local*/ class DocumentListenerImpl implements DocumentListener {
 
     private final JTextPane editor;
 
-    public DocumentListenerImpl(JTextPane editor) {
+    /*package-local*/ DocumentListenerImpl(JTextPane editor) {
         this.editor = editor;
     }
 

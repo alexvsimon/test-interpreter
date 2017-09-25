@@ -2,8 +2,6 @@ package interpretator;
 
 import interpretator.editor.DocumentContext;
 import interpretator.output.Output;
-import interpretator.editor.DocumentListenerImpl;
-import interpretator.editor.MyEditorKit;
 import interpretator.output.ErrorHighlighter;
 import java.awt.Component;
 import java.io.BufferedReader;

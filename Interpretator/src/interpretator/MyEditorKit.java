@@ -1,4 +1,4 @@
-package interpretator.editor;
+package interpretator;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -19,7 +19,7 @@ import javax.swing.text.ViewFactory;
  *
  * @author alex
  */
-public class MyEditorKit extends StyledEditorKit {
+/*package-local*/ class MyEditorKit extends StyledEditorKit {
 
     @Override
     public ViewFactory getViewFactory() {
