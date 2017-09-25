@@ -18,6 +18,7 @@ import interpretator.api.ast.SequenceAST;
 import interpretator.api.ast.UnaryExpressionAST;
 import interpretator.api.ast.VarAST;
 import interpretator.api.ast.VariableAST;
+import interpretator.api.run.ValueKind;
 import interpretator.output.Output;
 import java.util.HashMap;
 import java.util.Map;
@@ -105,20 +106,23 @@ public class ASTEval {
     }
     
     private void outValue(Value value) {
-        if (value instanceof IntegerValue) {
-            Output.getInstance().out("" + ((IntegerValue) value).getInteger());
-        } else if (value instanceof DoubleValue) {
-            Output.getInstance().out("" + ((DoubleValue) value).getDouble());
-        } else if (value instanceof SequenceValue) {
-            Output.getInstance().out("{");
-            SequenceValue v = (SequenceValue) value;
-            for (int i = 0; i < v.getSize(); i++) {
-                outValue(v.getValueAt(i));
-                if (i < v.getSize() - 1) {
-                    Output.getInstance().out(",");
-                }
-            }
-            Output.getInstance().out("}");
+        switch (value.getKind()) {
+            case Integer:
+                Output.getInstance().out("" + ((IntegerValue) value).getInteger());
+                break;
+            case Double:
+                Output.getInstance().out("" + ((DoubleValue) value).getDouble());
+                break;
+            case Sequence:
+                Output.getInstance().out("{");
+                SequenceValue v = (SequenceValue) value;
+                for (int i = 0; i < v.getSize(); i++) {
+                    outValue(v.getValueAt(i));
+                    if (i < v.getSize() - 1) {
+                        Output.getInstance().out(",");
+                    }
+                }   Output.getInstance().out("}");
+                break;
         }
     }
 
@@ -131,76 +135,75 @@ public class ASTEval {
     private Value evalUnaryExpression(UnaryExpressionAST ast) {
         assert ast.getKind() == ASTKind.UnaryMinus;
         Value eval = eval(ast.getExpression());
-        if (eval instanceof IntegerValue) {
-            return new IntegerImpl(-((IntegerValue) eval).getInteger());
-        } else if (eval instanceof DoubleValue) {
-            return new DoubleImpl(-((DoubleValue) eval).getDouble());
-        } else {
-            throw new InterpreterRuntimeError("Unsupported unary minus for sequence", ast);
+        switch (eval.getKind()) {
+            case Integer:
+                return new IntegerImpl(-((IntegerValue) eval).getInteger());
+            case Double:
+                return new DoubleImpl(-((DoubleValue) eval).getDouble());
+            default:
+                throw new InterpreterRuntimeError("Unsupported unary minus for sequence", ast);
         }
     }
 
     private Value evalExpression(BinaryExpressionAST ast) {
         Value lh = eval(ast.getLeftExpression());
-        if (!((lh instanceof IntegerValue) ||
-              (lh instanceof DoubleValue))) {
+        if (lh.getKind() == ValueKind.Sequence) {
             throw new InterpreterRuntimeError("Unsupported binary operation for sequence", ast.getLeftExpression());
         }
         Value rh = eval(ast.getRightExpression());
-        if (!((rh instanceof IntegerValue) ||
-              (rh instanceof DoubleValue))) {
+        if (rh.getKind() == ValueKind.Sequence) {
             throw new InterpreterRuntimeError("Unsupported binary operation for sequence", ast.getRightExpression());
         }
         switch (ast.getKind()) {
             case Plus: {
-                if ((lh instanceof IntegerValue) &&
-                    (rh instanceof IntegerValue)) {
+                if ((lh.getKind() == ValueKind.Integer) &&
+                    (rh.getKind() == ValueKind.Integer)) {
                     return new IntegerImpl(
-                            ((IntegerValue) lh).getInteger()
-                            + ((IntegerValue) rh).getInteger());
+                            ((IntegerValue) lh).getInteger() +
+                            ((IntegerValue) rh).getInteger());
                 }
-                double ldh = (lh instanceof IntegerValue)
+                double ldh = (lh.getKind() == ValueKind.Integer)
                         ? ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble();
-                double rdh = (rh instanceof IntegerValue)
+                double rdh = (rh.getKind() == ValueKind.Integer)
                         ? ((IntegerValue) rh).getInteger() : ((DoubleValue) rh).getDouble();
                 return new DoubleImpl(ldh + rdh);
             }
             case Minus: {
-                if ((lh instanceof IntegerValue) &&
-                    (rh instanceof IntegerValue)) {
+                if ((lh.getKind() == ValueKind.Integer) &&
+                    (rh.getKind() == ValueKind.Integer)) {
                     return new IntegerImpl(
-                            ((IntegerValue) lh).getInteger()
-                            - ((IntegerValue) rh).getInteger());
+                            ((IntegerValue) lh).getInteger() -
+                            ((IntegerValue) rh).getInteger());
                 }
-                double ldh = (lh instanceof IntegerValue)
+                double ldh = (lh.getKind() == ValueKind.Integer)
                         ? ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble();
-                double rdh = (rh instanceof IntegerValue)
+                double rdh = (rh.getKind() == ValueKind.Integer)
                         ? ((IntegerValue) rh).getInteger() : ((DoubleValue) rh).getDouble();
                 return new DoubleImpl(ldh - rdh);
             }
             case Mul: {
-                if ((lh instanceof IntegerValue) &&
-                    (rh instanceof IntegerValue)) {
+                if ((lh.getKind() == ValueKind.Integer) &&
+                    (rh.getKind() == ValueKind.Integer)) {
                     return new IntegerImpl(
-                            ((IntegerValue) lh).getInteger()
-                            * ((IntegerValue) rh).getInteger());
+                            ((IntegerValue) lh).getInteger() *
+                            ((IntegerValue) rh).getInteger());
                 }
-                double ldh = (lh instanceof IntegerValue)
+                double ldh = (lh.getKind() == ValueKind.Integer)
                         ? ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble();
-                double rdh = (rh instanceof IntegerValue)
+                double rdh = (rh.getKind() == ValueKind.Integer)
                         ? ((IntegerValue) rh).getInteger() : ((DoubleValue) rh).getDouble();
                 return new DoubleImpl(ldh * rdh);
             }
             case Div: {
-                double ldh = (lh instanceof IntegerValue)
+                double ldh = (lh.getKind() == ValueKind.Integer)
                         ? ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble();
-                double rdh = (rh instanceof IntegerValue)
+                double rdh = (rh.getKind() == ValueKind.Integer)
                         ? ((IntegerValue) rh).getInteger() : ((DoubleValue) rh).getDouble();
                 return new DoubleImpl(ldh / rdh);
             }
             case Pow: {
-                if (!(rh instanceof IntegerValue)) {
-                    throw new IllegalArgumentException();
+                if (rh.getKind() != ValueKind.Integer) {
+                    throw new InterpreterRuntimeError("Unsupported power operation for double", ast.getRightExpression());
                 }
                 int pow = ((IntegerValue) rh).getInteger();
                 if (pow == 0) {
@@ -210,7 +213,7 @@ public class ASTEval {
                 if (pow < 0) {
                     pow = -pow;
                 }
-                if ((lh instanceof IntegerValue)) {
+                if ((lh.getKind() == ValueKind.Integer)) {
                     int arg = ((IntegerValue) lh).getInteger();
                     if (arg == -1) {
                         return pow % 2 == 0 ? new IntegerImpl(1) : new IntegerImpl(-1);
@@ -244,7 +247,7 @@ public class ASTEval {
 
     private Value evalMap(MapAST ast) {
         Value arg = eval(ast.getInputExpression());
-        if (arg instanceof SequenceValue) {
+        if (arg.getKind() == ValueKind.Sequence) {
             SequenceValue seq = (SequenceValue) arg;
             return new MappedSequenceImpl(seq, ast.getLambda());
         }
@@ -254,8 +257,8 @@ public class ASTEval {
     private Value evalSequence(SequenceAST ast) {
         Value start = eval(ast.getStartExpression());
         Value end = eval(ast.getEndExpression());
-        if ((start instanceof IntegerValue) &&
-            (end instanceof IntegerValue)) {
+        if ((start.getKind() == ValueKind.Integer) &&
+            (end.getKind() == ValueKind.Integer)) {
             return new SequenceImpl(((IntegerValue) start).getInteger(), ((IntegerValue) end).getInteger());
         }
         throw new InterpreterRuntimeError("Sequence defined for integer operands", ast);
@@ -264,7 +267,7 @@ public class ASTEval {
     private Value evalReduce(ReduceAST ast) {
         Value seq = eval(ast.getInputExpression());
         Value start = eval(ast.getStartExpression());
-        if (seq instanceof SequenceValue) {
+        if (seq.getKind() == ValueKind.Sequence) {
             LambdaAST lambda = ast.getLambda();
             if (lambda.getParametersSize() != 2) {
                 throw new InterpreterRuntimeError("Labda of operator reduse must have 2 parameters", ast);

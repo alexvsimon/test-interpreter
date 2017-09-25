@@ -2,6 +2,7 @@ package interpretator.run;
 
 import interpretator.api.run.SequenceValue;
 import interpretator.api.run.Value;
+import interpretator.api.run.ValueKind;
 
 /**
  *
@@ -28,6 +29,11 @@ public class SequenceImpl implements SequenceValue {
             throw new IllegalArgumentException();
         }
         return new IntegerImpl(i + startIndex);
+    }
+    
+    @Override
+    public ValueKind getKind() {
+        return ValueKind.Sequence;
     }
 
     @Override

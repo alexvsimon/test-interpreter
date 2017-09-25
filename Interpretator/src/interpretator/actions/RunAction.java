@@ -61,7 +61,7 @@ public class RunAction {
                 if (parser.getErrors().size() > 0) {
                     ParserError error = parser.getErrors().get(0);
                     int[] rowCol = error.getRowCol();
-                    Output.getInstance().out("\n"+rowCol[0]+":"+rowCol[1]+": "+error.getMessage());
+                    Output.getInstance().out(""+rowCol[0]+":"+rowCol[1]+": "+error.getMessage());
                     Output.getInstance().out("\n"+error.getContext());
                     StringBuilder buf = new StringBuilder();
                     for(int i = 0; i < rowCol[1] - 2; i++){
@@ -71,11 +71,10 @@ public class RunAction {
                     Output.getInstance().out("\n"+buf.toString());
                     return;
                 }
-                Output.getInstance().out("\n");
                 try {
                     new ASTEval(program).run();
                 } catch (Throwable t) {
-                    Output.getInstance().out("\n"+t.getMessage()+"\n");
+                    Output.getInstance().out(t.getMessage());
                 }
             } catch (Throwable th) {
                 th.printStackTrace();

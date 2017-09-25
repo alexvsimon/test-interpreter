@@ -1,6 +1,7 @@
 package interpretator.run;
 
 import interpretator.api.run.IntegerValue;
+import interpretator.api.run.ValueKind;
 
 /**
  *
@@ -17,6 +18,11 @@ public class IntegerImpl implements IntegerValue {
     @Override
     public int getInteger() {
         return value;
+    }
+    
+    @Override
+    public ValueKind getKind() {
+        return ValueKind.Integer;
     }
 
     @Override

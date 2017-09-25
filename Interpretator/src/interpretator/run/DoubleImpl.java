@@ -1,6 +1,7 @@
 package interpretator.run;
 
 import interpretator.api.run.DoubleValue;
+import interpretator.api.run.ValueKind;
 
 /**
  *
@@ -17,6 +18,11 @@ public class DoubleImpl implements DoubleValue {
     @Override
     public double getDouble() {
         return value;
+    }
+
+    @Override
+    public ValueKind getKind() {
+        return ValueKind.Double;
     }
 
     @Override

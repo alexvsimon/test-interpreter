@@ -3,6 +3,7 @@ package interpretator.run;
 import interpretator.api.run.SequenceValue;
 import interpretator.api.run.Value;
 import interpretator.api.ast.LambdaAST;
+import interpretator.api.run.ValueKind;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,6 +34,11 @@ public class MappedSequenceImpl implements SequenceValue {
         Map<String, Value> args = new HashMap<>();
         args.put(arg, value);
         return new ASTEval(lambda).evalLambda(args);
+    }
+    
+    @Override
+    public ValueKind getKind() {
+        return ValueKind.Sequence;
     }
 
     @Override
