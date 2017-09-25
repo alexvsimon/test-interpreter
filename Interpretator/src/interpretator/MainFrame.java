@@ -4,6 +4,7 @@ import interpretator.editor.DocumentContext;
 import interpretator.output.Output;
 import interpretator.editor.DocumentListenerImpl;
 import interpretator.editor.MyEditorKit;
+import interpretator.output.MyErrorHighlighter;
 import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -37,6 +38,7 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
         this.editorPane.setEditorKit(new MyEditorKit());
         Output.getInstance().setOutputPane(outputPane);
+        MyErrorHighlighter.getInstance().setOutputPane(editorPane);
         editorPane.getDocument().addDocumentListener(new DocumentListenerImpl(editorPane));
         editorPane.addCaretListener(new CaretListenerImpl(editorPane));
     }

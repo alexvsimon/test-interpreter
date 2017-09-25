@@ -11,12 +11,16 @@ public class InterpreterRuntimeError extends RuntimeException {
     private final String message;
     private final String context;
     private final int[] rowCol; 
+    private final int startOffset;
+    private final int endOffset;
 
     public InterpreterRuntimeError(String message, AST ast) {
         this.message = message;
         Token token = ast.getFistToken();
         rowCol = token.getStartRowCol();
         context = token.getTokenLine();
+        startOffset = token.getStartOffset();
+        endOffset = token.getEndOffset();
     }
 
     @Override
@@ -30,5 +34,13 @@ public class InterpreterRuntimeError extends RuntimeException {
         }
         buf.append('^');
         return buf.toString();
+    }
+
+    public int getStartOffset() {
+        return startOffset;
+    }
+
+    public int getEndOffset() {
+        return endOffset;
     }
 }

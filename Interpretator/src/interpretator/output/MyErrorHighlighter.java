@@ -1,0 +1,101 @@
+package interpretator.output;
+
+import interpretator.editor.DocumentListenerImpl;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.Shape;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JTextPane;
+import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.Highlighter;
+import javax.swing.text.JTextComponent;
+
+/**
+ *
+ * @author alex
+ */
+public class MyErrorHighlighter {
+    private JTextPane editor;
+    
+    private MyErrorHighlighter(){
+    }
+    
+    public static MyErrorHighlighter getInstance() {
+        return ErrorHighlighterHelper.INSTANCE;
+    }
+
+    public void setOutputPane(javax.swing.JTextPane editor) {
+        this.editor = editor;
+    }
+    
+    private static class ErrorHighlighterHelper {
+        private static MyErrorHighlighter INSTANCE = new MyErrorHighlighter();
+
+        private ErrorHighlighterHelper() {
+        }
+    }
+
+    public void highlihgt(int start, int end) {
+        SwingUtilities.invokeLater(new Runnable(){
+            @Override
+            public void run() {
+                Document doc = editor.getDocument();
+                doc.render(new Runnable() {
+                    public void run() {
+                        try {
+                            Highlighter h = editor.getHighlighter();
+                            h.removeAllHighlights();
+                            h.addHighlight(start, end, new ErrorHighlightPainter(editor));
+                        } catch (BadLocationException ex) {
+                            Logger.getLogger(DocumentListenerImpl.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+            }
+        });
+        
+    }
+    
+    private static class ErrorHighlightPainter implements Highlighter.HighlightPainter {
+        private final JTextPane editor;
+
+        private ErrorHighlightPainter(JTextPane editor) {
+            this.editor = editor;
+        }
+
+        @Override
+        public void paint(Graphics g, int p0, int p1, Shape bounds, JTextComponent c) {
+            g.setColor(Color.RED);
+
+            try {
+                Rectangle start = editor.modelToView(p0);
+                Rectangle end = editor.modelToView(p1);
+
+                if (start.x < 0) {
+                    return;
+                }
+
+                int waveLength = end.x + end.width - start.x;
+                if (waveLength > 0) {
+                    int[] wf = {0, 0, -1, -1};
+                    int[] xArray = new int[waveLength + 1];
+                    int[] yArray = new int[waveLength + 1];
+
+                    int yBase = (int) (start.y + start.height - 2);
+                    for (int i = 0; i <= waveLength; i++) {
+                        xArray[i] = start.x + i;
+                        yArray[i] = yBase + wf[xArray[i] % 4];
+                    }
+                    g.drawPolyline(xArray, yArray, waveLength);
+                }
+            } catch (BadLocationException ex) {
+                Logger.getLogger(DocumentListenerImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+}

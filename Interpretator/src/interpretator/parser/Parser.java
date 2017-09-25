@@ -44,7 +44,7 @@ public class Parser {
     }
 
     private void addError(String message, Token token) {
-        errors.add(new ParserError(message, token.getTokenLine(), token.getStartRowCol()));
+        errors.add(new ParserError(message, token.getTokenLine(), token.getStartRowCol(), token.getStartOffset(), token.getEndOffset()));
     }
     
     public  List<ParserError> getErrors() {

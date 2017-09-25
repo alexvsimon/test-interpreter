@@ -8,6 +8,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.text.Highlighter;
 
 /**
  *
@@ -40,6 +41,8 @@ public class DocumentListenerImpl implements DocumentListener {
         Document doc = e.getDocument();
         doc.render(() -> {
             try {
+                Highlighter h = editor.getHighlighter();
+                h.removeAllHighlights();
                 String text = doc.getText(0, doc.getLength());
                 RunAction.getInstance().run(new DocumentContext(text));
             } catch (BadLocationException ex) {
