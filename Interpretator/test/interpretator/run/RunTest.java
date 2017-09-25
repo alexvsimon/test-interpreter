@@ -6,6 +6,7 @@ import interpretator.api.run.Value;
 import interpretator.editor.DocumentContext;
 import interpretator.editor.Lexer;
 import interpretator.parser.Parser;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -42,7 +43,7 @@ public class RunTest {
     public void eval2Mul2() {
         Lexer lexer = new Lexer(new DocumentContext("var res = 2*2"));
         Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        ASTEval run = new ASTEval(parser.parse(), new AtomicBoolean(false));
         run.run();
         Value res = run.getVariable("res");
         assertEquals(true, res instanceof IntegerValue);
@@ -53,7 +54,7 @@ public class RunTest {
     public void eval2Plus2Mul2() {
         Lexer lexer = new Lexer(new DocumentContext("var res = 2+2*2"));
         Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        ASTEval run = new ASTEval(parser.parse(), new AtomicBoolean(false));
         run.run();
         Value res = run.getVariable("res");
         assertEquals(true, res instanceof IntegerValue);
@@ -64,7 +65,7 @@ public class RunTest {
     public void evalMinus2Pow2Plus2Mul2() {
         Lexer lexer = new Lexer(new DocumentContext("var res = -2^2+2*2"));
         Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        ASTEval run = new ASTEval(parser.parse(), new AtomicBoolean(false));
         run.run();
         Value res = run.getVariable("res");
         assertEquals(true, res instanceof IntegerValue);
@@ -79,7 +80,7 @@ public class RunTest {
                 "var pi = 4 * reduce(sequence, 0, x y -> x + y)\n" +
                 "var delta = pi - 355/113"));
         Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        ASTEval run = new ASTEval(parser.parse(), new AtomicBoolean(false));
         run.run();
         Value res = run.getVariable("delta");
         assertEquals(true, res instanceof DoubleValue);

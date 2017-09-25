@@ -1,4 +1,4 @@
-package interpretator.run;
+package interpretator.api.run;
 
 import interpretator.api.ast.AST;
 import interpretator.editor.Token;
@@ -25,7 +25,7 @@ public class InterpreterRuntimeError extends RuntimeException {
         buf.append(""+rowCol[0]+":"+rowCol[1]+": "+message);
         buf.append("\n"+context);
         buf.append("\n");
-        for(int i = 0; i < rowCol[1] - 2; i++){
+        for(int i = 0; i < rowCol[1] - 1; i++){
             buf.append(' ');
         }
         buf.append('^');

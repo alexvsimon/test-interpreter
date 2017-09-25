@@ -1,5 +1,7 @@
 package interpretator.run;
 
+import interpretator.api.run.InterpreterRuntimeError;
+import interpretator.api.run.CanceledRuntimeError;
 import interpretator.api.run.SequenceValue;
 import interpretator.api.run.DoubleValue;
 import interpretator.api.run.IntegerValue;
@@ -22,6 +24,7 @@ import interpretator.api.run.ValueKind;
 import interpretator.output.Output;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  *
@@ -31,9 +34,12 @@ public class ASTEval {
 
     private final AST root;
     private Map<String, Value> vars = new HashMap<>();
-
-    public ASTEval(AST root) {
+    private final AtomicBoolean canceled;
+    private static final int MAX_OUT_SEQUENCE_LENGTH = 100;
+    
+    public ASTEval(AST root, AtomicBoolean canceled) {
         this.root = root;
+        this.canceled = canceled;
     }
 
     public void run() {
@@ -68,6 +74,9 @@ public class ASTEval {
     }
 
     private Value eval(AST ast) {
+        if (canceled.get()) {
+            throw new CanceledRuntimeError(ast);
+        }
         switch (ast.getKind()) {
             case UnaryMinus:
                 return evalUnaryExpression((UnaryExpressionAST) ast);
@@ -102,10 +111,10 @@ public class ASTEval {
     }
 
     private void runOut(OutAST ast) {
-        outValue(eval(ast.getExpression()));
+        outValue(ast, eval(ast.getExpression()));
     }
     
-    private void outValue(Value value) {
+    private void outValue(OutAST ast, Value value) {
         switch (value.getKind()) {
             case Integer:
                 Output.getInstance().out("" + ((IntegerValue) value).getInteger());
@@ -117,11 +126,20 @@ public class ASTEval {
                 Output.getInstance().out("{");
                 SequenceValue v = (SequenceValue) value;
                 for (int i = 0; i < v.getSize(); i++) {
-                    outValue(v.getValueAt(i));
+                    if (canceled.get()) {
+                        throw new CanceledRuntimeError(ast);
+                    }
+                    if (i < MAX_OUT_SEQUENCE_LENGTH) {
+                        outValue(ast, v.getValueAt(i));
+                    } else {
+                        Output.getInstance().out("...");
+                        break;
+                    }
                     if (i < v.getSize() - 1) {
                         Output.getInstance().out(",");
                     }
-                }   Output.getInstance().out("}");
+                }
+                Output.getInstance().out("}");
                 break;
         }
     }
@@ -249,7 +267,7 @@ public class ASTEval {
         Value arg = eval(ast.getInputExpression());
         if (arg.getKind() == ValueKind.Sequence) {
             SequenceValue seq = (SequenceValue) arg;
-            return new MappedSequenceImpl(seq, ast.getLambda());
+            return new MappedSequenceImpl(seq, ast.getLambda(), canceled);
         }
         throw new InterpreterRuntimeError("Operator map defined for sequence only", ast);
     }
@@ -275,18 +293,17 @@ public class ASTEval {
             String arg1 = lambda.getParameter(0);
             String arg2 = lambda.getParameter(1);
             for (int i = 0; i < ((SequenceValue) seq).getSize(); i++) {
+                if (canceled.get()) {
+                    throw new CanceledRuntimeError(ast);
+                }
                 Map<String, Value> args = new HashMap<>();
                 args.put(arg1, start);
                 args.put(arg2, ((SequenceValue) seq).getValueAt(i));
-                start = new ASTEval(lambda).evalLambda(args);
+                start = new ASTEval(lambda, canceled).evalLambda(args);
             }
             return start;
         }
         throw new InterpreterRuntimeError("First argument of operator reduce must be sequence", ast);
-    }
-
-    public ASTEval() {
-        this.root = null;
     }
 
     private Value evalVariable(VariableAST ast) {
@@ -302,7 +319,11 @@ public class ASTEval {
         if (value.indexOf('.') > 0) {
             return new DoubleImpl(Double.parseDouble(value));
         } else {
-            return new IntegerImpl(Integer.parseInt(value));
+            try {
+                return new IntegerImpl(Integer.parseInt(value));
+            } catch (NumberFormatException ex) {
+                throw new InterpreterRuntimeError("Integer '"+value+"' is too big", ast);
+            }
         }
     }
 }
