@@ -5,7 +5,7 @@ import interpretator.api.ast.StatementAST;
 import java.util.ArrayList;
 import java.util.List;
 import interpretator.api.ast.ProgramAST;
-import interpretator.editor.Token;
+import interpretator.api.lexer.Token;
 
 /**
  *

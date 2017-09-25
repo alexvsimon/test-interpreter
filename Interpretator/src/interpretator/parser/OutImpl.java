@@ -2,8 +2,8 @@ package interpretator.parser;
 
 import interpretator.api.ast.ASTKind;
 import interpretator.api.ast.AST;
-import interpretator.editor.Token;
 import interpretator.api.ast.OutAST;
+import interpretator.api.lexer.Token;
 
 /**
  *

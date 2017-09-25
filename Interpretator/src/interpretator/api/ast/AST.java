@@ -1,6 +1,6 @@
 package interpretator.api.ast;
 
-import interpretator.editor.Token;
+import interpretator.api.lexer.Token;
 
 /**
  *

@@ -1,5 +1,8 @@
 package interpretator.editor;
 
+import interpretator.api.lexer.Token;
+import interpretator.api.lexer.TokenKind;
+
 /**
  *
  * @author alex
@@ -24,7 +27,7 @@ public class Lexer {
     }
 
     private Token token(TokenKind kind, int start, int end){
-        return new Token(kind, start, end, doc);
+        return new TokenImpl(kind, start, end, doc);
     }
     
     private void readNumber() {

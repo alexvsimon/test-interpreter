@@ -1,4 +1,4 @@
-package interpretator.editor;
+package interpretator.api.lexer;
 
 /**
  *

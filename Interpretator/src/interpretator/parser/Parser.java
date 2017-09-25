@@ -5,9 +5,9 @@ import interpretator.api.ast.ExpressionAST;
 import interpretator.api.ast.AST;
 import interpretator.api.ast.LambdaAST;
 import interpretator.api.ast.ProgramAST;
+import interpretator.api.lexer.Token;
 import interpretator.editor.Lexer;
-import interpretator.editor.Token;
-import interpretator.editor.TokenKind;
+import interpretator.api.lexer.TokenKind;
 import java.util.ArrayList;
 import java.util.List;
 

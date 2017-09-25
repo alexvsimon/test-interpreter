@@ -1,5 +1,7 @@
 package interpretator.editor;
 
+import interpretator.api.lexer.Token;
+import interpretator.api.lexer.TokenKind;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
