@@ -32,6 +32,16 @@ public class Output {
         });
     }
     
+    public void clear() {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                outputPane.getDocument().remove(0, outputPane.getDocument().getLength());
+            } catch (BadLocationException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+    }
+    
     
     public void setOutputPane(javax.swing.JTextPane outputPane) {
         this.outputPane = outputPane;

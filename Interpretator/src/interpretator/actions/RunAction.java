@@ -4,11 +4,12 @@ import interpretator.api.ast.ProgramAST;
 import interpretator.editor.DocumentContext;
 import interpretator.editor.Lexer;
 import interpretator.output.Output;
-import interpretator.parser.ASTDump;
 import interpretator.parser.Parser;
 import interpretator.parser.ParserError;
 import interpretator.run.ASTEval;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -16,30 +17,47 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  */
 public class RunAction {
     private static final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+    private ScheduledFuture<?> task;
+    private final Object lock = new Object();
     
-    private final DocumentContext doc;
-
-    public RunAction(DocumentContext doc) {
-        this.doc = doc;
+    private RunAction() {
     }
 
-    public void run() {
-        executor.execute(() -> {
+    public static RunAction getInstance() {
+        return RunActionHelper.INSTANCE;
+    }
+    
+    public void run(DocumentContext doc) {
+        synchronized(lock) {
+            if (task != null) {
+                task.cancel(true);
+            }
+            executor.purge();
+            task = executor.schedule(new RunnableImpl(doc), 100, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    private static class RunActionHelper {
+        private static RunAction INSTANCE = new RunAction();
+
+        private RunActionHelper() {
+        }
+    }
+    
+    private static class RunnableImpl implements Runnable {
+        private final DocumentContext doc;
+        
+        public RunnableImpl(DocumentContext doc) {
+            this.doc = doc;
+        }
+
+        @Override
+        public void run() {
             try {
+                Output.getInstance().clear();
                 Lexer lexer = new Lexer(doc);
-                //while(true) {
-                //    Token token = lexer.nextToken();
-                //    Output.getInstance().out(token.toString()+"\n");
-                //    if (token.getKind() == TokenKind.EOF) {
-                //        break;
-                //    }
-                //}
                 Parser parser = new Parser(lexer);
                 ProgramAST program = parser.parse();
-                //ASTDump visitor = new ASTDump(program);
-                //visitor.dump();
-                //Output.getInstance().out(visitor.dump());
-                //Output.getInstance().out("\n");
                 if (parser.getErrors().size() > 0) {
                     ParserError error = parser.getErrors().get(0);
                     int[] rowCol = error.getRowCol();
@@ -62,7 +80,8 @@ public class RunAction {
             } catch (Throwable th) {
                 th.printStackTrace();
             }
-        });
+        }
     }
+    
     
 }

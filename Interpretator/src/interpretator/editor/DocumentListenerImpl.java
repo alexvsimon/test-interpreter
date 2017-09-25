@@ -1,0 +1,50 @@
+package interpretator.editor;
+
+import interpretator.actions.RunAction;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JEditorPane;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+
+/**
+ *
+ * @author alex
+ */
+public class DocumentListenerImpl implements DocumentListener {
+
+    private final JEditorPane editor;
+
+    public DocumentListenerImpl(JEditorPane editor) {
+        this.editor = editor;
+    }
+
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+        update(e);
+    }
+
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+        update(e);
+    }
+
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+        update(e);
+    }
+
+    private void update(DocumentEvent e) {
+        Document doc = e.getDocument();
+        doc.render(() -> {
+            try {
+                String text = doc.getText(0, doc.getLength());
+                RunAction.getInstance().run(new DocumentContext(text));
+            } catch (BadLocationException ex) {
+                Logger.getLogger(DocumentListenerImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+    }
+}

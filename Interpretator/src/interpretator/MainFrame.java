@@ -2,11 +2,16 @@ package interpretator;
 
 import interpretator.editor.DocumentContext;
 import interpretator.output.Output;
-import interpretator.actions.RunAction;
+import interpretator.editor.DocumentListenerImpl;
 import interpretator.editor.MyEditorKit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JEditorPane;
+import javax.swing.SwingUtilities;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 
 /**
  *
@@ -21,6 +26,8 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
         this.editorPane.setEditorKit(new MyEditorKit());
         Output.getInstance().setOutputPane(outputPane);
+        editorPane.getDocument().addDocumentListener(new DocumentListenerImpl(editorPane));
+        editorPane.addCaretListener(new CaretListenerImpl(editorPane));
     }
 
     /**
@@ -32,48 +39,20 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jToolBar1 = new javax.swing.JToolBar();
-        runButton = new javax.swing.JButton();
-        clearButton = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
         editorPane = new javax.swing.JEditorPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         outputPane = new javax.swing.JTextPane();
         jPanel1 = new javax.swing.JPanel();
-        statusLine = new javax.swing.JButton();
+        positionLabel = new javax.swing.JLabel();
+        messageLabel = new javax.swing.JLabel();
         mainMenuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         loadItem = new javax.swing.JMenuItem();
         saveItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jToolBar1.setRollover(true);
-
-        runButton.setText("Run");
-        runButton.setFocusable(false);
-        runButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        runButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        runButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                runButtonActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(runButton);
-
-        clearButton.setText("Clear");
-        clearButton.setFocusable(false);
-        clearButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        clearButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        clearButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearButtonActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(clearButton);
-
-        getContentPane().add(jToolBar1, java.awt.BorderLayout.NORTH);
 
         jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane1.setResizeWeight(0.5);
@@ -84,6 +63,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jSplitPane1.setTopComponent(jScrollPane1);
 
+        outputPane.setEditable(false);
         outputPane.setFont(new java.awt.Font("Monospaced", 0, 15)); // NOI18N
         jScrollPane2.setViewportView(outputPane);
 
@@ -93,8 +73,9 @@ public class MainFrame extends javax.swing.JFrame {
 
         jPanel1.setLayout(new java.awt.BorderLayout());
 
-        statusLine.setText("status line");
-        jPanel1.add(statusLine, java.awt.BorderLayout.CENTER);
+        positionLabel.setPreferredSize(new java.awt.Dimension(60, 15));
+        jPanel1.add(positionLabel, java.awt.BorderLayout.EAST);
+        jPanel1.add(messageLabel, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.SOUTH);
 
@@ -112,18 +93,6 @@ public class MainFrame extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void runButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runButtonActionPerformed
-        new RunAction(new DocumentContext(editorPane.getText())).run();
-    }//GEN-LAST:event_runButtonActionPerformed
-
-    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
-        try {
-            outputPane.getDocument().remove(0, outputPane.getDocument().getLength());
-        } catch (BadLocationException ex) {
-            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_clearButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -162,19 +131,48 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton clearButton;
     private javax.swing.JEditorPane editorPane;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuItem loadItem;
     private javax.swing.JMenuBar mainMenuBar;
+    private javax.swing.JLabel messageLabel;
     private javax.swing.JTextPane outputPane;
-    private javax.swing.JButton runButton;
+    private javax.swing.JLabel positionLabel;
     private javax.swing.JMenuItem saveItem;
-    private javax.swing.JButton statusLine;
     // End of variables declaration//GEN-END:variables
+
+    
+    public class CaretListenerImpl implements CaretListener {
+        private final JEditorPane editor;
+
+        public CaretListenerImpl(JEditorPane editor) {
+            this.editor = editor;
+        }
+
+        @Override
+        public void caretUpdate(CaretEvent e) {
+            int dot = e.getDot();
+            Document doc = editor.getDocument();
+            doc.render(() -> {
+                try {
+                    String text = doc.getText(0, doc.getLength());
+                    DocumentContext context = new DocumentContext(text);
+                    final int[] position = context.getRowCol(dot);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            positionLabel.setText(""+position[0]+":"+position[1]);
+                        }
+                    });
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(DocumentListenerImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
+        }
+
+    }    
 }

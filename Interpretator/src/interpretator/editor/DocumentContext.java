@@ -19,7 +19,7 @@ public class DocumentContext {
     public int[] getRowCol(int offset) {
         int row = 1;
         int col = 1;
-        for (int i = 0; i <= offset && i < text.length(); i++) {
+        for (int i = 0; i < offset && i < text.length(); i++) {
             char c = text.charAt(i);
             switch (c) {
                 case '\n':
