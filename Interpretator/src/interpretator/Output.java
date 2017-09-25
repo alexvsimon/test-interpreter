@@ -1,4 +1,4 @@
-package interpretator.output;
+package interpretator;
 
 import interpretator.MainFrame;
 import java.util.logging.Level;
@@ -43,7 +43,7 @@ public class Output {
     }
     
     
-    public void setOutputPane(javax.swing.JTextPane outputPane) {
+    /*package-local*/ void setOutputPane(javax.swing.JTextPane outputPane) {
         this.outputPane = outputPane;
     }
 

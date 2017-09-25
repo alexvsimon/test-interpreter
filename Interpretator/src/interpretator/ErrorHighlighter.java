@@ -1,4 +1,4 @@
-package interpretator.output;
+package interpretator;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -27,7 +27,7 @@ public class ErrorHighlighter {
         return ErrorHighlighterHelper.INSTANCE;
     }
 
-    public void setOutputPane(javax.swing.JTextPane editor) {
+    /*package-local*/ void setOutputPane(javax.swing.JTextPane editor) {
         this.editor = editor;
     }
     

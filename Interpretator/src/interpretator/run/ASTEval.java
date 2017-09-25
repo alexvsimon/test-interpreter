@@ -21,7 +21,7 @@ import interpretator.api.ast.UnaryExpressionAST;
 import interpretator.api.ast.VarAST;
 import interpretator.api.ast.VariableAST;
 import interpretator.api.run.ValueKind;
-import interpretator.output.Output;
+import interpretator.Output;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
