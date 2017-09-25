@@ -9,7 +9,7 @@ import interpretator.parser.ParserError;
 import interpretator.run.ASTEval;
 import interpretator.api.run.CanceledRuntimeError;
 import interpretator.api.run.InterpreterRuntimeError;
-import interpretator.output.MyErrorHighlighter;
+import interpretator.output.ErrorHighlighter;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -82,7 +82,7 @@ public class RunAction {
                 if (parser.getErrors().size() > 0) {
                     ParserError error = parser.getErrors().get(0);
                     int[] rowCol = error.getRowCol();
-                    MyErrorHighlighter.getInstance().highlihgt(error.getStartOffset(), error.getEndOffset());
+                    ErrorHighlighter.getInstance().highlihgt(error.getStartOffset(), error.getEndOffset());
                     Output.getInstance().out(""+rowCol[0]+":"+rowCol[1]+": "+error.getMessage());
                     Output.getInstance().out("\n"+error.getContext());
                     StringBuilder buf = new StringBuilder();
@@ -96,7 +96,7 @@ public class RunAction {
                 try {
                     new ASTEval(program, canceled).run();
                 } catch (InterpreterRuntimeError t) {
-                    MyErrorHighlighter.getInstance().highlihgt(t.getStartOffset(), t.getEndOffset());
+                    ErrorHighlighter.getInstance().highlihgt(t.getStartOffset(), t.getEndOffset());
                     Output.getInstance().out(t.getMessage());
                 } catch (CanceledRuntimeError t) {
                     // skip cancel error

@@ -18,13 +18,13 @@ import javax.swing.text.JTextComponent;
  *
  * @author alex
  */
-public class MyErrorHighlighter {
+public class ErrorHighlighter {
     private JTextPane editor;
     
-    private MyErrorHighlighter(){
+    private ErrorHighlighter(){
     }
     
-    public static MyErrorHighlighter getInstance() {
+    public static ErrorHighlighter getInstance() {
         return ErrorHighlighterHelper.INSTANCE;
     }
 
@@ -33,7 +33,7 @@ public class MyErrorHighlighter {
     }
     
     private static class ErrorHighlighterHelper {
-        private static MyErrorHighlighter INSTANCE = new MyErrorHighlighter();
+        private static ErrorHighlighter INSTANCE = new ErrorHighlighter();
 
         private ErrorHighlighterHelper() {
         }
