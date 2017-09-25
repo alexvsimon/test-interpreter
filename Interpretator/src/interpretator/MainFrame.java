@@ -4,12 +4,23 @@ import interpretator.editor.DocumentContext;
 import interpretator.output.Output;
 import interpretator.editor.DocumentListenerImpl;
 import interpretator.editor.MyEditorKit;
+import java.awt.Component;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JEditorPane;
+import javax.swing.JFileChooser;
+import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.plaf.ComponentUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
@@ -41,7 +52,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
-        editorPane = new javax.swing.JEditorPane();
+        editorPane = new MyJTextPane();
         jScrollPane2 = new javax.swing.JScrollPane();
         outputPane = new javax.swing.JTextPane();
         jPanel1 = new javax.swing.JPanel();
@@ -51,6 +62,8 @@ public class MainFrame extends javax.swing.JFrame {
         fileMenu = new javax.swing.JMenu();
         loadItem = new javax.swing.JMenuItem();
         saveItem = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -81,18 +94,121 @@ public class MainFrame extends javax.swing.JFrame {
 
         fileMenu.setText("File");
 
-        loadItem.setText("Load");
+        loadItem.setText("Open...");
+        loadItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(loadItem);
 
-        saveItem.setText("Save");
+        saveItem.setText("Save As...");
+        saveItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(saveItem);
 
         mainMenuBar.add(fileMenu);
+
+        jMenu1.setText("Sample");
+
+        jMenuItem1.setText("Pi");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        mainMenuBar.add(jMenu1);
 
         setJMenuBar(mainMenuBar);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        Document doc = editorPane.getDocument();
+        try {
+            doc.remove(0, doc.getLength());
+            doc.insertString(0, 
+                    "var n = 500\n" +
+                    "var sequence = map({0, n}, i -> (-1)^i / (2.0 * i + 1))\n" +
+                    "var pi = 4 * reduce(sequence, 0, x y -> x + y)\n" +
+                    "print \"pi = \"\n" +
+                    "out pi", null);
+        } catch (BadLocationException ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void loadItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadItemActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Open");
+        int returnVal = chooser.showOpenDialog(this);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            BufferedReader reader = null;
+            try {
+                reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+                StringBuilder buf = new StringBuilder();
+                int c;
+                while((c = reader.read()) != -1) {
+                    buf.append((char)c);
+                }
+                Document doc = editorPane.getDocument();
+                try {
+                    doc.remove(0, doc.getLength());
+                    doc.insertString(0,buf.toString(), null);
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                if (reader != null) {
+                    try {
+                        reader.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_loadItemActionPerformed
+
+    private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Save");
+        chooser.setApproveButtonText("Save");
+        int returnVal = chooser.showOpenDialog(this);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            BufferedWriter writer = null;
+            try {
+                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+                Document doc = editorPane.getDocument();
+                try {
+                    writer.write(doc.getText(0, doc.getLength()));
+                    writer.flush();
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                if (writer != null) {
+                    try {
+                        writer.close();
+                    } catch (IOException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_saveItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -131,8 +247,10 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JEditorPane editorPane;
+    private javax.swing.JTextPane editorPane;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -147,9 +265,9 @@ public class MainFrame extends javax.swing.JFrame {
 
     
     public class CaretListenerImpl implements CaretListener {
-        private final JEditorPane editor;
+        private final JTextPane editor;
 
-        public CaretListenerImpl(JEditorPane editor) {
+        public CaretListenerImpl(JTextPane editor) {
             this.editor = editor;
         }
 
@@ -173,6 +291,15 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             });
         }
+    }
+    
+    private static final class MyJTextPane extends JTextPane {
 
-    }    
+        @Override
+        public boolean getScrollableTracksViewportWidth() {
+            Component parent = getParent();
+            ComponentUI ui = getUI();
+            return parent != null ? (ui.getPreferredSize(this).width <= parent.getSize().width) : true;
+        }
+    }
 }

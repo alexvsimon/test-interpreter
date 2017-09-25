@@ -3,7 +3,7 @@ package interpretator.editor;
 import interpretator.actions.RunAction;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JEditorPane;
+import javax.swing.JTextPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
@@ -15,9 +15,9 @@ import javax.swing.text.Document;
  */
 public class DocumentListenerImpl implements DocumentListener {
 
-    private final JEditorPane editor;
+    private final JTextPane editor;
 
-    public DocumentListenerImpl(JEditorPane editor) {
+    public DocumentListenerImpl(JTextPane editor) {
         this.editor = editor;
     }
 
