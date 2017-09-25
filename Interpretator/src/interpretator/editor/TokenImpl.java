@@ -7,13 +7,13 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-public class TokenImpl implements Token {
+/*package-local*/  class TokenImpl implements Token {
     private final TokenKind kind;
     private final int startOffset;
     private final int endOffset;
     private final DocumentContext doc;
 
-    public TokenImpl(TokenKind kind, int startOffset, int endOffset, DocumentContext doc) {
+    /*package-local*/  TokenImpl(TokenKind kind, int startOffset, int endOffset, DocumentContext doc) {
         this.kind = kind;
         this.startOffset = startOffset;
         this.endOffset = endOffset;
