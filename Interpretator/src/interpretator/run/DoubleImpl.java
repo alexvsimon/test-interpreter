@@ -7,11 +7,11 @@ import interpretator.api.run.ValueKind;
  *
  * @author alex
  */
-public class DoubleImpl implements DoubleValue {
+/*package-local*/ class DoubleImpl implements DoubleValue {
 
     private final double value;
 
-    public DoubleImpl(double value) {
+    /*package-local*/ DoubleImpl(double value) {
         this.value = value;
     }
 

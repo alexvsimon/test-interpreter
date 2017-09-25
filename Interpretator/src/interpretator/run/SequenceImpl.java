@@ -8,12 +8,12 @@ import interpretator.api.run.ValueKind;
  *
  * @author alex
  */
-public class SequenceImpl implements SequenceValue {
+/*package-local*/ class SequenceImpl implements SequenceValue {
 
     private final int startIndex;
     private final int endIndex;
 
-    public SequenceImpl(int startIndex, int endIndex) {
+    /*package-local*/ SequenceImpl(int startIndex, int endIndex) {
         this.startIndex = startIndex;
         this.endIndex = endIndex;
     }

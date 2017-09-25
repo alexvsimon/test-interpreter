@@ -7,11 +7,11 @@ import interpretator.api.run.ValueKind;
  *
  * @author alex
  */
-public class IntegerImpl implements IntegerValue {
+/*package-local*/ class IntegerImpl implements IntegerValue {
 
     private final int value;
 
-    public IntegerImpl(int value) {
+    /*package-local*/ IntegerImpl(int value) {
         this.value = value;
     }
 

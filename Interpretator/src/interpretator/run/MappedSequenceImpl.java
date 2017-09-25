@@ -12,13 +12,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author alex
  */
-public class MappedSequenceImpl implements SequenceValue {
+/*package-local*/ class MappedSequenceImpl implements SequenceValue {
 
     private final SequenceValue mapped;
     private final LambdaAST lambda;
     private final AtomicBoolean canceled;
 
-    public MappedSequenceImpl(SequenceValue mapped, LambdaAST lambda, AtomicBoolean canceled) {
+    /*package-local*/ MappedSequenceImpl(SequenceValue mapped, LambdaAST lambda, AtomicBoolean canceled) {
         this.mapped = mapped;
         this.lambda = lambda;
         this.canceled = canceled;

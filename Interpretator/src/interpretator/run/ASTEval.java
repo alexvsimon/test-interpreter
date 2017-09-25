@@ -33,7 +33,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ASTEval {
 
     private final AST root;
-    private Map<String, Value> vars = new HashMap<>();
+    private final Map<String, Value> vars = new HashMap<>();
     private final AtomicBoolean canceled;
     private static final int MAX_OUT_SEQUENCE_LENGTH = 100;
     
