@@ -2,6 +2,9 @@ package interpretator;
 
 import interpretator.editor.DocumentContext;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,14 +15,22 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextPane;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 
 /**
  *
@@ -37,6 +48,45 @@ public class MainFrame extends javax.swing.JFrame {
         ErrorHighlighter.getInstance().setOutputPane(editorPane);
         editorPane.getDocument().addDocumentListener(new DocumentListenerImpl(editorPane));
         editorPane.addCaretListener(new CaretListenerImpl(editorPane));
+        initActionsMap();
+    }
+    
+    private void initActionsMap(){
+        undoManager = new UndoManager();
+        Document doc = editorPane.getDocument();
+        doc.addUndoableEditListener(new UndoHandler());
+        
+        undoAction = new UndoAction();
+        editorPane.getInputMap().put(KeyStroke.getKeyStroke("control Z"), "undoKeystroke");
+        editorPane.getActionMap().put("undoKeystroke", undoAction);
+
+        redoAction = new RedoAction();
+        editorPane.getInputMap().put(KeyStroke.getKeyStroke("control Y"), "redoKeystroke");
+        editorPane.getActionMap().put("redoKeystroke", redoAction);
+        
+        editorPane.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showPopUp(e);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showPopUp(e);
+                }
+            }
+            
+            private void showPopUp(MouseEvent e) {
+                JPopupMenu menu = new JPopupMenu();
+                menu.add(undoAction);
+                menu.add(redoAction);
+                menu.show(e.getComponent(), e.getX(), e.getY());
+            }
+
+        });
     }
 
     /**
@@ -288,11 +338,14 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem saveItem;
     // End of variables declaration//GEN-END:variables
 
+    private UndoManager undoManager;
+    private UndoAction undoAction;
+    private RedoAction redoAction;
     
-    public class CaretListenerImpl implements CaretListener {
+    private class CaretListenerImpl implements CaretListener {
         private final JTextPane editor;
 
-        public CaretListenerImpl(JTextPane editor) {
+        private CaretListenerImpl(JTextPane editor) {
             this.editor = editor;
         }
 
@@ -312,7 +365,7 @@ public class MainFrame extends javax.swing.JFrame {
                         }
                     });
                 } catch (BadLocationException ex) {
-                    Logger.getLogger(DocumentListenerImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
                 }
             });
         }
@@ -325,6 +378,62 @@ public class MainFrame extends javax.swing.JFrame {
             Component parent = getParent();
             ComponentUI ui = getUI();
             return parent != null ? (ui.getPreferredSize(this).width <= parent.getSize().width) : true;
+        }
+    }
+    
+    private class UndoHandler implements UndoableEditListener {
+
+        @Override
+        public void undoableEditHappened(UndoableEditEvent e) {
+            undoManager.addEdit(e.getEdit());
+            undoAction.update();
+            redoAction.update();
+        }
+    }
+
+    private class UndoAction extends AbstractAction {
+
+        private UndoAction() {
+            super("Undo");
+            setEnabled(false);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                undoManager.undo();
+            } catch (CannotUndoException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            update();
+            redoAction.update();
+        }
+
+        protected void update() {
+            setEnabled(undoManager.canUndo());
+        }
+    }
+
+    private class RedoAction extends AbstractAction {
+
+        private RedoAction() {
+            super("Redo");
+            setEnabled(false);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                undoManager.redo();
+            } catch (CannotRedoException ex) {
+                Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            update();
+            undoAction.update();
+        }
+
+        protected void update() {
+            setEnabled(undoManager.canRedo());
         }
     }
 }
