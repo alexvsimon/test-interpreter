@@ -8,4 +8,12 @@ public interface NumberAST extends ExpressionAST {
 
     String getValue();
     
+    /**
+     * Integer or Double presentation.
+     * 
+     * @return Integer or Double presentation of the value
+     * @exception InterpreterRuntimeError if value cannot be converted to Integer or Double.
+     */
+    Number eval();
+    
 }

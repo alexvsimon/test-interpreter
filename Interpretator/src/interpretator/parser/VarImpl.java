@@ -13,16 +13,18 @@ import interpretator.api.lexer.Token;
     private final Token varToken;
     private final Token id;
     private final ExpressionAST expression;
+    private final String name;
             
     /*package-local*/ VarImpl(Token start, Token id, ExpressionAST expression){
         varToken = start;
         this.id = id;
         this.expression = expression;
+        name = id.getText();
     }
 
     @Override
     public String getName() {
-        return id.getText();
+        return name;
     }
     
     @Override

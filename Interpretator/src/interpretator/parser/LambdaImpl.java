@@ -11,12 +11,20 @@ import interpretator.api.lexer.Token;
  */
 /*package-local*/ class LambdaImpl implements LambdaAST {
     private final Token v1;
+    private final String parameter1;
     private final Token v2;
+    private final String parameter2;
     private final ExpressionAST function;
 
     /*package-local*/ LambdaImpl(Token v1, Token v2, ExpressionAST function) {
         this.v1 = v1;
         this.v2 = v2;
+        parameter1 = v1.getText();
+        if (v2 != null) {
+            parameter2 = v2.getText();
+        } else {
+            parameter2 = null;
+        }
         this.function = function;
     }
 
@@ -29,10 +37,10 @@ import interpretator.api.lexer.Token;
     public String getParameter(int i) {
         switch(i) {
             case 0:
-                return v1.getText();
+                return parameter1;
             case 1:
                 assert v2 != null;
-                return v2.getText();
+                return parameter2;
             default:
                 throw new ArrayIndexOutOfBoundsException(i);
         }

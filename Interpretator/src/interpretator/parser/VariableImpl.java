@@ -10,14 +10,16 @@ import interpretator.api.lexer.Token;
  */
 /*package-local*/ class VariableImpl implements VariableAST {
     private final Token id;
+    private final String name;
 
     /*package-local*/ VariableImpl(Token id) {
         this.id = id;
+        name = id.getText();
     }
 
     @Override
     public String getName() {
-        return id.getText();
+        return name;
     }
     
     @Override

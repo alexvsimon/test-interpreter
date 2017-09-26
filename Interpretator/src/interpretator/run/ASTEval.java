@@ -340,15 +340,11 @@ public class ASTEval {
     }
 
     private Value evalNumber(NumberAST ast) {
-        String value = ast.getValue();
-        if (value.indexOf('.') > 0) {
-            return new DoubleImpl(Double.parseDouble(value));
+        Number eval = ast.eval();
+        if (eval instanceof Integer) {
+            return new IntegerImpl(eval.intValue());
         } else {
-            try {
-                return new IntegerImpl(Integer.parseInt(value));
-            } catch (NumberFormatException ex) {
-                throw new InterpreterRuntimeError("Integer '"+value+"' is too big", ast);
-            }
+            return new DoubleImpl(eval.doubleValue());
         }
     }
 }
