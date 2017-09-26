@@ -112,7 +112,6 @@ public class ParserTest {
         List<StatementAST> statements = program.getStatements();
         assertEquals(1, statements.size());
         assertEquals(ASTKind.Out, statements.get(0).getKind());
-        System.err.println(new ASTDump(program).dump());
         assertEquals("Out\n" +
                      " Pow\n" +
                      "  Number 2\n" +

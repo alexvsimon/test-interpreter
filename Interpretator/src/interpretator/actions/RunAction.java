@@ -13,7 +13,6 @@ import interpretator.ErrorHighlighter;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  *
@@ -22,7 +21,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class RunAction {
     private static final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
     private ScheduledFuture<?> task;
-    private AtomicBoolean canceled = new AtomicBoolean(false);
     private final Object lock = new Object();
     
     private RunAction() {
@@ -35,12 +33,10 @@ public class RunAction {
     public void run(DocumentContext doc) {
         synchronized(lock) {
             if (task != null) {
-                canceled.set(true);
                 task.cancel(true);
             }
             executor.purge();
-            canceled = new AtomicBoolean(false);
-            task = executor.schedule(new RunnableImpl(doc, canceled), 100, TimeUnit.MILLISECONDS);
+            task = executor.schedule(new RunnableImpl(doc), 100, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -53,30 +49,28 @@ public class RunAction {
     
     private static class RunnableImpl implements Runnable {
         private final DocumentContext doc;
-        private final AtomicBoolean canceled;
         
-        public RunnableImpl(DocumentContext doc, AtomicBoolean canceled) {
+        public RunnableImpl(DocumentContext doc) {
             this.doc = doc;
-            this.canceled = canceled;
         }
 
         @Override
         public void run() {
             try {
-                if (canceled.get()) {
+                if (Thread.interrupted()) {
                     return;
                 }
                 Output.getInstance().clear();
                 Lexer lexer = new Lexer(doc);
-                if (canceled.get()) {
+                if (Thread.interrupted()) {
                     return;
                 }
                 Parser parser = new Parser(lexer);
-                if (canceled.get()) {
+                if (Thread.interrupted()) {
                     return;
                 }
                 ProgramAST program = parser.parse();
-                if (canceled.get()) {
+                if (Thread.interrupted()) {
                     return;
                 }
                 if (parser.getErrors().size() > 0) {
@@ -94,7 +88,7 @@ public class RunAction {
                     return;
                 }
                 try {
-                    new ASTEval(program, canceled).run();
+                    new ASTEval(program).run();
                 } catch (InterpreterRuntimeError t) {
                     ErrorHighlighter.getInstance().highlihgt(t.getStartOffset(), t.getEndOffset());
                     Output.getInstance().out(t.getMessage());

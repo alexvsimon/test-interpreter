@@ -23,7 +23,6 @@ import interpretator.api.ast.VarAST;
 import interpretator.api.ast.VariableAST;
 import interpretator.api.run.ValueKind;
 import interpretator.Output;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  *
@@ -33,18 +32,15 @@ public class ASTEval {
 
     private final AST root;
     private VarsMap vars;
-    private final AtomicBoolean canceled;
     private static final int MAX_OUT_SEQUENCE_LENGTH = 100;
     
     /**
      * Creates interpreter for AST.
      * 
      * @param root root AST is a program or lambda
-     * @param canceled execution canceler
      */
-    public ASTEval(AST root, AtomicBoolean canceled) {
+    public ASTEval(AST root) {
         this.root = root;
-        this.canceled = canceled;
     }
 
     /**
@@ -102,7 +98,7 @@ public class ASTEval {
     }
 
     private Value eval(AST ast) {
-        if (canceled.get()) {
+        if(Thread.interrupted()) {
             throw new CanceledRuntimeError(ast);
         }
         switch (ast.getKind()) {
@@ -154,7 +150,7 @@ public class ASTEval {
                 Output.getInstance().out("{");
                 SequenceValue v = (SequenceValue) value;
                 for (int i = 0; i < v.getSize(); i++) {
-                    if (canceled.get()) {
+                    if(Thread.interrupted()) {
                         throw new CanceledRuntimeError(ast);
                     }
                     if (i < MAX_OUT_SEQUENCE_LENGTH) {
@@ -295,7 +291,7 @@ public class ASTEval {
         Value arg = eval(ast.getInputExpression());
         if (arg.getKind() == ValueKind.Sequence) {
             SequenceValue seq = (SequenceValue) arg;
-            return new MappedSequenceImpl(seq, ast.getLambda(), canceled);
+            return new MappedSequenceImpl(seq, ast.getLambda());
         }
         throw new InterpreterRuntimeError("Operator map defined for sequence only", ast);
     }
@@ -321,10 +317,10 @@ public class ASTEval {
             String arg1 = lambda.getParameter(0);
             String arg2 = lambda.getParameter(1);
             for (int i = 0; i < ((SequenceValue) seq).getSize(); i++) {
-                if (canceled.get()) {
+                if(Thread.interrupted()) {
                     throw new CanceledRuntimeError(ast);
                 }
-                start = new ASTEval(lambda, canceled).evalLambda(new TwoVarMap(arg1, start, arg2, ((SequenceValue) seq).getValueAt(i)));
+                start = new ASTEval(lambda).evalLambda(new TwoVarMap(arg1, start, arg2, ((SequenceValue) seq).getValueAt(i)));
             }
             return start;
         }

@@ -4,7 +4,6 @@ import interpretator.api.run.SequenceValue;
 import interpretator.api.run.Value;
 import interpretator.api.ast.LambdaAST;
 import interpretator.api.run.ValueKind;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  *
@@ -14,12 +13,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
     private final SequenceValue mapped;
     private final LambdaAST lambda;
-    private final AtomicBoolean canceled;
 
-    /*package-local*/ MappedSequenceImpl(SequenceValue mapped, LambdaAST lambda, AtomicBoolean canceled) {
+    /*package-local*/ MappedSequenceImpl(SequenceValue mapped, LambdaAST lambda) {
         this.mapped = mapped;
         this.lambda = lambda;
-        this.canceled = canceled;
     }
 
     @Override
@@ -32,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         Value value = mapped.getValueAt(i);
         assert lambda.getParametersSize() == 1;
         String arg = lambda.getParameter(0);
-        return new ASTEval(lambda, canceled).evalLambda(new OneVarMap(arg, value));
+        return new ASTEval(lambda).evalLambda(new OneVarMap(arg, value));
     }
     
     @Override
