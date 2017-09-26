@@ -4,8 +4,6 @@ import interpretator.api.run.SequenceValue;
 import interpretator.api.run.Value;
 import interpretator.api.ast.LambdaAST;
 import interpretator.api.run.ValueKind;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -34,9 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
         Value value = mapped.getValueAt(i);
         assert lambda.getParametersSize() == 1;
         String arg = lambda.getParameter(0);
-        Map<String, Value> args = new HashMap<>();
-        args.put(arg, value);
-        return new ASTEval(lambda, canceled).evalLambda(args);
+        return new ASTEval(lambda, canceled).evalLambda(new OneVarMap(arg, value));
     }
     
     @Override

@@ -1,5 +1,6 @@
 package interpretator.run;
 
+import interpretator.api.run.VarsMap;
 import interpretator.api.run.InterpreterRuntimeError;
 import interpretator.api.run.CanceledRuntimeError;
 import interpretator.api.run.SequenceValue;
@@ -22,8 +23,6 @@ import interpretator.api.ast.VarAST;
 import interpretator.api.ast.VariableAST;
 import interpretator.api.run.ValueKind;
 import interpretator.Output;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -33,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ASTEval {
 
     private final AST root;
-    private final Map<String, Value> vars = new HashMap<>();
+    private VarsMap vars;
     private final AtomicBoolean canceled;
     private static final int MAX_OUT_SEQUENCE_LENGTH = 100;
     
@@ -56,21 +55,22 @@ public class ASTEval {
      *            reference on undefined variable, unsupported operations, and other.
      */
     public void run() {
+        vars = new VarsMapImpl();
         run(root);
     }
 
     /**
      * Interprets lambda.
      * 
-     * @param vars input parameters
+     * @param vars input parameters map
      * @return value
      * @exception CanceledRuntimeError if interpretation is canceled.
      * @exception InterpreterRuntimeError if interpreter finds runtime error such as incompatible type,
      *            reference on undefined variable, unsupported operations, and other.
      */
-    public Value evalLambda(Map<String, Value> vars) {
+    public Value evalLambda(VarsMap vars) {
         assert root.getKind() == ASTKind.Lambda;
-        this.vars.putAll(vars);
+        this.vars = vars;
         return eval(((LambdaAST) root).getBody());
     }
 
@@ -324,10 +324,7 @@ public class ASTEval {
                 if (canceled.get()) {
                     throw new CanceledRuntimeError(ast);
                 }
-                Map<String, Value> args = new HashMap<>();
-                args.put(arg1, start);
-                args.put(arg2, ((SequenceValue) seq).getValueAt(i));
-                start = new ASTEval(lambda, canceled).evalLambda(args);
+                start = new ASTEval(lambda, canceled).evalLambda(new TwoVarMap(arg1, start, arg2, ((SequenceValue) seq).getValueAt(i)));
             }
             return start;
         }
