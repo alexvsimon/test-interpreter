@@ -144,14 +144,21 @@ public class Parser {
 
     private ExpressionAST parsePow() {
         ExpressionAST lh = parseUnaryMinus();
-        while (t.getKind() == TokenKind.Pow) {
+        //left associative ^
+        //while (t.getKind() == TokenKind.Pow) {
+        //    Token op = t;
+        //    next();
+        //    ExpressionAST rh = parseUnaryMinus();
+        //    lh = new BinaryExpressionImpl(lh, rh, op, ASTKind.Pow);
+        //}
+        //right associative ^
+        if (t.getKind() == TokenKind.Pow) {
             Token op = t;
             next();
-            ExpressionAST rh = parseUnaryMinus();
+            ExpressionAST rh = parsePow();
             lh = new BinaryExpressionImpl(lh, rh, op, ASTKind.Pow);
         }
         return lh;
-
     }
     
     private ExpressionAST parseUnaryMinus() {

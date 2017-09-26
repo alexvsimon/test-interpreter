@@ -103,6 +103,23 @@ public class ParserTest {
                      "   Number 5\n" +
                      "   Number 2\n", new ASTDump(program).dump());
     }
+
+    @Test
+    public void pow() {
+        Lexer lexer = new Lexer(new DocumentContext("out 2^3^2\n"));
+        Parser parser = new Parser(lexer);
+        ProgramAST program = parser.parse();
+        List<StatementAST> statements = program.getStatements();
+        assertEquals(1, statements.size());
+        assertEquals(ASTKind.Out, statements.get(0).getKind());
+        System.err.println(new ASTDump(program).dump());
+        assertEquals("Out\n" +
+                     " Pow\n" +
+                     "  Number 2\n" +
+                     "  Pow\n" +
+                     "   Number 3\n" +
+                     "   Number 2\n", new ASTDump(program).dump());
+    }
     
     @Test
     public void varReduceStream() {
