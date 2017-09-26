@@ -37,21 +37,49 @@ public class ASTEval {
     private final AtomicBoolean canceled;
     private static final int MAX_OUT_SEQUENCE_LENGTH = 100;
     
+    /**
+     * Creates interpreter for AST.
+     * 
+     * @param root root AST is a program or lambda
+     * @param canceled execution canceler
+     */
     public ASTEval(AST root, AtomicBoolean canceled) {
         this.root = root;
         this.canceled = canceled;
     }
 
+    /**
+     * Interprets program
+     * 
+     * @exception CanceledRuntimeError if interpretation is canceled.
+     * @exception InterpreterRuntimeError if interpreter finds runtime error such as incompatible type,
+     *            reference on undefined variable, unsupported operations, and other.
+     */
     public void run() {
         run(root);
     }
 
+    /**
+     * Interprets lambda.
+     * 
+     * @param vars input parameters
+     * @return value
+     * @exception CanceledRuntimeError if interpretation is canceled.
+     * @exception InterpreterRuntimeError if interpreter finds runtime error such as incompatible type,
+     *            reference on undefined variable, unsupported operations, and other.
+     */
     public Value evalLambda(Map<String, Value> vars) {
         assert root.getKind() == ASTKind.Lambda;
         this.vars.putAll(vars);
         return eval(((LambdaAST) root).getBody());
     }
 
+    /**
+     * Gets value of variable.
+     * 
+     * @param name variable name.
+     * @return value if variable exists.
+     */
     public Value getVariable(String name) {
         return vars.get(name);
     }

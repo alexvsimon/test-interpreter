@@ -72,6 +72,12 @@ public class Lexer {
         return "1234567890".indexOf(c) != -1;
     }
     
+    /**
+     * Gets next token in document.
+     * Last token is EOF.
+     * 
+     * @return next token
+     */
     public Token nextToken() {
         int start = offset-1;
         if (c == 0) {

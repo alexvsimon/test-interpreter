@@ -16,6 +16,13 @@ public class DocumentContext {
         return text;
     }
 
+    /**
+     * Counts row and column by offset.
+     * Row and column is 1 based.
+     * 
+     * @param offset offset in text
+     * @return pair of row and column
+     */
     public int[] getRowCol(int offset) {
         int row = 1;
         int col = 1;
@@ -34,6 +41,13 @@ public class DocumentContext {
         return new int[]{row, col};
     }
 
+    /**
+     * Return text row.
+     * Line number is 1 based.
+     * 
+     * @param line line number
+     * @return line string
+     */
     public String getLine(int line) {
         int row = 1;
         int lineStart = 0;
