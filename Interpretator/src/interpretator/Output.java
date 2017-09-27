@@ -1,6 +1,5 @@
 package interpretator;
 
-import interpretator.MainFrame;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -8,7 +7,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 /**
- *
+ * Prints running results or exceptions in output pane.
+ * 
  * @author alex
  */
 public class Output {
@@ -17,10 +17,20 @@ public class Output {
     private Output() {
     }
     
+    /**
+     * Single instance of {@code Output}.
+     * 
+     * @return instance of {@code Output}.
+     */
     public static Output getInstance() {
         return OutputHelper.INSTANCE;
     }
     
+    /**
+     * Print string in output pane.
+     * 
+     * @param s printed string.
+     */
     public void out(String s){
         SwingUtilities.invokeLater(() -> {
             Document doc = outputPane.getDocument();
@@ -32,6 +42,9 @@ public class Output {
         });
     }
     
+    /**
+     * Clear output pane.
+     */
     public void clear() {
         SwingUtilities.invokeLater(() -> {
             try {

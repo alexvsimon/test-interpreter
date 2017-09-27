@@ -14,7 +14,10 @@ import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
 
 /**
- *
+ * Highlights fragment of program.
+ * 
+ * <p>A fragment is red waved.
+ * 
  * @author alex
  */
 public class ErrorHighlighter {
@@ -23,6 +26,11 @@ public class ErrorHighlighter {
     private ErrorHighlighter(){
     }
     
+    /**
+     * Single instance of {@code ErrorHighlighter}.
+     * 
+     * @return instance of {@code ErrorHighlighter}.
+     */
     public static ErrorHighlighter getInstance() {
         return ErrorHighlighterHelper.INSTANCE;
     }
@@ -38,6 +46,12 @@ public class ErrorHighlighter {
         }
     }
 
+    /**
+     * Highlights specified fragment of program.
+     * 
+     * @param start start offset of program.
+     * @param end end offset of program.
+     */
     public void highlihgt(int start, int end) {
         SwingUtilities.invokeLater(new Runnable(){
             @Override
