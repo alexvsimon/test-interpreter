@@ -4,7 +4,8 @@ import interpretator.api.lexer.Token;
 import interpretator.api.lexer.TokenKind;
 
 /**
- *
+ * Tokenizes document.
+ * 
  * @author alex
  */
 public class Lexer {
@@ -12,6 +13,10 @@ public class Lexer {
     private int offset;
     private char c;
 
+    /**
+     * 
+     * @param doc program snapshot.
+     */
     public Lexer(DocumentContext doc) {
         this.doc = doc;
         read();
@@ -74,7 +79,8 @@ public class Lexer {
     
     /**
      * Gets next token in document.
-     * Last token is EOF.
+     * 
+     * <p>Last token is EOF.
      * 
      * @return next token
      */

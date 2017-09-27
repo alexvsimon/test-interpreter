@@ -1,6 +1,9 @@
 package interpretator.editor;
 
 /**
+ * Program snapshot.
+ * 
+ * <p>Contains program text and utility methods for text manipulation.
  *
  * @author alex
  */
@@ -12,13 +15,19 @@ public class DocumentContext {
         this.text = text;
     }
 
+    /**
+     * Program snapshot text.
+     * 
+     * @return program text.
+     */
     public CharSequence getText() {
         return text;
     }
 
     /**
      * Counts row and column by offset.
-     * Row and column is 1 based.
+     * 
+     * <p>Row and column are 1 based.
      * 
      * @param offset offset in text
      * @return pair of row and column
@@ -43,7 +52,8 @@ public class DocumentContext {
 
     /**
      * Return text row.
-     * Line number is 1 based.
+     * 
+     * <p>Line number is 1 based.
      * 
      * @param line line number
      * @return line string
