@@ -1,6 +1,7 @@
 package interpretator.api.ast;
 
 /**
+ * Common type of all statements.
  *
  * @author alex
  */

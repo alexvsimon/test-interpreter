@@ -1,15 +1,29 @@
 package interpretator.api.ast;
 
 /**
- *
+ * Lambda.
+ * 
  * @author alex
  */
 public interface LambdaAST extends AST {
 
-    ExpressionAST getBody();
-
+    /**
+     * 
+     * @return parameters size.
+     */
+    int getParametersSize();
+       
+    /**
+     * 
+     * @param i parameter number.
+     * @return parameter name.
+     */
     String getParameter(int i);
 
-    int getParametersSize();
-    
+    /**
+     * 
+     * @return lambda body expression.
+     */
+    ExpressionAST getBody();
+
 }

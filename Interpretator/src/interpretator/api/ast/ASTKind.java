@@ -1,6 +1,7 @@
 package interpretator.api.ast;
 
 /**
+ * All possible kinds of AST nodes.
  *
  * @author alex
  */

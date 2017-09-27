@@ -3,11 +3,16 @@ package interpretator.api.ast;
 import interpretator.api.run.InterpreterRuntimeException;
 
 /**
+ * Numeric literal (integer or floating point).
  *
  * @author alex
  */
 public interface NumberAST extends ExpressionAST {
 
+    /**
+     * 
+     * @return literal text.
+     */
     String getValue();
     
     /**
