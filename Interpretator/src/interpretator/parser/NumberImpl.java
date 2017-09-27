@@ -3,7 +3,7 @@ package interpretator.parser;
 import interpretator.api.ast.ASTKind;
 import interpretator.api.ast.NumberAST;
 import interpretator.api.lexer.Token;
-import interpretator.api.run.InterpreterRuntimeError;
+import interpretator.api.run.InterpreterRuntimeException;
 
 /**
  *
@@ -40,19 +40,19 @@ import interpretator.api.run.InterpreterRuntimeError;
     }
 
     @Override
-    public Number eval() {
+    public Number eval() throws InterpreterRuntimeException {
         if (eval == null) {
             if (value.indexOf('.') > 0) {
                 try {
                     eval = Double.parseDouble(value);
                 } catch (NumberFormatException ex) {
-                    throw new InterpreterRuntimeError("Double '"+value+"' is too big", this);
+                    throw new InterpreterRuntimeException("Double '"+value+"' is too big", this);
                 }
             } else {
                 try {
                     eval = Integer.parseInt(value);
                 } catch (NumberFormatException ex) {
-                    throw new InterpreterRuntimeError("Integer '"+value+"' is too big", this);
+                    throw new InterpreterRuntimeException("Integer '"+value+"' is too big", this);
                 }
             }
         }

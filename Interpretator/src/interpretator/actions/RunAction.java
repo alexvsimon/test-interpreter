@@ -7,8 +7,8 @@ import interpretator.Output;
 import interpretator.parser.Parser;
 import interpretator.parser.ParserError;
 import interpretator.run.ASTEval;
-import interpretator.api.run.CanceledRuntimeError;
-import interpretator.api.run.InterpreterRuntimeError;
+import interpretator.api.run.CanceledRuntimeException;
+import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.ErrorHighlighter;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -89,10 +89,10 @@ public class RunAction {
                 }
                 try {
                     new ASTEval(program).run();
-                } catch (InterpreterRuntimeError t) {
+                } catch (InterpreterRuntimeException t) {
                     ErrorHighlighter.getInstance().highlihgt(t.getStartOffset(), t.getEndOffset());
                     Output.getInstance().out(t.getMessage());
-                } catch (CanceledRuntimeError t) {
+                } catch (CanceledRuntimeException t) {
                     // skip cancel error
                 } catch (Throwable t) {
                     Output.getInstance().out(t.getMessage());

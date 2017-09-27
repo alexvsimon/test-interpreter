@@ -1,8 +1,8 @@
 package interpretator.run;
 
 import interpretator.api.run.VarsMap;
-import interpretator.api.run.InterpreterRuntimeError;
-import interpretator.api.run.CanceledRuntimeError;
+import interpretator.api.run.InterpreterRuntimeException;
+import interpretator.api.run.CanceledRuntimeException;
 import interpretator.api.run.SequenceValue;
 import interpretator.api.run.DoubleValue;
 import interpretator.api.run.IntegerValue;
@@ -45,12 +45,12 @@ public class ASTEval {
 
     /**
      * Interprets program
-     * 
-     * @exception CanceledRuntimeError if interpretation is canceled.
-     * @exception InterpreterRuntimeError if interpreter finds runtime error such as incompatible type,
-     *            reference on undefined variable, unsupported operations, and other.
+     *
+     * @throws CanceledRuntimeException if interpretation is canceled.
+     * @throws InterpreterRuntimeException if interpreter finds runtime error such as incompatible type,
+            reference on undefined variable, unsupported operations, and other.
      */
-    public void run() {
+    public void run() throws CanceledRuntimeException, InterpreterRuntimeException {
         vars = new VarsMapImpl();
         run(root);
     }
@@ -60,11 +60,11 @@ public class ASTEval {
      * 
      * @param vars input parameters map
      * @return value
-     * @exception CanceledRuntimeError if interpretation is canceled.
-     * @exception InterpreterRuntimeError if interpreter finds runtime error such as incompatible type,
-     *            reference on undefined variable, unsupported operations, and other.
+     * @throws CanceledRuntimeException if interpretation is canceled.
+     * @throws InterpreterRuntimeException if interpreter finds runtime error such as incompatible type,
+            reference on undefined variable, unsupported operations, and other.
      */
-    public Value evalLambda(VarsMap vars) {
+    public Value evalLambda(VarsMap vars) throws CanceledRuntimeException, InterpreterRuntimeException {
         assert root.getKind() == ASTKind.Lambda;
         this.vars = vars;
         return eval(((LambdaAST) root).getBody());
@@ -99,7 +99,7 @@ public class ASTEval {
 
     private Value eval(AST ast) {
         if(Thread.interrupted()) {
-            throw new CanceledRuntimeError(ast);
+            throw new CanceledRuntimeException(ast);
         }
         switch (ast.getKind()) {
             case UnaryMinus:
@@ -151,7 +151,7 @@ public class ASTEval {
                 SequenceValue v = (SequenceValue) value;
                 for (int i = 0; i < v.getSize(); i++) {
                     if(Thread.interrupted()) {
-                        throw new CanceledRuntimeError(ast);
+                        throw new CanceledRuntimeException(ast);
                     }
                     if (i < MAX_OUT_SEQUENCE_LENGTH) {
                         outValue(ast, v.getValueAt(i));
@@ -183,18 +183,18 @@ public class ASTEval {
             case Double:
                 return new DoubleImpl(-((DoubleValue) eval).getDouble());
             default:
-                throw new InterpreterRuntimeError("Unsupported unary minus for sequence", ast);
+                throw new InterpreterRuntimeException("Unsupported unary minus for sequence", ast);
         }
     }
 
     private Value evalExpression(BinaryExpressionAST ast) {
         Value lh = eval(ast.getLeftExpression());
         if (lh.getKind() == ValueKind.Sequence) {
-            throw new InterpreterRuntimeError("Unsupported binary operation for sequence", ast.getLeftExpression());
+            throw new InterpreterRuntimeException("Unsupported binary operation for sequence", ast.getLeftExpression());
         }
         Value rh = eval(ast.getRightExpression());
         if (rh.getKind() == ValueKind.Sequence) {
-            throw new InterpreterRuntimeError("Unsupported binary operation for sequence", ast.getRightExpression());
+            throw new InterpreterRuntimeException("Unsupported binary operation for sequence", ast.getRightExpression());
         }
         switch (ast.getKind()) {
             case Plus: {
@@ -245,7 +245,7 @@ public class ASTEval {
             }
             case Pow: {
                 if (rh.getKind() != ValueKind.Integer) {
-                    throw new InterpreterRuntimeError("Unsupported power operation for double", ast.getRightExpression());
+                    throw new InterpreterRuntimeException("Unsupported power operation for double", ast.getRightExpression());
                 }
                 int pow = ((IntegerValue) rh).getInteger();
                 if (pow == 0) {
@@ -283,7 +283,7 @@ public class ASTEval {
                 }
             }
             default:
-                throw new InterpreterRuntimeError("Unsupported binary operation", ast);
+                throw new InterpreterRuntimeException("Unsupported binary operation", ast);
         }
     }
 
@@ -293,7 +293,7 @@ public class ASTEval {
             SequenceValue seq = (SequenceValue) arg;
             return new MappedSequenceImpl(seq, ast.getLambda());
         }
-        throw new InterpreterRuntimeError("Operator map defined for sequence only", ast);
+        throw new InterpreterRuntimeException("Operator map defined for sequence only", ast);
     }
 
     private Value evalSequence(SequenceAST ast) {
@@ -303,7 +303,7 @@ public class ASTEval {
             (end.getKind() == ValueKind.Integer)) {
             return new SequenceImpl(((IntegerValue) start).getInteger(), ((IntegerValue) end).getInteger());
         }
-        throw new InterpreterRuntimeError("Sequence defined for integer operands", ast);
+        throw new InterpreterRuntimeException("Sequence defined for integer operands", ast);
     }
 
     private Value evalReduce(ReduceAST ast) {
@@ -312,25 +312,25 @@ public class ASTEval {
         if (seq.getKind() == ValueKind.Sequence) {
             LambdaAST lambda = ast.getLambda();
             if (lambda.getParametersSize() != 2) {
-                throw new InterpreterRuntimeError("Labda of operator reduse must have 2 parameters", ast);
+                throw new InterpreterRuntimeException("Labda of operator reduse must have 2 parameters", ast);
             }
             String arg1 = lambda.getParameter(0);
             String arg2 = lambda.getParameter(1);
             for (int i = 0; i < ((SequenceValue) seq).getSize(); i++) {
                 if(Thread.interrupted()) {
-                    throw new CanceledRuntimeError(ast);
+                    throw new CanceledRuntimeException(ast);
                 }
                 start = new ASTEval(lambda).evalLambda(new TwoVarMap(arg1, start, arg2, ((SequenceValue) seq).getValueAt(i)));
             }
             return start;
         }
-        throw new InterpreterRuntimeError("First argument of operator reduce must be sequence", ast);
+        throw new InterpreterRuntimeException("First argument of operator reduce must be sequence", ast);
     }
 
     private Value evalVariable(VariableAST ast) {
         Value value = vars.get(ast.getName());
         if (value == null) {
-            throw new InterpreterRuntimeError("Variable '"+ast.getName()+"' is not declared", ast);
+            throw new InterpreterRuntimeException("Variable '"+ast.getName()+"' is not declared", ast);
         }
         return value;
     }
