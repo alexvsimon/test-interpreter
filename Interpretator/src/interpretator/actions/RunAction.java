@@ -15,6 +15,16 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Program runner.
+ * 
+ * <p>Runs program in background thread. It includes sequence of actions:
+ * <ul>
+ *   <li> Clear output pane.
+ *   <li> Lex program.
+ *   <li> Parse program.
+ *   <li> Interpret program.
+ * </ul>
+ * <p>Running stars with small delay after each document updating. Action cancels previous runner if it exists.
  *
  * @author alex
  */
@@ -26,10 +36,20 @@ public class RunAction {
     private RunAction() {
     }
 
+    /**
+     * Single instance of {@code RunAction}.
+     * 
+     * @return instance of {@code RunAction}.
+     */
     public static RunAction getInstance() {
         return RunActionHelper.INSTANCE;
     }
     
+    /**
+     * Starts program interpretation.
+     * 
+     * @param doc program to run.
+     */
     public void run(DocumentContext doc) {
         synchronized(lock) {
             if (task != null) {
