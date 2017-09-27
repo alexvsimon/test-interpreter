@@ -1,6 +1,5 @@
 package interpretator.run;
 
-import interpretator.api.run.VarsMap;
 import interpretator.api.run.Value;
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,5 @@
 package interpretator.run;
 
-import interpretator.api.run.VarsMap;
 import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.api.run.CanceledRuntimeException;
 import interpretator.api.run.SequenceValue;
@@ -64,7 +63,7 @@ public class ASTEval {
      * @throws InterpreterRuntimeException if interpreter finds runtime error such as incompatible type,
             reference on undefined variable, unsupported operations, and other.
      */
-    public Value evalLambda(VarsMap vars) throws CanceledRuntimeException, InterpreterRuntimeException {
+    /*package-local*/ Value evalLambda(VarsMap vars) throws CanceledRuntimeException, InterpreterRuntimeException {
         assert root.getKind() == ASTKind.Lambda;
         this.vars = vars;
         return eval(((LambdaAST) root).getBody());

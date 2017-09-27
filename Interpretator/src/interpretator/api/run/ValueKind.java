@@ -1,6 +1,7 @@
 package interpretator.api.run;
 
 /**
+ * Enumerate all kinds of run time types.
  *
  * @author alex
  */

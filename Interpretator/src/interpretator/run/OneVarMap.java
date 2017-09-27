@@ -5,7 +5,6 @@
  */
 package interpretator.run;
 
-import interpretator.api.run.VarsMap;
 import interpretator.api.run.Value;
 
 /**
