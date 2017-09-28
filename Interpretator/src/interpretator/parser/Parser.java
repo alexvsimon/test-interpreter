@@ -221,6 +221,7 @@ public class Parser {
                 next();
             }
         }
+        assert errors.size() > 0;
         return null;
     }
 
@@ -236,6 +237,8 @@ public class Parser {
                 if (t.getKind() == TokenKind.RParen) {
                     next();
                     return new MapImpl(map, arg1, lambda);
+                } else {
+                    addError("Expected ')'", t);            
                 }
             } else {
                 addError("Expected ','", t);
@@ -243,6 +246,7 @@ public class Parser {
         } else {
             addError("Expected '('", t);
         }
+        assert errors.size() > 0;
         return null;
     }
 
@@ -273,6 +277,7 @@ public class Parser {
         } else {
             addError("Expected '('", t);
         }
+        assert errors.size() > 0;
         return null;
     }
 
@@ -296,6 +301,7 @@ public class Parser {
         } else {
             addError("Expected identifier", t);
         }
+        assert errors.size() > 0;
         return null;
     }
 }
