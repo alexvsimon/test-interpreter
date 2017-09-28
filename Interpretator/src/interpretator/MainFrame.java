@@ -46,6 +46,7 @@ public class MainFrame extends javax.swing.JFrame {
         this.editorPane.setEditorKit(new MyEditorKit());
         Output.getInstance().setOutputPane(outputPane);
         ErrorHighlighter.getInstance().setOutputPane(editorPane);
+        StatusLine.getInstance().setStatusLine(messageLabel);
         editorPane.getDocument().addDocumentListener(new DocumentListenerImpl(editorPane));
         editorPane.addCaretListener(new CaretListenerImpl(editorPane));
         initActionsMap();

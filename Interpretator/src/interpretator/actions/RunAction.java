@@ -10,6 +10,7 @@ import interpretator.run.ASTEval;
 import interpretator.api.run.CanceledRuntimeException;
 import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.ErrorHighlighter;
+import interpretator.StatusLine;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -77,20 +78,26 @@ public class RunAction {
         @Override
         public void run() {
             try {
+                StatusLine.getInstance().out("Running...");
+                long startTime = System.currentTimeMillis();
                 if (Thread.interrupted()) {
+                    StatusLine.getInstance().out("Canceled");
                     return;
                 }
                 Output.getInstance().clear();
                 Lexer lexer = new Lexer(doc);
                 if (Thread.interrupted()) {
+                    StatusLine.getInstance().out("Canceled");
                     return;
                 }
                 Parser parser = new Parser(lexer);
                 if (Thread.interrupted()) {
+                    StatusLine.getInstance().out("Canceled");
                     return;
                 }
                 ProgramAST program = parser.parse();
                 if (Thread.interrupted()) {
+                    StatusLine.getInstance().out("Canceled");
                     return;
                 }
                 if (parser.getErrors().size() > 0) {
@@ -105,19 +112,27 @@ public class RunAction {
                     }
                     buf.append('^');
                     Output.getInstance().out("\n"+buf.toString());
+                    StatusLine.getInstance().out("Syntax errorr");
                     return;
                 }
                 try {
                     new ASTEval(program).run();
+                    long delta = System.currentTimeMillis() - startTime;
+                    StatusLine.getInstance().out("Successfully finished. Interpretation time is "+delta+"ms.");
                 } catch (InterpreterRuntimeException t) {
                     ErrorHighlighter.getInstance().highlihgt(t.getStartOffset(), t.getEndOffset());
                     Output.getInstance().out(t.getMessage());
+                    StatusLine.getInstance().out("Runtime errorr");
                 } catch (CanceledRuntimeException t) {
+                    StatusLine.getInstance().out("Canceled");
                     // skip cancel error
                 } catch (Throwable t) {
                     Output.getInstance().out(t.getMessage());
+                    StatusLine.getInstance().out("Fatal error");
+                    t.printStackTrace();
                 }
             } catch (Throwable th) {
+                StatusLine.getInstance().out("Fatal error");
                 th.printStackTrace();
             }
         }
