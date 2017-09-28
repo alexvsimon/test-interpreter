@@ -3,6 +3,9 @@ package interpretator.run;
 import interpretator.api.run.SequenceValue;
 import interpretator.api.run.Value;
 import interpretator.api.ast.LambdaAST;
+import interpretator.api.run.DoubleValue;
+import interpretator.api.run.IntegerValue;
+import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.api.run.ValueKind;
 
 /**
@@ -13,6 +16,8 @@ import interpretator.api.run.ValueKind;
 
     private final SequenceValue mapped;
     private final LambdaAST lambda;
+    private boolean numericSequence = ASTEval.OPTIMIZE_DOUBLE_ARITHMETIC;
+    private int evals = 0;
 
     /*package-local*/ MappedSequenceImpl(SequenceValue mapped, LambdaAST lambda) {
         this.mapped = mapped;
@@ -26,10 +31,40 @@ import interpretator.api.run.ValueKind;
 
     @Override
     public Value getValueAt(int i) {
+        evals++;
         Value value = mapped.getValueAt(i);
-        assert lambda.getParametersSize() == 1;
         String arg = lambda.getParameter(0);
-        return new ASTEval(lambda).evalLambda(new OneVarMap(arg, value));
+        if (numericSequence && evals < 10) {
+            if (value.getKind() == ValueKind.Sequence) {
+                numericSequence = false;
+            }
+            final ASTEval eval = new ASTEval(lambda);
+            final Value res = eval.evalLambda(new OneVarMap(arg, value));
+            if (res.getKind() != ValueKind.Double) {
+                numericSequence = false;
+            }
+            if (eval.hasRecursiveLambda()) {
+                numericSequence = false;
+            }
+            return res;
+        }
+        if (numericSequence) {
+            double res;
+            switch(value.getKind()) {
+                case Integer:
+                    res = ((IntegerValue)value).getInteger();
+                    break;
+                case Double:
+                    res = ((DoubleValue)value).getDouble();
+                    break;
+                default:
+                    throw new InterpreterRuntimeException("Sequence has number and sequence elements", lambda);
+            }
+            res =  new DoubleEval(lambda).evalDoubleLambda(new OneDoubleVarMap(arg, res));
+            return new DoubleImpl(res);
+        } else {
+            return new ASTEval(lambda).evalLambda(new OneVarMap(arg, value));
+        }
     }
     
     @Override

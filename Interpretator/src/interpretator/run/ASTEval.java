@@ -31,7 +31,17 @@ public class ASTEval {
 
     private final AST root;
     private VarsMap vars;
+    
+    /**
+     * maximum of printed sequence elements
+     */
     private static final int MAX_OUT_SEQUENCE_LENGTH = 100;
+    
+    /**
+     * use optimized expression evaluator
+     */
+    /*package-local*/ static final boolean OPTIMIZE_DOUBLE_ARITHMETIC = true;   
+    private boolean hasRecursiveLambda = false;
     
     /**
      * Creates interpreter for AST.
@@ -68,7 +78,15 @@ public class ASTEval {
         this.vars = vars;
         return eval(((LambdaAST) root).getBody());
     }
-
+    
+    /**
+     * 
+     * @return true if lambda call inner lambda
+     */
+    /*package-local*/ boolean hasRecursiveLambda() {
+        return hasRecursiveLambda;
+    }
+    
     /**
      * Gets value of variable.
      * 
@@ -120,7 +138,7 @@ public class ASTEval {
             case Number:
                 return evalNumber((NumberAST) ast);
         }
-        return null;
+        throw new InterpreterRuntimeException("Unsupported operation", ast);
     }
 
     private void runProgram(ProgramAST ast) {
@@ -244,7 +262,10 @@ public class ASTEval {
             }
             case Pow: {
                 if (rh.getKind() != ValueKind.Integer) {
-                    throw new InterpreterRuntimeException("Unsupported power operation for double", ast.getRightExpression());
+                    return new DoubleImpl(Math.pow((lh.getKind() == ValueKind.Integer)
+                        ? ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble(),
+                            (rh.getKind() == ValueKind.Integer)
+                        ? ((IntegerValue) rh).getInteger() : ((DoubleValue) rh).getDouble()));
                 }
                 int pow = ((IntegerValue) rh).getInteger();
                 if (pow == 0) {
@@ -289,8 +310,13 @@ public class ASTEval {
     private Value evalMap(MapAST ast) {
         Value arg = eval(ast.getInputExpression());
         if (arg.getKind() == ValueKind.Sequence) {
+            LambdaAST lambda = ast.getLambda();
+            if (lambda.getParametersSize() != 1) {
+                throw new InterpreterRuntimeException("Lambda of operator map must have 1 parameter", ast);
+            }
+            hasRecursiveLambda = true;
             SequenceValue seq = (SequenceValue) arg;
-            return new MappedSequenceImpl(seq, ast.getLambda());
+            return new MappedSequenceImpl(seq, lambda);
         }
         throw new InterpreterRuntimeException("Operator map defined for sequence only", ast);
     }
@@ -309,17 +335,59 @@ public class ASTEval {
         Value seq = eval(ast.getInputExpression());
         Value start = eval(ast.getStartExpression());
         if (seq.getKind() == ValueKind.Sequence) {
+            SequenceValue sequense = (SequenceValue) seq;
             LambdaAST lambda = ast.getLambda();
             if (lambda.getParametersSize() != 2) {
-                throw new InterpreterRuntimeException("Labda of operator reduse must have 2 parameters", ast);
+                throw new InterpreterRuntimeException("Lambda of operator reduse must have 2 parameters", ast);
             }
+            hasRecursiveLambda = true;
             String arg1 = lambda.getParameter(0);
             String arg2 = lambda.getParameter(1);
-            for (int i = 0; i < ((SequenceValue) seq).getSize(); i++) {
+            boolean numericSequence = OPTIMIZE_DOUBLE_ARITHMETIC;
+            for (int i = 0; i < ((SequenceValue) seq).getSize() && i < 10; i++) {
                 if(Thread.interrupted()) {
                     throw new CanceledRuntimeException(ast);
                 }
-                start = new ASTEval(lambda).evalLambda(new TwoVarMap(arg1, start, arg2, ((SequenceValue) seq).getValueAt(i)));
+                Value currentSeq = sequense.getValueAt(i);
+                if (currentSeq.getKind() == ValueKind.Sequence) {
+                    numericSequence = false;
+                }
+                final ASTEval eval = new ASTEval(lambda);
+                start = eval.evalLambda(new TwoVarMap(arg1, start, arg2, currentSeq));
+                if (eval.hasRecursiveLambda) {
+                    numericSequence = false;
+                }
+            }
+            if (numericSequence && start.getKind() == ValueKind.Double) {
+                double doubleStart = ((DoubleValue)start).getDouble();
+                final DoubleEval doubleEval = new DoubleEval(lambda);
+                for (int i = 10; i < ((SequenceValue) seq).getSize(); i++) {
+                    if(Thread.interrupted()) {
+                        throw new CanceledRuntimeException(ast);
+                    }
+                    Value currentSeq = sequense.getValueAt(i);
+                    double currendValue;
+                    switch (currentSeq.getKind()) {
+                        case Integer:
+                            currendValue = ((IntegerValue)currentSeq).getInteger();
+                            break;
+                        case Double:
+                            currendValue = ((DoubleValue)currentSeq).getDouble();
+                            break;
+                        default:
+                            throw new InterpreterRuntimeException("Sequence has number and sequence elements", ast);
+                    }
+                    doubleStart = doubleEval.evalDoubleLambda(new TwoDoubleVarsMap(arg1, doubleStart, arg2, currendValue));
+                }
+                start = new DoubleImpl(doubleStart);
+            } else {
+                final ASTEval astEval = new ASTEval(lambda);
+                for (int i = 10; i < ((SequenceValue) seq).getSize(); i++) {
+                    if(Thread.interrupted()) {
+                        throw new CanceledRuntimeException(ast);
+                    }
+                    start = astEval.evalLambda(new TwoVarMap(arg1, start, arg2, sequense.getValueAt(i)));
+                }
             }
             return start;
         }
