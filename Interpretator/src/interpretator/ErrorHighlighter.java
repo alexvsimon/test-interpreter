@@ -53,22 +53,17 @@ public class ErrorHighlighter {
      * @param end end offset of program.
      */
     public void highlihgt(int start, int end) {
-        SwingUtilities.invokeLater(new Runnable(){
-            @Override
-            public void run() {
-                Document doc = editor.getDocument();
-                doc.render(new Runnable() {
-                    public void run() {
-                        try {
-                            Highlighter h = editor.getHighlighter();
-                            h.removeAllHighlights();
-                            h.addHighlight(start, end, new ErrorHighlightPainter(editor));
-                        } catch (BadLocationException ex) {
-                            Logger.getLogger(ErrorHighlighter.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                });
-            }
+        SwingUtilities.invokeLater(() -> {
+            Document doc = editor.getDocument();
+            doc.render(() -> {
+                try {
+                    Highlighter h = editor.getHighlighter();
+                    h.removeAllHighlights();
+                    h.addHighlight(start, end, new ErrorHighlightPainter(editor));
+                } catch (BadLocationException ex) {
+                    Logger.getLogger(ErrorHighlighter.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            });
         });
         
     }

@@ -282,7 +282,7 @@ public class Parser {
     }
 
     private LambdaImpl parseLambda() {
-        Token v1 = null;
+        Token v1;
         Token v2 = null;
         if (t.getKind() == TokenKind.Identifier) {
             v1 = t;

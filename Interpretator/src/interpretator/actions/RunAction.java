@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * @author alex
  */
 public class RunAction {
-    private static final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+    private static final ScheduledThreadPoolExecutor EXECUTOR = new ScheduledThreadPoolExecutor(1);
     private ScheduledFuture<?> task;
     private final Object lock = new Object();
     
@@ -56,8 +56,8 @@ public class RunAction {
             if (task != null) {
                 task.cancel(true);
             }
-            executor.purge();
-            task = executor.schedule(new RunnableImpl(doc), 100, TimeUnit.MILLISECONDS);
+            EXECUTOR.purge();
+            task = EXECUTOR.schedule(new RunnableImpl(doc), 100, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -129,11 +129,12 @@ public class RunAction {
                 } catch (Throwable t) {
                     Output.getInstance().out(t.getMessage());
                     StatusLine.getInstance().out("Fatal error");
-                    t.printStackTrace();
+                    t.printStackTrace(System.err);
                 }
             } catch (Throwable th) {
+                Output.getInstance().out(th.getMessage());
                 StatusLine.getInstance().out("Fatal error");
-                th.printStackTrace();
+                th.printStackTrace(System.err);
             }
         }
     }
