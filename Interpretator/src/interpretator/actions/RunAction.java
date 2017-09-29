@@ -112,7 +112,7 @@ public class RunAction {
                     }
                     buf.append('^');
                     Output.getInstance().out("\n"+buf.toString());
-                    StatusLine.getInstance().out("Syntax errorr");
+                    StatusLine.getInstance().out("Syntax error");
                     return;
                 }
                 try {
@@ -122,7 +122,7 @@ public class RunAction {
                 } catch (InterpreterRuntimeException t) {
                     ErrorHighlighter.getInstance().highlihgt(t.getStartOffset(), t.getEndOffset());
                     Output.getInstance().out(t.getMessage());
-                    StatusLine.getInstance().out("Runtime errorr");
+                    StatusLine.getInstance().out("Runtime error");
                 } catch (CanceledRuntimeException t) {
                     StatusLine.getInstance().out("Canceled");
                     // skip cancel error
