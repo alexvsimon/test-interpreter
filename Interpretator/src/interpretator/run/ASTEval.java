@@ -243,9 +243,16 @@ public class ASTEval {
             case Mul: {
                 if ((lh.getKind() == ValueKind.Integer) &&
                     (rh.getKind() == ValueKind.Integer)) {
-                    return new IntegerImpl(
-                            ((IntegerValue) lh).getInteger() *
-                            ((IntegerValue) rh).getInteger());
+                    //return new IntegerImpl(
+                    //        ((IntegerValue) lh).getInteger() *
+                    //        ((IntegerValue) rh).getInteger());
+                    int a = ((IntegerValue) lh).getInteger();
+                    int b = ((IntegerValue) rh).getInteger();
+                    try {
+                        return new IntegerImpl(Math.multiplyExact(a,b));
+                    } catch (ArithmeticException ex) {
+                        // count as double
+                    }
                 }
                 double ldh = (lh.getKind() == ValueKind.Integer)
                         ? ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble();
@@ -281,25 +288,29 @@ public class ASTEval {
                         return pow % 2 == 0 ? new IntegerImpl(1) : new IntegerImpl(-1);
                     }
                     int res = arg;
-                    for (int i = 1; i < pow; i++) {
-                        res = res * arg;
+                    try {
+                        for (int i = 1; i < pow; i++) {
+                            res = Math.multiplyExact(res, arg);
+                        }
+                        if (minus) {
+                            return new DoubleImpl(1.0 / res);
+                        } else {
+                            return new IntegerImpl(res);
+                        }
+                    } catch (ArithmeticException ex) {
+                        // count as double
                     }
-                    if (minus) {
-                        return new DoubleImpl(1.0 / res);
-                    } else {
-                        return new IntegerImpl(res);
-                    }
+                }
+                double arg = lh.getKind() == ValueKind.Integer ?
+                        ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble();
+                double res = arg;
+                for (int i = 1; i < pow; i++) {
+                    res = res * arg;
+                }
+                if (minus) {
+                    return new DoubleImpl(1.0 / res);
                 } else {
-                    double arg = ((DoubleValue) lh).getDouble();
-                    double res = arg;
-                    for (int i = 1; i < pow; i++) {
-                        res = res * arg;
-                    }
-                    if (minus) {
-                        return new DoubleImpl(1.0 / res);
-                    } else {
-                        return new DoubleImpl(res);
-                    }
+                    return new DoubleImpl(res);
                 }
             }
             default:
