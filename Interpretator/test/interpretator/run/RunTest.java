@@ -1,8 +1,9 @@
 package interpretator.run;
 
-import interpretator.api.run.DoubleValue;
-import interpretator.api.run.IntegerValue;
+import interpretator.api.run.InterpreterRuntimeException;
+import interpretator.api.run.SequenceValue;
 import interpretator.api.run.Value;
+import interpretator.api.run.ValueKind;
 import interpretator.editor.DocumentContext;
 import interpretator.editor.Lexer;
 import interpretator.parser.Parser;
@@ -45,8 +46,8 @@ public class RunTest {
         ASTEval run = new ASTEval(parser.parse());
         run.run();
         Value res = run.getVariable("res");
-        assertEquals(true, res instanceof IntegerValue);
-        assertEquals(4, ((IntegerValue) res).getInteger());
+        assertEquals(true, res.getKind() == ValueKind.Integer);
+        assertEquals(4, res.getInteger());
     }
 
     @Test
@@ -56,8 +57,8 @@ public class RunTest {
         ASTEval run = new ASTEval(parser.parse());
         run.run();
         Value res = run.getVariable("res");
-        assertEquals(true, res instanceof IntegerValue);
-        assertEquals(6, ((IntegerValue) res).getInteger());
+        assertEquals(true, res.getKind() == ValueKind.Integer);
+        assertEquals(6, res.getInteger());
     }
 
     @Test
@@ -67,8 +68,8 @@ public class RunTest {
         ASTEval run = new ASTEval(parser.parse());
         run.run();
         Value res = run.getVariable("res");
-        assertEquals(true, res instanceof IntegerValue);
-        assertEquals(8, ((IntegerValue) res).getInteger());
+        assertEquals(true, res.getKind() == ValueKind.Integer);
+        assertEquals(8, res.getInteger());
     }
 
     @Test
@@ -82,8 +83,8 @@ public class RunTest {
         ASTEval run = new ASTEval(parser.parse());
         run.run();
         Value res = run.getVariable("delta");
-        assertEquals(true, res instanceof DoubleValue);
-        assertTrue(Math.abs(((DoubleValue) res).getDouble()) < 0.0001);
+        assertEquals(true, res.getKind() == ValueKind.Double);
+        assertTrue(Math.abs(res.getDouble()) < 0.0001);
     }
     
 }

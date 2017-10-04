@@ -9,6 +9,4 @@ package interpretator.api.run;
  */
 public interface DoubleValue extends Value {
 
-    double getDouble();
-
 }

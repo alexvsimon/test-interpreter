@@ -1,18 +1,16 @@
 package interpretator.run;
 
+import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.api.run.SequenceValue;
 import interpretator.api.run.Value;
-import interpretator.api.ast.LambdaAST;
-import interpretator.api.run.DoubleValue;
-import interpretator.api.run.IntegerValue;
-import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.api.run.ValueKind;
+import interpretator.api.ast.LambdaAST;
 
 /**
  *
  * @author alex
  */
-/*package-local*/ class MappedSequenceImpl implements SequenceValue {
+/*package-local*/ final class MappedSequenceImpl implements SequenceValue {
 
     private final SequenceValue mapped;
     private final LambdaAST lambda;
@@ -52,10 +50,10 @@ import interpretator.api.run.ValueKind;
             double res;
             switch(value.getKind()) {
                 case Integer:
-                    res = ((IntegerValue)value).getInteger();
+                    res = value.getInteger();
                     break;
                 case Double:
-                    res = ((DoubleValue)value).getDouble();
+                    res = value.getDouble();
                     break;
                 default:
                     throw new InterpreterRuntimeException("Sequence has number and sequence elements", lambda);
@@ -65,6 +63,16 @@ import interpretator.api.run.ValueKind;
         } else {
             return new ASTEval(lambda).evalLambda(new OneVarMap(arg, value));
         }
+    }
+    
+    @Override
+    public double getDouble() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getInteger() {
+        throw new UnsupportedOperationException();
     }
     
     @Override

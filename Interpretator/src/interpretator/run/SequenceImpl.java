@@ -8,7 +8,7 @@ import interpretator.api.run.ValueKind;
  *
  * @author alex
  */
-/*package-local*/ class SequenceImpl implements SequenceValue {
+/*package-local*/ final class SequenceImpl implements SequenceValue {
 
     private final int startIndex;
     private final int endIndex;
@@ -32,10 +32,20 @@ import interpretator.api.run.ValueKind;
     }
     
     @Override
+    public double getDouble() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public int getInteger() {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
     public ValueKind getKind() {
         return ValueKind.Sequence;
     }
-
+    
     @Override
     public String toString() {
         return "Sequence of " + getSize() + " values";

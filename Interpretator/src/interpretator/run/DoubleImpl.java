@@ -7,7 +7,7 @@ import interpretator.api.run.ValueKind;
  *
  * @author alex
  */
-/*package-local*/ class DoubleImpl implements DoubleValue {
+/*package-local*/ final class DoubleImpl implements DoubleValue {
 
     private final double value;
 
@@ -21,10 +21,15 @@ import interpretator.api.run.ValueKind;
     }
 
     @Override
+    public int getInteger() {
+        throw new UnsupportedOperationException();
+    }
+    
+    @Override
     public ValueKind getKind() {
         return ValueKind.Double;
     }
-
+    
     @Override
     public String toString() {
         return ""+value;

@@ -3,9 +3,8 @@ package interpretator.run;
 import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.api.run.CanceledRuntimeException;
 import interpretator.api.run.SequenceValue;
-import interpretator.api.run.DoubleValue;
-import interpretator.api.run.IntegerValue;
 import interpretator.api.run.Value;
+import interpretator.api.run.ValueKind;
 import interpretator.api.ast.AST;
 import interpretator.api.ast.ASTKind;
 import interpretator.api.ast.BinaryExpressionAST;
@@ -20,7 +19,6 @@ import interpretator.api.ast.SequenceAST;
 import interpretator.api.ast.UnaryExpressionAST;
 import interpretator.api.ast.VarAST;
 import interpretator.api.ast.VariableAST;
-import interpretator.api.run.ValueKind;
 import interpretator.Output;
 
 /**
@@ -158,10 +156,10 @@ public class ASTEval {
     private void outValue(OutAST ast, Value value) {
         switch (value.getKind()) {
             case Integer:
-                Output.getInstance().out("" + ((IntegerValue) value).getInteger());
+                Output.getInstance().out("" + value.getInteger());
                 break;
             case Double:
-                Output.getInstance().out("" + ((DoubleValue) value).getDouble());
+                Output.getInstance().out("" + value.getDouble());
                 break;
             case Sequence:
                 Output.getInstance().out("{");
@@ -196,9 +194,9 @@ public class ASTEval {
         Value eval = eval(ast.getExpression());
         switch (eval.getKind()) {
             case Integer:
-                return new IntegerImpl(-((IntegerValue) eval).getInteger());
+                return new IntegerImpl(-eval.getInteger());
             case Double:
-                return new DoubleImpl(-((DoubleValue) eval).getDouble());
+                return new DoubleImpl(-eval.getDouble());
             default:
                 throw new InterpreterRuntimeException("Unsupported unary minus for sequence", ast);
         }
@@ -217,64 +215,47 @@ public class ASTEval {
             case Plus: {
                 if ((lh.getKind() == ValueKind.Integer) &&
                     (rh.getKind() == ValueKind.Integer)) {
-                    return new IntegerImpl(
-                            ((IntegerValue) lh).getInteger() +
-                            ((IntegerValue) rh).getInteger());
+                    return new IntegerImpl(lh.getInteger() + rh.getInteger());
                 }
-                double ldh = (lh.getKind() == ValueKind.Integer)
-                        ? ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble();
-                double rdh = (rh.getKind() == ValueKind.Integer)
-                        ? ((IntegerValue) rh).getInteger() : ((DoubleValue) rh).getDouble();
+                double ldh = (lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble();
+                double rdh = (rh.getKind() == ValueKind.Integer) ? rh.getInteger() : rh.getDouble();
                 return new DoubleImpl(ldh + rdh);
             }
             case Minus: {
                 if ((lh.getKind() == ValueKind.Integer) &&
                     (rh.getKind() == ValueKind.Integer)) {
-                    return new IntegerImpl(
-                            ((IntegerValue) lh).getInteger() -
-                            ((IntegerValue) rh).getInteger());
+                    return new IntegerImpl(lh.getInteger() - rh.getInteger());
                 }
-                double ldh = (lh.getKind() == ValueKind.Integer)
-                        ? ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble();
-                double rdh = (rh.getKind() == ValueKind.Integer)
-                        ? ((IntegerValue) rh).getInteger() : ((DoubleValue) rh).getDouble();
+                double ldh = (lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble();
+                double rdh = (rh.getKind() == ValueKind.Integer) ? rh.getInteger() : rh.getDouble();
                 return new DoubleImpl(ldh - rdh);
             }
             case Mul: {
                 if ((lh.getKind() == ValueKind.Integer) &&
                     (rh.getKind() == ValueKind.Integer)) {
-                    //return new IntegerImpl(
-                    //        ((IntegerValue) lh).getInteger() *
-                    //        ((IntegerValue) rh).getInteger());
-                    int a = ((IntegerValue) lh).getInteger();
-                    int b = ((IntegerValue) rh).getInteger();
+                    int a = lh.getInteger();
+                    int b = rh.getInteger();
                     try {
                         return new IntegerImpl(Math.multiplyExact(a,b));
                     } catch (ArithmeticException ex) {
                         // count as double
                     }
                 }
-                double ldh = (lh.getKind() == ValueKind.Integer)
-                        ? ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble();
-                double rdh = (rh.getKind() == ValueKind.Integer)
-                        ? ((IntegerValue) rh).getInteger() : ((DoubleValue) rh).getDouble();
+                double ldh = (lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble();
+                double rdh = (rh.getKind() == ValueKind.Integer) ? rh.getInteger() : rh.getDouble();
                 return new DoubleImpl(ldh * rdh);
             }
             case Div: {
-                double ldh = (lh.getKind() == ValueKind.Integer)
-                        ? ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble();
-                double rdh = (rh.getKind() == ValueKind.Integer)
-                        ? ((IntegerValue) rh).getInteger() : ((DoubleValue) rh).getDouble();
+                double ldh = (lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble();
+                double rdh = (rh.getKind() == ValueKind.Integer) ? rh.getInteger() : rh.getDouble();
                 return new DoubleImpl(ldh / rdh);
             }
             case Pow: {
                 if (rh.getKind() != ValueKind.Integer) {
-                    return new DoubleImpl(Math.pow((lh.getKind() == ValueKind.Integer)
-                        ? ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble(),
-                            (rh.getKind() == ValueKind.Integer)
-                        ? ((IntegerValue) rh).getInteger() : ((DoubleValue) rh).getDouble()));
+                    return new DoubleImpl(Math.pow((lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble(),
+                            (rh.getKind() == ValueKind.Integer) ? rh.getInteger() : rh.getDouble()));
                 }
-                int pow = ((IntegerValue) rh).getInteger();
+                int pow = rh.getInteger();
                 if (pow == 0) {
                     return new IntegerImpl(1);
                 }
@@ -283,7 +264,7 @@ public class ASTEval {
                     pow = -pow;
                 }
                 if ((lh.getKind() == ValueKind.Integer)) {
-                    int arg = ((IntegerValue) lh).getInteger();
+                    int arg = lh.getInteger();
                     if (arg == -1) {
                         return pow % 2 == 0 ? new IntegerImpl(1) : new IntegerImpl(-1);
                     }
@@ -301,8 +282,7 @@ public class ASTEval {
                         // count as double
                     }
                 }
-                double arg = lh.getKind() == ValueKind.Integer ?
-                        ((IntegerValue) lh).getInteger() : ((DoubleValue) lh).getDouble();
+                double arg = (lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble();
                 double res = arg;
                 for (int i = 1; i < pow; i++) {
                     res = res * arg;
@@ -337,7 +317,7 @@ public class ASTEval {
         Value end = eval(ast.getEndExpression());
         if ((start.getKind() == ValueKind.Integer) &&
             (end.getKind() == ValueKind.Integer)) {
-            return new SequenceImpl(((IntegerValue) start).getInteger(), ((IntegerValue) end).getInteger());
+            return new SequenceImpl(start.getInteger(), end.getInteger());
         }
         throw new InterpreterRuntimeException("Sequence defined for integer operands", ast);
     }
@@ -369,8 +349,8 @@ public class ASTEval {
                     numericSequence = false;
                 }
             }
-            if (numericSequence && start.getKind() == ValueKind.Double) {
-                double doubleStart = ((DoubleValue)start).getDouble();
+            if (numericSequence && (start.getKind() == ValueKind.Double)) {
+                double doubleStart = start.getDouble();
                 final DoubleEval doubleEval = new DoubleEval(lambda);
                 for (int i = 10; i < ((SequenceValue) seq).getSize(); i++) {
                     if(Thread.interrupted()) {
@@ -380,10 +360,10 @@ public class ASTEval {
                     double currendValue;
                     switch (currentSeq.getKind()) {
                         case Integer:
-                            currendValue = ((IntegerValue)currentSeq).getInteger();
+                            currendValue = currentSeq.getInteger();
                             break;
                         case Double:
-                            currendValue = ((DoubleValue)currentSeq).getDouble();
+                            currendValue = currentSeq.getDouble();
                             break;
                         default:
                             throw new InterpreterRuntimeException("Sequence has number and sequence elements", ast);

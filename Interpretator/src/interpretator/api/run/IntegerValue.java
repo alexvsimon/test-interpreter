@@ -9,6 +9,4 @@ package interpretator.api.run;
  */
 public interface IntegerValue extends Value {
 
-    int getInteger();
-
 }

@@ -8,4 +8,9 @@ package interpretator.api.run;
 public interface Value {
 
     ValueKind getKind();
+    
+    double getDouble();
+
+    int getInteger();
+    
 }

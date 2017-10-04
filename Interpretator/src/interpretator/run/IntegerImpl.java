@@ -7,12 +7,17 @@ import interpretator.api.run.ValueKind;
  *
  * @author alex
  */
-/*package-local*/ class IntegerImpl implements IntegerValue {
+/*package-local*/ final class IntegerImpl implements IntegerValue {
 
     private final int value;
 
     /*package-local*/ IntegerImpl(int value) {
         this.value = value;
+    }
+
+    @Override
+    public double getDouble() {
+        throw new UnsupportedOperationException();        
     }
 
     @Override
