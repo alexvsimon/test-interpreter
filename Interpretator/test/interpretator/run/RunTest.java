@@ -51,6 +51,77 @@ public class RunTest {
     }
 
     @Test
+    public void evalSeq() {
+        Lexer lexer = new Lexer(new DocumentContext("var res = {1,10}"));
+        Parser parser = new Parser(lexer);
+        ASTEval run = new ASTEval(parser.parse());
+        run.run();
+        Value res = run.getVariable("res");
+        assertEquals(true, res.getKind() == ValueKind.Sequence);
+        SequenceValue seq = (SequenceValue) res;
+        assertEquals(10, seq.getSize());
+        for(int i = 0; i < seq.getSize(); i++) {
+            assertEquals(i+1, seq.getValueAt(i).getInteger());
+        }
+    }
+
+    @Test
+    public void evalSeq0() {
+        Lexer lexer = new Lexer(new DocumentContext("var res = {6,5}"));
+        Parser parser = new Parser(lexer);
+        ASTEval run = new ASTEval(parser.parse());
+        run.run();
+        Value res = run.getVariable("res");
+        assertEquals(true, res.getKind() == ValueKind.Sequence);
+        SequenceValue seq = (SequenceValue) res;
+        assertEquals(0, seq.getSize());
+    }
+
+    @Test
+    public void evalSeq1() {
+        Lexer lexer = new Lexer(new DocumentContext("var res = {5,5}"));
+        Parser parser = new Parser(lexer);
+        ASTEval run = new ASTEval(parser.parse());
+        run.run();
+        Value res = run.getVariable("res");
+        assertEquals(true, res.getKind() == ValueKind.Sequence);
+        SequenceValue seq = (SequenceValue) res;
+        assertEquals(1, seq.getSize());
+        for(int i = 0; i < seq.getSize(); i++) {
+            assertEquals(5, seq.getValueAt(i).getInteger());
+        }
+    }
+
+    @Test
+    public void evalFailedSeq() {
+        Lexer lexer = new Lexer(new DocumentContext("var res = {1,10.}"));
+        Parser parser = new Parser(lexer);
+        ASTEval run = new ASTEval(parser.parse());
+        try {
+            run.run();
+        } catch (InterpreterRuntimeException e) {
+            assertTrue(e.getMessage().contains("Sequence defined for integer operands"));
+            return;
+        }
+        assertTrue("Should be run time exception", false);
+    }
+
+    @Test
+    public void evalNestedSeq() {
+        Lexer lexer = new Lexer(new DocumentContext("var res = map({1,10},x->{1,x})"));
+        Parser parser = new Parser(lexer);
+        ASTEval run = new ASTEval(parser.parse());
+        run.run();
+        Value res = run.getVariable("res");
+        assertEquals(true, res.getKind() == ValueKind.Sequence);
+        SequenceValue seq = (SequenceValue) res;
+        assertEquals(10, seq.getSize());
+        for(int i = 0; i < seq.getSize(); i++) {
+            assertTrue(seq.getValueAt(i).getKind() == ValueKind.Sequence);
+        }
+    }
+
+    @Test
     public void eval2Plus2Mul2() {
         Lexer lexer = new Lexer(new DocumentContext("var res = 2+2*2"));
         Parser parser = new Parser(lexer);
