@@ -1,4 +1,4 @@
-package interpretator.editor;
+package interpretator;
 
 /**
  * Program snapshot.
@@ -7,7 +7,7 @@ package interpretator.editor;
  *
  * @author alex
  */
-public class DocumentContext {
+public final class DocumentContext {
 
     private final String text;
     private final int documentVersion;

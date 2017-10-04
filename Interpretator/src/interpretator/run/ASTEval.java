@@ -1,5 +1,6 @@
 package interpretator.run;
 
+import interpretator.api.run.Interpretator;
 import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.api.run.CanceledRuntimeException;
 import interpretator.api.run.SequenceValue;
@@ -25,7 +26,7 @@ import interpretator.Output;
  *
  * @author alex
  */
-public class ASTEval {
+/*package-local*/ class ASTEval implements Interpretator {
 
     private final AST root;
     private VarsMap vars;
@@ -46,7 +47,7 @@ public class ASTEval {
      * 
      * @param root root AST is a program or lambda
      */
-    public ASTEval(AST root) {
+    /*package-local*/ ASTEval(AST root) {
         this.root = root;
     }
 
@@ -57,6 +58,7 @@ public class ASTEval {
      * @throws InterpreterRuntimeException if interpreter finds runtime error such as incompatible type,
             reference on undefined variable, unsupported operations, and other.
      */
+    @Override
     public void run() throws CanceledRuntimeException, InterpreterRuntimeException {
         vars = new VarsMapImpl();
         run(root);
@@ -91,6 +93,7 @@ public class ASTEval {
      * @param name variable name.
      * @return value if variable exists.
      */
+    @Override
     public Value getVariable(String name) {
         return vars.get(name);
     }

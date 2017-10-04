@@ -1,18 +1,22 @@
 package interpretator.run;
 
+import interpretator.api.ast.Parser;
+import interpretator.api.lexer.Lexer;
+import interpretator.api.run.Interpretator;
 import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.api.run.SequenceValue;
 import interpretator.api.run.Value;
 import interpretator.api.run.ValueKind;
-import interpretator.editor.DocumentContext;
-import interpretator.editor.Lexer;
-import interpretator.parser.Parser;
+import interpretator.DocumentContext;
+import interpretator.spi.ast.ParserFactory;
+import interpretator.spi.lexer.LexerFactory;
+import interpretator.spi.run.InterpretatorFactory;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -41,9 +45,9 @@ public class RunTest {
 
     @Test
     public void eval2Mul2() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = 2*2", 0));
-        Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("var res = 2*2", 0));
+        Parser parser = ParserFactory.getInstance().getParser(lexer);
+        Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
         assertEquals(true, res.getKind() == ValueKind.Integer);
@@ -52,9 +56,9 @@ public class RunTest {
 
     @Test
     public void evalSeq() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = {1,10}", 0));
-        Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("var res = {1,10}", 0));
+        Parser parser = ParserFactory.getInstance().getParser(lexer);
+        Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
         assertEquals(true, res.getKind() == ValueKind.Sequence);
@@ -67,9 +71,9 @@ public class RunTest {
 
     @Test
     public void evalSeq0() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = {6,5}", 0));
-        Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("var res = {6,5}", 0));
+        Parser parser = ParserFactory.getInstance().getParser(lexer);
+        Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
         assertEquals(true, res.getKind() == ValueKind.Sequence);
@@ -79,9 +83,9 @@ public class RunTest {
 
     @Test
     public void evalReduce0() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = reduce({6,5},7,x y->x+y)", 0));
-        Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("var res = reduce({6,5},7,x y->x+y)", 0));
+        Parser parser = ParserFactory.getInstance().getParser(lexer);
+        Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
         assertEquals(7, res.getInteger());
@@ -89,9 +93,9 @@ public class RunTest {
 
     @Test
     public void evalReduce1() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = reduce({5,5},7,x y->x+y)", 0));
-        Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("var res = reduce({5,5},7,x y->x+y)", 0));
+        Parser parser = ParserFactory.getInstance().getParser(lexer);
+        Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
         assertEquals(12, res.getInteger());
@@ -99,9 +103,9 @@ public class RunTest {
 
     @Test
     public void evalSeq1() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = {5,5}", 0));
-        Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("var res = {5,5}", 0));
+        Parser parser = ParserFactory.getInstance().getParser(lexer);
+        Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
         assertEquals(true, res.getKind() == ValueKind.Sequence);
@@ -114,9 +118,9 @@ public class RunTest {
 
     @Test
     public void evalFailedSeq() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = {1,10.}", 0));
-        Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("var res = {1,10.}", 0));
+        Parser parser = ParserFactory.getInstance().getParser(lexer);
+        Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         try {
             run.run();
         } catch (InterpreterRuntimeException e) {
@@ -128,9 +132,9 @@ public class RunTest {
 
     @Test
     public void evalNestedSeq() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = map({1,10},x->{1,x})", 0));
-        Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("var res = map({1,10},x->{1,x})", 0));
+        Parser parser = ParserFactory.getInstance().getParser(lexer);
+        Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
         assertEquals(true, res.getKind() == ValueKind.Sequence);
@@ -143,9 +147,9 @@ public class RunTest {
 
     @Test
     public void eval2Plus2Mul2() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = 2+2*2", 0));
-        Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("var res = 2+2*2", 0));
+        Parser parser = ParserFactory.getInstance().getParser(lexer);
+        Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
         assertEquals(true, res.getKind() == ValueKind.Integer);
@@ -154,9 +158,9 @@ public class RunTest {
 
     @Test
     public void evalMinus2Pow2Plus2Mul2() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = -2^2+2*2", 0));
-        Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("var res = -2^2+2*2", 0));
+        Parser parser = ParserFactory.getInstance().getParser(lexer);
+        Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
         assertEquals(true, res.getKind() == ValueKind.Integer);
@@ -165,13 +169,13 @@ public class RunTest {
 
     @Test
     public void evalPi() {
-        Lexer lexer = new Lexer(new DocumentContext(
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext(
                 "var n = 10000\n" +
                 "var sequence = map({0, n}, i -> (-1)^i / (2.0 * i + 1))\n" +
                 "var pi = 4 * reduce(sequence, 0, x y -> x + y)\n" +
                 "var delta = pi - 355/113", 0));
-        Parser parser = new Parser(lexer);
-        ASTEval run = new ASTEval(parser.parse());
+        Parser parser = ParserFactory.getInstance().getParser(lexer);
+        Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("delta");
         assertEquals(true, res.getKind() == ValueKind.Double);

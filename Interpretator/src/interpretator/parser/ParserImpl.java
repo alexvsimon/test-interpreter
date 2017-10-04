@@ -1,12 +1,14 @@
 package interpretator.parser;
 
+import interpretator.api.ast.AST;
 import interpretator.api.ast.ASTKind;
 import interpretator.api.ast.ExpressionAST;
-import interpretator.api.ast.AST;
 import interpretator.api.ast.LambdaAST;
+import interpretator.api.ast.Parser;
+import interpretator.api.ast.ParserError;
 import interpretator.api.ast.ProgramAST;
+import interpretator.api.lexer.Lexer;
 import interpretator.api.lexer.Token;
-import interpretator.editor.Lexer;
 import interpretator.api.lexer.TokenKind;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
  *
  * @author alex
  */
-public class Parser {
+/*package-local*/ class ParserImpl implements Parser {
 
     private final List<Token> ts;
     private int index;
@@ -23,7 +25,7 @@ public class Parser {
     private final ProgramImpl program;
     private List<ParserError> errors = new ArrayList<>();
 
-    public Parser(Lexer lexer) {
+    /*package-local*/  ParserImpl(Lexer lexer) {
         ts = new ArrayList<>();
         while (true) {
             Token token = lexer.nextToken();
@@ -47,6 +49,7 @@ public class Parser {
         errors.add(new ParserError(message, token.getTokenLine(), token.getStartRowCol(), token.getStartOffset(), token.getEndOffset()));
     }
     
+    @Override
     public  List<ParserError> getErrors() {
         return errors;
     }
@@ -57,6 +60,7 @@ public class Parser {
         }
     }
 
+    @Override
     public ProgramAST parse() {
         while (true) {
             switch (t.getKind()) {

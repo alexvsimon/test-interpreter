@@ -1,14 +1,16 @@
 package interpretator.editor;
 
+import interpretator.DocumentContext;
 import interpretator.api.lexer.Token;
 import interpretator.api.lexer.TokenKind;
+import interpretator.api.lexer.Lexer;
 
 /**
  * Tokenizes document.
  * 
  * @author alex
  */
-public class Lexer {
+/*package-local*/ class LexerImpl implements Lexer {
     private final DocumentContext doc;
     private int offset;
     private char c;
@@ -17,7 +19,7 @@ public class Lexer {
      * 
      * @param doc program snapshot.
      */
-    public Lexer(DocumentContext doc) {
+    /*package-local*/ LexerImpl(DocumentContext doc) {
         this.doc = doc;
         read();
     }
@@ -84,6 +86,7 @@ public class Lexer {
      * 
      * @return next token
      */
+    @Override
     public Token nextToken() {
         int start = offset-1;
         if (c == 0) {

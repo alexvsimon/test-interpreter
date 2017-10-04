@@ -1,15 +1,18 @@
 package interpretator.editor;
 
+import interpretator.DocumentContext;
+import interpretator.api.lexer.Lexer;
 import interpretator.api.lexer.Token;
 import interpretator.api.lexer.TokenKind;
+import interpretator.spi.lexer.LexerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -38,7 +41,7 @@ public class LexerTest {
 
     @Test
     public void emptyStream() {
-        Lexer lexer = new Lexer(new DocumentContext("", 0));
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("", 0));
         List<Token> tokens = getTokens(lexer);
         assertEquals(1, tokens.size());
         assertEquals(TokenKind.EOF, tokens.get(0).getKind());
@@ -46,7 +49,7 @@ public class LexerTest {
 
     @Test
     public void emptySpaceStream() {
-        Lexer lexer = new Lexer(new DocumentContext(" ", 0));
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext(" ", 0));
         List<Token> tokens = getTokens(lexer);
         assertEquals(2, tokens.size());
         assertEquals(TokenKind.WhiteSpace, tokens.get(0).getKind());
@@ -55,7 +58,7 @@ public class LexerTest {
 
     @Test
     public void emptyNewLineStream() {
-        Lexer lexer = new Lexer(new DocumentContext("\n", 0));
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("\n", 0));
         List<Token> tokens = getTokens(lexer);
         assertEquals(2, tokens.size());
         assertEquals(TokenKind.WhiteSpace, tokens.get(0).getKind());
@@ -64,7 +67,7 @@ public class LexerTest {
 
     @Test
     public void varStream() {
-        Lexer lexer = new Lexer(new DocumentContext("var n = 500", 0));
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("var n = 500", 0));
         List<Token> tokens = getTokens(lexer);
         assertEquals(8, tokens.size());
         assertEquals(TokenKind.Var, tokens.get(0).getKind());
@@ -81,7 +84,7 @@ public class LexerTest {
     
     @Test
     public void printStream() {
-        Lexer lexer = new Lexer(new DocumentContext("print \"pi = \"", 0));
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("print \"pi = \"", 0));
         List<Token> tokens = getTokens(lexer);
         assertEquals(4, tokens.size());
         assertEquals(TokenKind.Print, tokens.get(0).getKind());
@@ -93,7 +96,7 @@ public class LexerTest {
 
     @Test
     public void outStream() {
-        Lexer lexer = new Lexer(new DocumentContext("out pi", 0));
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("out pi", 0));
         List<Token> tokens = getTokens(lexer);
         assertEquals(4, tokens.size());
         assertEquals(TokenKind.Out, tokens.get(0).getKind());
@@ -105,7 +108,7 @@ public class LexerTest {
 
     @Test
     public void expressionStream() {
-        Lexer lexer = new Lexer(new DocumentContext("(-1)^i / (2.0 * i + 1)", 0));
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("(-1)^i / (2.0 * i + 1)", 0));
         List<Token> tokens = getTokens(lexer);
         assertEquals(21, tokens.size());
         assertEquals(TokenKind.LParen, tokens.get(0).getKind());
@@ -138,7 +141,7 @@ public class LexerTest {
     
     @Test
     public void expressionLabdaStream() {
-        Lexer lexer = new Lexer(new DocumentContext("4*reduce(sequence,0,x y->x+y)", 0));
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("4*reduce(sequence,0,x y->x+y)", 0));
         List<Token> tokens = getTokens(lexer);
         assertEquals(17, tokens.size());
         assertEquals(TokenKind.Number, tokens.get(0).getKind());
@@ -169,7 +172,7 @@ public class LexerTest {
 
     @Test
     public void expressionSequenceStream() {
-        Lexer lexer = new Lexer(new DocumentContext("{0,n}", 0));
+        Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext("{0,n}", 0));
         List<Token> tokens = getTokens(lexer);
         assertEquals(6, tokens.size());
         assertEquals(TokenKind.LBrace, tokens.get(0).getKind());
@@ -194,7 +197,7 @@ public class LexerTest {
                         "out pi\n";
         // type at the end of file
         for(int i = 0; i < source.length(); i++) {
-            Lexer lexer = new Lexer(new DocumentContext(source.substring(0, i), 0));
+            Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext(source.substring(0, i), 0));
             List<Token> tokens = getTokens(lexer);
             //System.err.println("Source length="+i+" token stream size="+tokens.size());
         }
@@ -212,7 +215,7 @@ public class LexerTest {
                 for(int k = i + 1; k < lines.length; k++) {
                     buf.append(lines[k]).append('\n');
                 }
-                Lexer lexer = new Lexer(new DocumentContext(buf.toString(), 0));
+                Lexer lexer = LexerFactory.getInstance().getLexer(new DocumentContext(buf.toString(), 0));
                 List<Token> tokens = getTokens(lexer);
                 //System.err.println("Source length="+buf.length()+" token stream size="+tokens.size());
             }

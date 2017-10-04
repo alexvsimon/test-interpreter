@@ -1,10 +1,10 @@
-package interpretator.parser;
+package interpretator.api.ast;
 
 /**
  *
  * @author alex
  */
-public class ParserError {
+public final class ParserError {
     private final String message;
     private final String context;
     private final int[] rowCol; 

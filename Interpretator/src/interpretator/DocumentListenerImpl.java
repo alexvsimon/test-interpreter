@@ -1,7 +1,6 @@
 package interpretator;
 
 import interpretator.actions.RunAction;
-import interpretator.editor.DocumentContext;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextPane;

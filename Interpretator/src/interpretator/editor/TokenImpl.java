@@ -1,5 +1,6 @@
 package interpretator.editor;
 
+import interpretator.DocumentContext;
 import interpretator.api.lexer.TokenKind;
 import interpretator.api.lexer.Token;
 

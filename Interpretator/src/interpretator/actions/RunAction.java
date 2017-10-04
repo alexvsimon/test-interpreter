@@ -1,16 +1,18 @@
 package interpretator.actions;
 
-import interpretator.api.ast.ProgramAST;
-import interpretator.editor.DocumentContext;
-import interpretator.editor.Lexer;
+import interpretator.ErrorHighlighter;
 import interpretator.Output;
-import interpretator.parser.Parser;
-import interpretator.parser.ParserError;
-import interpretator.run.ASTEval;
+import interpretator.StatusLine;
+import interpretator.api.ast.Parser;
+import interpretator.api.ast.ParserError;
+import interpretator.api.ast.ProgramAST;
+import interpretator.api.lexer.Lexer;
 import interpretator.api.run.CanceledRuntimeException;
 import interpretator.api.run.InterpreterRuntimeException;
-import interpretator.ErrorHighlighter;
-import interpretator.StatusLine;
+import interpretator.DocumentContext;
+import interpretator.spi.ast.ParserFactory;
+import interpretator.spi.lexer.LexerFactory;
+import interpretator.spi.run.InterpretatorFactory;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -85,12 +87,12 @@ public class RunAction {
                     return;
                 }
                 Output.getInstance().clear();
-                Lexer lexer = new Lexer(doc);
+                Lexer lexer = LexerFactory.getInstance().getLexer(doc);
                 if (Thread.interrupted()) {
                     StatusLine.getInstance().out("Canceled");
                     return;
                 }
-                Parser parser = new Parser(lexer);
+                Parser parser = ParserFactory.getInstance().getParser(lexer);
                 if (Thread.interrupted()) {
                     StatusLine.getInstance().out("Canceled");
                     return;
@@ -116,7 +118,7 @@ public class RunAction {
                     return;
                 }
                 try {
-                    new ASTEval(program).run();
+                    InterpretatorFactory.getInstance().getInterpretator(program).run();
                     long delta = System.currentTimeMillis() - startTime;
                     StatusLine.getInstance().out("Successfully finished. Interpretation time is "+delta+"ms.");
                 } catch (InterpreterRuntimeException t) {
