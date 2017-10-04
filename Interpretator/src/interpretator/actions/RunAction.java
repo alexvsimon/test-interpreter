@@ -11,8 +11,9 @@ import interpretator.api.run.CanceledRuntimeException;
 import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.ErrorHighlighter;
 import interpretator.StatusLine;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * @author alex
  */
 public class RunAction {
-    private static final ScheduledThreadPoolExecutor EXECUTOR = new ScheduledThreadPoolExecutor(1);
+    private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
     private ScheduledFuture<?> task;
     private final Object lock = new Object();
     
@@ -56,7 +57,6 @@ public class RunAction {
             if (task != null) {
                 task.cancel(true);
             }
-            EXECUTOR.purge();
             task = EXECUTOR.schedule(new RunnableImpl(doc), 100, TimeUnit.MILLISECONDS);
         }
     }
