@@ -78,6 +78,26 @@ public class RunTest {
     }
 
     @Test
+    public void evalReduce0() {
+        Lexer lexer = new Lexer(new DocumentContext("var res = reduce({6,5},7,x y->x+y)"));
+        Parser parser = new Parser(lexer);
+        ASTEval run = new ASTEval(parser.parse());
+        run.run();
+        Value res = run.getVariable("res");
+        assertEquals(7, res.getInteger());
+    }
+
+    @Test
+    public void evalReduce1() {
+        Lexer lexer = new Lexer(new DocumentContext("var res = reduce({5,5},7,x y->x+y)"));
+        Parser parser = new Parser(lexer);
+        ASTEval run = new ASTEval(parser.parse());
+        run.run();
+        Value res = run.getVariable("res");
+        assertEquals(12, res.getInteger());
+    }
+
+    @Test
     public void evalSeq1() {
         Lexer lexer = new Lexer(new DocumentContext("var res = {5,5}"));
         Parser parser = new Parser(lexer);
