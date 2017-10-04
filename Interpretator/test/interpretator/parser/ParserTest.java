@@ -40,7 +40,7 @@ public class ParserTest {
 
     @Test
     public void emptyStream() {
-        Lexer lexer = new Lexer(new DocumentContext(""));
+        Lexer lexer = new Lexer(new DocumentContext("", 0));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
         List<StatementAST> statements = program.getStatements();
@@ -49,7 +49,7 @@ public class ParserTest {
 
     @Test
     public void printStream() {
-        Lexer lexer = new Lexer(new DocumentContext("print \"pi = \""));
+        Lexer lexer = new Lexer(new DocumentContext("print \"pi = \"", 0));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
         List<StatementAST> statements = program.getStatements();
@@ -61,7 +61,7 @@ public class ParserTest {
 
     @Test
     public void varMapStream() {
-        Lexer lexer = new Lexer(new DocumentContext("var sequence = map({0, n}, i -> (-1)^i / (2.0 * i + 1))\n"));
+        Lexer lexer = new Lexer(new DocumentContext("var sequence = map({0, n}, i -> (-1)^i / (2.0 * i + 1))\n", 0));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
         List<StatementAST> statements = program.getStatements();
@@ -87,7 +87,7 @@ public class ParserTest {
 
     @Test
     public void unaryMinus(){
-        Lexer lexer = new Lexer(new DocumentContext("var n = -6*2-5*2\n"));
+        Lexer lexer = new Lexer(new DocumentContext("var n = -6*2-5*2\n", 0));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
         List<StatementAST> statements = program.getStatements();
@@ -106,7 +106,7 @@ public class ParserTest {
 
     @Test
     public void pow() {
-        Lexer lexer = new Lexer(new DocumentContext("out 2^3^2\n"));
+        Lexer lexer = new Lexer(new DocumentContext("out 2^3^2\n", 0));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
         List<StatementAST> statements = program.getStatements();
@@ -122,7 +122,7 @@ public class ParserTest {
     
     @Test
     public void varReduceStream() {
-        Lexer lexer = new Lexer(new DocumentContext("var pi = 4 * reduce(sequence, 0, x y -> x + y)\n"));
+        Lexer lexer = new Lexer(new DocumentContext("var pi = 4 * reduce(sequence, 0, x y -> x + y)\n", 0));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
         List<StatementAST> statements = program.getStatements();
@@ -147,7 +147,7 @@ public class ParserTest {
                 "var sequence = map({0, n}, i -> (-1)^i / (2.0 * i + 1))\n" +
                 "var pi = 4 * reduce(sequence, 0, x y -> x + y)\n" +
                 "print \"pi = \"\n" +
-                "out pi"));
+                "out pi", 0));
         Parser parser = new Parser(lexer);
         ProgramAST program = parser.parse();
         List<StatementAST> statements = program.getStatements();
@@ -202,7 +202,7 @@ public class ParserTest {
                         "out pi\n";
         // type at the end of file
         for(int i = 0; i < source.length(); i++) {
-            Lexer lexer = new Lexer(new DocumentContext(source.substring(0, i)));
+            Lexer lexer = new Lexer(new DocumentContext(source.substring(0, i), 0));
             Parser parser = new Parser(lexer);
             ProgramAST program = parser.parse();
         }
@@ -220,7 +220,7 @@ public class ParserTest {
                 for(int k = i + 1; k < lines.length; k++) {
                     buf.append(lines[k]).append('\n');
                 }
-                Lexer lexer = new Lexer(new DocumentContext(buf.toString()));
+                Lexer lexer = new Lexer(new DocumentContext(buf.toString(), 0));
                 Parser parser = new Parser(lexer);
                 ProgramAST program = parser.parse();
             }

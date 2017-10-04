@@ -10,9 +10,19 @@ package interpretator.editor;
 public class DocumentContext {
 
     private final String text;
+    private final int documentVersion;
 
-    public DocumentContext(String text) {
+    public DocumentContext(String text, int documentVersion) {
         this.text = text;
+        this.documentVersion = documentVersion;
+    }
+
+    /**
+     * 
+     * @return editor document version at snapshot creation time.
+     */
+    public int getDocumentVersion() {
+        return documentVersion;
     }
 
     /**

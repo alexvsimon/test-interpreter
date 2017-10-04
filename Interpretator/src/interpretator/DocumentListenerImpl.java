@@ -40,12 +40,13 @@ import javax.swing.text.Highlighter;
 
     private void update(DocumentEvent e) {
         Document doc = e.getDocument();
+        final int documentVersion = ((VersionedStyledDocument)doc).incrementDocumentVersion();
         doc.render(() -> {
             try {
                 Highlighter h = editor.getHighlighter();
                 h.removeAllHighlights();
                 String text = doc.getText(0, doc.getLength());
-                RunAction.getInstance().run(new DocumentContext(text));
+                RunAction.getInstance().run(new DocumentContext(text, documentVersion));
             } catch (BadLocationException ex) {
                 Logger.getLogger(DocumentListenerImpl.class.getName()).log(Level.SEVERE, null, ex);
             }

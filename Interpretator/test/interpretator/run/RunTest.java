@@ -41,7 +41,7 @@ public class RunTest {
 
     @Test
     public void eval2Mul2() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = 2*2"));
+        Lexer lexer = new Lexer(new DocumentContext("var res = 2*2", 0));
         Parser parser = new Parser(lexer);
         ASTEval run = new ASTEval(parser.parse());
         run.run();
@@ -52,7 +52,7 @@ public class RunTest {
 
     @Test
     public void evalSeq() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = {1,10}"));
+        Lexer lexer = new Lexer(new DocumentContext("var res = {1,10}", 0));
         Parser parser = new Parser(lexer);
         ASTEval run = new ASTEval(parser.parse());
         run.run();
@@ -67,7 +67,7 @@ public class RunTest {
 
     @Test
     public void evalSeq0() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = {6,5}"));
+        Lexer lexer = new Lexer(new DocumentContext("var res = {6,5}", 0));
         Parser parser = new Parser(lexer);
         ASTEval run = new ASTEval(parser.parse());
         run.run();
@@ -79,7 +79,7 @@ public class RunTest {
 
     @Test
     public void evalReduce0() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = reduce({6,5},7,x y->x+y)"));
+        Lexer lexer = new Lexer(new DocumentContext("var res = reduce({6,5},7,x y->x+y)", 0));
         Parser parser = new Parser(lexer);
         ASTEval run = new ASTEval(parser.parse());
         run.run();
@@ -89,7 +89,7 @@ public class RunTest {
 
     @Test
     public void evalReduce1() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = reduce({5,5},7,x y->x+y)"));
+        Lexer lexer = new Lexer(new DocumentContext("var res = reduce({5,5},7,x y->x+y)", 0));
         Parser parser = new Parser(lexer);
         ASTEval run = new ASTEval(parser.parse());
         run.run();
@@ -99,7 +99,7 @@ public class RunTest {
 
     @Test
     public void evalSeq1() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = {5,5}"));
+        Lexer lexer = new Lexer(new DocumentContext("var res = {5,5}", 0));
         Parser parser = new Parser(lexer);
         ASTEval run = new ASTEval(parser.parse());
         run.run();
@@ -114,7 +114,7 @@ public class RunTest {
 
     @Test
     public void evalFailedSeq() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = {1,10.}"));
+        Lexer lexer = new Lexer(new DocumentContext("var res = {1,10.}", 0));
         Parser parser = new Parser(lexer);
         ASTEval run = new ASTEval(parser.parse());
         try {
@@ -128,7 +128,7 @@ public class RunTest {
 
     @Test
     public void evalNestedSeq() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = map({1,10},x->{1,x})"));
+        Lexer lexer = new Lexer(new DocumentContext("var res = map({1,10},x->{1,x})", 0));
         Parser parser = new Parser(lexer);
         ASTEval run = new ASTEval(parser.parse());
         run.run();
@@ -143,7 +143,7 @@ public class RunTest {
 
     @Test
     public void eval2Plus2Mul2() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = 2+2*2"));
+        Lexer lexer = new Lexer(new DocumentContext("var res = 2+2*2", 0));
         Parser parser = new Parser(lexer);
         ASTEval run = new ASTEval(parser.parse());
         run.run();
@@ -154,7 +154,7 @@ public class RunTest {
 
     @Test
     public void evalMinus2Pow2Plus2Mul2() {
-        Lexer lexer = new Lexer(new DocumentContext("var res = -2^2+2*2"));
+        Lexer lexer = new Lexer(new DocumentContext("var res = -2^2+2*2", 0));
         Parser parser = new Parser(lexer);
         ASTEval run = new ASTEval(parser.parse());
         run.run();
@@ -169,7 +169,7 @@ public class RunTest {
                 "var n = 10000\n" +
                 "var sequence = map({0, n}, i -> (-1)^i / (2.0 * i + 1))\n" +
                 "var pi = 4 * reduce(sequence, 0, x y -> x + y)\n" +
-                "var delta = pi - 355/113"));
+                "var delta = pi - 355/113", 0));
         Parser parser = new Parser(lexer);
         ASTEval run = new ASTEval(parser.parse());
         run.run();

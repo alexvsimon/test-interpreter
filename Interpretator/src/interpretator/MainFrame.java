@@ -27,6 +27,7 @@ import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -44,6 +45,7 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         this.editorPane.setEditorKit(new MyEditorKit());
+        this.editorPane.setDocument(new VersionedStyledDocument());
         Output.getInstance().setOutputPane(outputPane);
         ErrorHighlighter.getInstance().setOutputPane(editorPane);
         StatusLine.getInstance().setStatusLine(messageLabel);
@@ -381,7 +383,7 @@ public class MainFrame extends javax.swing.JFrame {
             doc.render(() -> {
                 try {
                     String text = doc.getText(0, doc.getLength());
-                    DocumentContext context = new DocumentContext(text);
+                    DocumentContext context = new DocumentContext(text, ((VersionedStyledDocument)doc).getDocumentVersion());
                     final int[] position = context.getRowCol(dot);
                     SwingUtilities.invokeLater(new Runnable() {
                         @Override
@@ -461,4 +463,5 @@ public class MainFrame extends javax.swing.JFrame {
             setEnabled(undoManager.canRedo());
         }
     }
+    
 }

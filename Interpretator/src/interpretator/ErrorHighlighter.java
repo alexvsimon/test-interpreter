@@ -51,15 +51,18 @@ public class ErrorHighlighter {
      * 
      * @param start start offset of program.
      * @param end end offset of program.
+     * @param documentVersion document version to highlight
      */
-    public void highlihgt(int start, int end) {
+    public void highlihgt(int start, int end, int documentVersion) {
         SwingUtilities.invokeLater(() -> {
             Document doc = editor.getDocument();
             doc.render(() -> {
                 try {
                     Highlighter h = editor.getHighlighter();
                     h.removeAllHighlights();
-                    h.addHighlight(start, end, new ErrorHighlightPainter(editor));
+                    if (((VersionedStyledDocument)doc).getDocumentVersion() == documentVersion) {
+                        h.addHighlight(start, end, new ErrorHighlightPainter(editor));
+                    }
                 } catch (BadLocationException ex) {
                     Logger.getLogger(ErrorHighlighter.class.getName()).log(Level.SEVERE, null, ex);
                 }
