@@ -10,7 +10,7 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-/*package-local*/ class MapImpl implements MapAST {
+/*package-local*/ final class MapImpl implements MapAST {
     private final ExpressionAST arg1;
     private final LambdaAST lambda;
     private final Token map;

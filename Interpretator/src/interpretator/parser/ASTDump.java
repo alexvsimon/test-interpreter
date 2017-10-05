@@ -18,7 +18,7 @@ import interpretator.api.ast.VariableAST;
  *
  * @author alex
  */
-/*package-local*/ class ASTDump {
+/*package-local*/ final class ASTDump {
     private final AST root;
     private final StringBuilder buf = new StringBuilder();
     private int shift;

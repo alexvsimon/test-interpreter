@@ -9,7 +9,7 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-/*package-local*/ class SequenceImpl implements SequenceAST {
+/*package-local*/ final class SequenceImpl implements SequenceAST {
     private final ExpressionAST arg1;
     private final ExpressionAST arg2;
     private final Token startToken;

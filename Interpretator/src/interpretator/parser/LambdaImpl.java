@@ -9,7 +9,7 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-/*package-local*/ class LambdaImpl implements LambdaAST {
+/*package-local*/ final class LambdaImpl implements LambdaAST {
     private final Token v1;
     private final String parameter1;
     private final Token v2;

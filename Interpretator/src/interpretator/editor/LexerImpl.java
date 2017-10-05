@@ -10,7 +10,7 @@ import interpretator.api.lexer.Lexer;
  * 
  * @author alex
  */
-/*package-local*/ class LexerImpl implements Lexer {
+/*package-local*/ final class LexerImpl implements Lexer {
     private final DocumentContext doc;
     private int offset;
     private char c;

@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author alex
  */
-/*package-local*/ class ParserImpl implements Parser {
+/*package-local*/ final class ParserImpl implements Parser {
 
     private final List<Token> ts;
     private int index;

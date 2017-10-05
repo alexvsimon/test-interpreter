@@ -8,7 +8,7 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-/*package-local*/ class PrintImpl implements PrintAST {
+/*package-local*/ final class PrintImpl implements PrintAST {
     private final Token stringToken;
     private final Token printToken;
 

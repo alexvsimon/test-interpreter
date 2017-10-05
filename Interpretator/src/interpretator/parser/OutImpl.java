@@ -9,7 +9,7 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-/*package-local*/ class OutImpl implements OutAST {
+/*package-local*/ final class OutImpl implements OutAST {
     private final Token outToken;
     private final AST expression;
     

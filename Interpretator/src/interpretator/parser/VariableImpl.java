@@ -8,7 +8,7 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-/*package-local*/ class VariableImpl implements VariableAST {
+/*package-local*/ final class VariableImpl implements VariableAST {
     private final Token id;
     private final String name;
 

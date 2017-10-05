@@ -10,7 +10,7 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-/*package-local*/ class ReduceImpl implements ReduceAST {
+/*package-local*/ final class ReduceImpl implements ReduceAST {
     private final ExpressionAST arg1;
     private final ExpressionAST arg2;
     private final LambdaAST lambda;

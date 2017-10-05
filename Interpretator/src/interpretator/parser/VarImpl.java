@@ -9,7 +9,7 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-/*package-local*/ class VarImpl implements VarAST {
+/*package-local*/ final class VarImpl implements VarAST {
     private final Token varToken;
     private final Token id;
     private final ExpressionAST expression;

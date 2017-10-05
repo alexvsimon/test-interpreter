@@ -6,7 +6,7 @@ import interpretator.api.run.Value;
  *
  * @author alex
  */
-/*package-local*/ class TwoVarMap implements VarsMap {
+/*package-local*/ final class TwoVarMap implements VarsMap {
     private final String parameter1;
     private final Value value1;
     private final String parameter2;

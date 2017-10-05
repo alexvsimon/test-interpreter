@@ -6,7 +6,7 @@ import interpretator.api.run.Value;
  *
  * @author alex
  */
-/*package-local*/ class OneVarMap implements VarsMap {
+/*package-local*/ final class OneVarMap implements VarsMap {
     private final String parameter;
     private final Value value;
     

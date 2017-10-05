@@ -14,7 +14,7 @@ import interpretator.api.run.InterpreterRuntimeException;
  *
  * @author alex
  */
- /*package-local*/ class DoubleEval {
+ /*package-local*/ final class DoubleEval {
     private final AST root;
     private DoubleVarsMap vars;
     

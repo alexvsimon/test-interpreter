@@ -10,7 +10,7 @@ import interpretator.api.lexer.Token;
  * 
  * @author alex
  */
-public class CanceledRuntimeException extends RuntimeException {
+public final class CanceledRuntimeException extends RuntimeException {
     private final String message;
     private final String context;
     private final int[] rowCol; 

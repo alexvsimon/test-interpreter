@@ -25,7 +25,7 @@ import interpretator.Output;
  *
  * @author alex
  */
-/*package-local*/ class ASTEval implements Interpretator {
+/*package-local*/ final class ASTEval implements Interpretator {
 
     private final AST root;
     private VarsMap vars;

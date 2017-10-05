@@ -15,7 +15,7 @@ import interpretator.api.lexer.Token;
  * </ul>
  * @author alex
  */
-public class InterpreterRuntimeException extends RuntimeException {
+public final class InterpreterRuntimeException extends RuntimeException {
     private final String message;
     private final String context;
     private final int[] rowCol; 

@@ -9,7 +9,7 @@ import interpretator.api.run.InterpreterRuntimeException;
  *
  * @author alex
  */
-/*package-local*/ class NumberImpl implements NumberAST {
+/*package-local*/ final class NumberImpl implements NumberAST {
     private final Token number;
     private final String value;
     private Number eval;

@@ -9,7 +9,7 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-/*package-local*/ class BinaryExpressionImpl implements BinaryExpressionAST {
+/*package-local*/ final class BinaryExpressionImpl implements BinaryExpressionAST {
     private final ExpressionAST lh;
     private final ExpressionAST rh;
     private final ASTKind kind;

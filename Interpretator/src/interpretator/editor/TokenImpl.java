@@ -8,7 +8,7 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-/*package-local*/  class TokenImpl implements Token {
+/*package-local*/ final class TokenImpl implements Token {
     private final TokenKind kind;
     private final int startOffset;
     private final int endOffset;

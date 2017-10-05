@@ -9,7 +9,7 @@ import interpretator.api.lexer.Token;
  *
  * @author alex
  */
-/*package-local*/  class UnaryExpressionImpl implements UnaryExpressionAST {
+/*package-local*/ final class UnaryExpressionImpl implements UnaryExpressionAST {
 
     private final ExpressionAST rh;
     private final ASTKind kind;

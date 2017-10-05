@@ -8,7 +8,7 @@ import java.util.Map;
  *
  * @author alex
  */
-/*package-local*/ class VarsMapImpl implements VarsMap {
+/*package-local*/ final class VarsMapImpl implements VarsMap {
     private final Map<String, Value> vars = new HashMap<>();
     
     /*package-local*/ VarsMapImpl(){

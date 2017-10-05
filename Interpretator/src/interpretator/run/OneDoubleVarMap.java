@@ -9,12 +9,12 @@ package interpretator.run;
  *
  * @author alex
  */
-/*package-local*/ class OneDoubleVarMap implements DoubleVarsMap {
-    private final String parameter;
+/*package-local*/ final class OneDoubleVarMap implements DoubleVarsMap {
+    //private final String parameter;
     private final double value;
     
     /*package-local*/ OneDoubleVarMap(String parameter, double value) {
-        this.parameter = parameter;
+        //this.parameter = parameter;
         this.value = value;
     }
     
