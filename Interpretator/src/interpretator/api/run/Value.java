@@ -9,8 +9,23 @@ public interface Value {
 
     ValueKind getKind();
     
-    double getDouble();
+    default double getDouble(){
+        throw new UnsupportedOperationException();        
+    }
 
-    int getInteger();
+    default int getInteger(){
+        throw new UnsupportedOperationException();        
+    }
     
+    default boolean isDouble(){
+        return false;
+    }
+    
+    default boolean isInteger(){
+        return false;
+    }
+
+    default boolean isSequence(){
+        return false;
+    }
 }

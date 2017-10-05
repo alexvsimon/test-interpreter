@@ -33,12 +33,12 @@ import interpretator.api.ast.LambdaAST;
         Value value = mapped.getValueAt(i);
         String arg = lambda.getParameter(0);
         if (numericSequence && evals < 10) {
-            if (value.getKind() == ValueKind.Sequence) {
+            if (value.isSequence()) {
                 numericSequence = false;
             }
             final ASTEval eval = new ASTEval(lambda);
             final Value res = eval.evalLambda(new OneVarMap(arg, value));
-            if (res.getKind() != ValueKind.Double) {
+            if (!res.isDouble()) {
                 numericSequence = false;
             }
             if (eval.hasRecursiveLambda()) {
@@ -64,15 +64,10 @@ import interpretator.api.ast.LambdaAST;
             return new ASTEval(lambda).evalLambda(new OneVarMap(arg, value));
         }
     }
-    
-    @Override
-    public double getDouble() {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
-    public int getInteger() {
-        throw new UnsupportedOperationException();
+    public boolean isSequence() {
+        return true;
     }
     
     @Override

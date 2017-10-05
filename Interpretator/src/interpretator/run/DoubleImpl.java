@@ -1,13 +1,13 @@
 package interpretator.run;
 
-import interpretator.api.run.DoubleValue;
+import interpretator.api.run.Value;
 import interpretator.api.run.ValueKind;
 
 /**
  *
  * @author alex
  */
-/*package-local*/ final class DoubleImpl implements DoubleValue {
+/*package-local*/ final class DoubleImpl implements Value {
 
     private final double value;
 
@@ -21,10 +21,10 @@ import interpretator.api.run.ValueKind;
     }
 
     @Override
-    public int getInteger() {
-        throw new UnsupportedOperationException();
+    public boolean isDouble() {
+        return true;
     }
-    
+
     @Override
     public ValueKind getKind() {
         return ValueKind.Double;

@@ -50,7 +50,7 @@ public class RunTest {
         Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
-        assertEquals(true, res.getKind() == ValueKind.Integer);
+        assertEquals(true, res.isInteger());
         assertEquals(4, res.getInteger());
     }
 
@@ -61,7 +61,7 @@ public class RunTest {
         Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
-        assertEquals(true, res.getKind() == ValueKind.Sequence);
+        assertEquals(true, res.isSequence());
         SequenceValue seq = (SequenceValue) res;
         assertEquals(10, seq.getSize());
         for(int i = 0; i < seq.getSize(); i++) {
@@ -76,7 +76,7 @@ public class RunTest {
         Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
-        assertEquals(true, res.getKind() == ValueKind.Sequence);
+        assertEquals(true, res.isSequence());
         SequenceValue seq = (SequenceValue) res;
         assertEquals(0, seq.getSize());
     }
@@ -108,7 +108,7 @@ public class RunTest {
         Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
-        assertEquals(true, res.getKind() == ValueKind.Sequence);
+        assertEquals(true, res.isSequence());
         SequenceValue seq = (SequenceValue) res;
         assertEquals(1, seq.getSize());
         for(int i = 0; i < seq.getSize(); i++) {
@@ -137,11 +137,11 @@ public class RunTest {
         Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
-        assertEquals(true, res.getKind() == ValueKind.Sequence);
+        assertEquals(true, res.isSequence());
         SequenceValue seq = (SequenceValue) res;
         assertEquals(10, seq.getSize());
         for(int i = 0; i < seq.getSize(); i++) {
-            assertTrue(seq.getValueAt(i).getKind() == ValueKind.Sequence);
+            assertTrue(seq.getValueAt(i).isSequence());
         }
     }
 
@@ -152,7 +152,7 @@ public class RunTest {
         Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
-        assertEquals(true, res.getKind() == ValueKind.Integer);
+        assertEquals(true, res.isInteger());
         assertEquals(6, res.getInteger());
     }
 
@@ -163,7 +163,7 @@ public class RunTest {
         Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("res");
-        assertEquals(true, res.getKind() == ValueKind.Integer);
+        assertEquals(true, res.isInteger());
         assertEquals(8, res.getInteger());
     }
 
@@ -178,7 +178,7 @@ public class RunTest {
         Interpretator run = InterpretatorFactory.getInstance().getInterpretator(parser.parse());
         run.run();
         Value res = run.getVariable("delta");
-        assertEquals(true, res.getKind() == ValueKind.Double);
+        assertEquals(true, res.isDouble());
         assertTrue(Math.abs(res.getDouble()) < 0.0001);
     }
     

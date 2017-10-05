@@ -5,7 +5,6 @@ import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.api.run.CanceledRuntimeException;
 import interpretator.api.run.SequenceValue;
 import interpretator.api.run.Value;
-import interpretator.api.run.ValueKind;
 import interpretator.api.ast.AST;
 import interpretator.api.ast.ASTKind;
 import interpretator.api.ast.BinaryExpressionAST;
@@ -207,35 +206,35 @@ import interpretator.Output;
 
     private Value evalExpression(BinaryExpressionAST ast) {
         Value lh = eval(ast.getLeftExpression());
-        if (lh.getKind() == ValueKind.Sequence) {
+        if (lh.isSequence()) {
             throw new InterpreterRuntimeException("Unsupported binary operation for sequence", ast.getLeftExpression());
         }
         Value rh = eval(ast.getRightExpression());
-        if (rh.getKind() == ValueKind.Sequence) {
+        if (rh.isSequence()) {
             throw new InterpreterRuntimeException("Unsupported binary operation for sequence", ast.getRightExpression());
         }
         switch (ast.getKind()) {
             case Plus: {
-                if ((lh.getKind() == ValueKind.Integer) &&
-                    (rh.getKind() == ValueKind.Integer)) {
+                if ((lh.isInteger()) &&
+                    (rh.isInteger())) {
                     return new IntegerImpl(lh.getInteger() + rh.getInteger());
                 }
-                double ldh = (lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble();
-                double rdh = (rh.getKind() == ValueKind.Integer) ? rh.getInteger() : rh.getDouble();
+                double ldh = (lh.isInteger()) ? lh.getInteger() : lh.getDouble();
+                double rdh = (rh.isInteger()) ? rh.getInteger() : rh.getDouble();
                 return new DoubleImpl(ldh + rdh);
             }
             case Minus: {
-                if ((lh.getKind() == ValueKind.Integer) &&
-                    (rh.getKind() == ValueKind.Integer)) {
+                if ((lh.isInteger()) &&
+                    (rh.isInteger())) {
                     return new IntegerImpl(lh.getInteger() - rh.getInteger());
                 }
-                double ldh = (lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble();
-                double rdh = (rh.getKind() == ValueKind.Integer) ? rh.getInteger() : rh.getDouble();
+                double ldh = (lh.isInteger()) ? lh.getInteger() : lh.getDouble();
+                double rdh = (rh.isInteger()) ? rh.getInteger() : rh.getDouble();
                 return new DoubleImpl(ldh - rdh);
             }
             case Mul: {
-                if ((lh.getKind() == ValueKind.Integer) &&
-                    (rh.getKind() == ValueKind.Integer)) {
+                if ((lh.isInteger()) &&
+                    (rh.isInteger())) {
                     int a = lh.getInteger();
                     int b = rh.getInteger();
                     try {
@@ -244,19 +243,19 @@ import interpretator.Output;
                         // count as double
                     }
                 }
-                double ldh = (lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble();
-                double rdh = (rh.getKind() == ValueKind.Integer) ? rh.getInteger() : rh.getDouble();
+                double ldh = (lh.isInteger()) ? lh.getInteger() : lh.getDouble();
+                double rdh = (rh.isInteger()) ? rh.getInteger() : rh.getDouble();
                 return new DoubleImpl(ldh * rdh);
             }
             case Div: {
-                double ldh = (lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble();
-                double rdh = (rh.getKind() == ValueKind.Integer) ? rh.getInteger() : rh.getDouble();
+                double ldh = (lh.isInteger()) ? lh.getInteger() : lh.getDouble();
+                double rdh = (rh.isInteger()) ? rh.getInteger() : rh.getDouble();
                 return new DoubleImpl(ldh / rdh);
             }
             case Pow: {
-                if (rh.getKind() != ValueKind.Integer) {
-                    return new DoubleImpl(Math.pow((lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble(),
-                            (rh.getKind() == ValueKind.Integer) ? rh.getInteger() : rh.getDouble()));
+                if (!rh.isInteger()) {
+                    return new DoubleImpl(Math.pow((lh.isInteger()) ? lh.getInteger() : lh.getDouble(),
+                            (rh.isInteger()) ? rh.getInteger() : rh.getDouble()));
                 }
                 int pow = rh.getInteger();
                 if (pow == 0) {
@@ -266,7 +265,7 @@ import interpretator.Output;
                 if (pow < 0) {
                     pow = -pow;
                 }
-                if ((lh.getKind() == ValueKind.Integer)) {
+                if ((lh.isInteger())) {
                     int arg = lh.getInteger();
                     if (arg == -1) {
                         return pow % 2 == 0 ? new IntegerImpl(1) : new IntegerImpl(-1);
@@ -285,7 +284,7 @@ import interpretator.Output;
                         // count as double
                     }
                 }
-                double arg = (lh.getKind() == ValueKind.Integer) ? lh.getInteger() : lh.getDouble();
+                double arg = (lh.isInteger()) ? lh.getInteger() : lh.getDouble();
                 double res = arg;
                 for (int i = 1; i < pow; i++) {
                     res = res * arg;
@@ -303,7 +302,7 @@ import interpretator.Output;
 
     private Value evalMap(MapAST ast) {
         Value arg = eval(ast.getInputExpression());
-        if (arg.getKind() == ValueKind.Sequence) {
+        if (arg.isSequence()) {
             LambdaAST lambda = ast.getLambda();
             if (lambda.getParametersSize() != 1) {
                 throw new InterpreterRuntimeException("Lambda of operator map must have 1 parameter", ast);
@@ -318,8 +317,8 @@ import interpretator.Output;
     private Value evalSequence(SequenceAST ast) {
         Value start = eval(ast.getStartExpression());
         Value end = eval(ast.getEndExpression());
-        if ((start.getKind() == ValueKind.Integer) &&
-            (end.getKind() == ValueKind.Integer)) {
+        if ((start.isInteger()) &&
+            (end.isInteger())) {
             return new SequenceImpl(start.getInteger(), end.getInteger());
         }
         throw new InterpreterRuntimeException("Sequence defined for integer operands", ast);
@@ -328,7 +327,7 @@ import interpretator.Output;
     private Value evalReduce(ReduceAST ast) {
         Value seq = eval(ast.getInputExpression());
         Value start = eval(ast.getStartExpression());
-        if (seq.getKind() == ValueKind.Sequence) {
+        if (seq.isSequence()) {
             SequenceValue sequense = (SequenceValue) seq;
             LambdaAST lambda = ast.getLambda();
             if (lambda.getParametersSize() != 2) {
@@ -343,7 +342,7 @@ import interpretator.Output;
                     throw new CanceledRuntimeException(ast);
                 }
                 Value currentSeq = sequense.getValueAt(i);
-                if (currentSeq.getKind() == ValueKind.Sequence) {
+                if (currentSeq.isSequence()) {
                     numericSequence = false;
                 }
                 final ASTEval eval = new ASTEval(lambda);
@@ -352,7 +351,7 @@ import interpretator.Output;
                     numericSequence = false;
                 }
             }
-            if (numericSequence && (start.getKind() == ValueKind.Double)) {
+            if (numericSequence && (start.isDouble())) {
                 double doubleStart = start.getDouble();
                 final DoubleEval doubleEval = new DoubleEval(lambda);
                 for (int i = 10; i < ((SequenceValue) seq).getSize(); i++) {

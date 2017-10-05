@@ -1,13 +1,13 @@
 package interpretator.run;
 
-import interpretator.api.run.IntegerValue;
+import interpretator.api.run.Value;
 import interpretator.api.run.ValueKind;
 
 /**
  *
  * @author alex
  */
-/*package-local*/ final class IntegerImpl implements IntegerValue {
+/*package-local*/ final class IntegerImpl implements Value {
 
     private final int value;
 
@@ -16,13 +16,13 @@ import interpretator.api.run.ValueKind;
     }
 
     @Override
-    public double getDouble() {
-        throw new UnsupportedOperationException();        
+    public int getInteger() {
+        return value;
     }
 
     @Override
-    public int getInteger() {
-        return value;
+    public boolean isInteger() {
+        return true;
     }
     
     @Override

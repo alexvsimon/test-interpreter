@@ -30,15 +30,10 @@ import interpretator.api.run.ValueKind;
         }
         return new IntegerImpl(i + startIndex);
     }
-    
-    @Override
-    public double getDouble() {
-        throw new UnsupportedOperationException();
-    }
 
     @Override
-    public int getInteger() {
-        throw new UnsupportedOperationException();
+    public boolean isSequence() {
+        return true;
     }
     
     @Override
