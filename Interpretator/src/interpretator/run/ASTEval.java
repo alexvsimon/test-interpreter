@@ -142,9 +142,9 @@ import interpretator.Output;
     }
 
     private void runProgram(ProgramAST ast) {
-        for (AST statement : ast.getStatements()) {
+        ast.getStatements().forEach((statement) -> {
             run(statement);
-        }
+        });
     }
 
     private void runPrint(PrintAST ast) {

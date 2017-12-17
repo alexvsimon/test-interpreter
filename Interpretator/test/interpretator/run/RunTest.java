@@ -6,7 +6,6 @@ import interpretator.api.run.Interpretator;
 import interpretator.api.run.InterpreterRuntimeException;
 import interpretator.api.run.SequenceValue;
 import interpretator.api.run.Value;
-import interpretator.api.run.ValueKind;
 import interpretator.DocumentContext;
 import interpretator.spi.ast.ParserFactory;
 import interpretator.spi.lexer.LexerFactory;

@@ -79,9 +79,9 @@ import interpretator.api.ast.VariableAST;
     }
     
     private void dumpProgram(ProgramAST ast) {
-        for(AST statement : ast.getStatements()) {
+        ast.getStatements().forEach((statement) -> {
             dump(statement);
-        }
+        });
     }
     
     private void dumpPrint(PrintAST ast) {
