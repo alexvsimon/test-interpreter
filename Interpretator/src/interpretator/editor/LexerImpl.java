@@ -66,7 +66,7 @@ import interpretator.api.lexer.Lexer;
         }
     }
     
-    private boolean isWiteSpace(){
+    private boolean isWhiteSpace(){
         return c == ' ' || c == '\t' || c == '\n';
     }
 
@@ -92,9 +92,9 @@ import interpretator.api.lexer.Lexer;
         if (c == 0) {
             return token(TokenKind.EOF, start, start);
         }
-        if (isWiteSpace()) {
+        if (isWhiteSpace()) {
             read();
-            while(isWiteSpace()) {
+            while(isWhiteSpace()) {
                 read();
             }
             return token(TokenKind.WhiteSpace, start, offset-1);
@@ -105,18 +105,19 @@ import interpretator.api.lexer.Lexer;
                 read();
             }
             String id = doc.getText().subSequence(start, offset-1).toString();
-            if ("var".equals(id)) {
-                return token(TokenKind.Var, start, offset-1);
-            } else if("out".equals(id)) {
-                return token(TokenKind.Out, start, offset-1);
-            } else if ("print".equals(id)) {
-                return token(TokenKind.Print, start, offset-1);
-            } else if ("map".equals(id)) {
-                return token(TokenKind.Map, start, offset-1);
-            } else if ("reduce".equals(id)) {
-                return token(TokenKind.Reduce, start, offset-1);
-            } else {
-                return token(TokenKind.Identifier, start, offset-1);
+            switch (id) {
+                case "var":
+                    return token(TokenKind.Var, start, offset - 1);
+                case "out":
+                    return token(TokenKind.Out, start, offset - 1);
+                case "print":
+                    return token(TokenKind.Print, start, offset - 1);
+                case "map":
+                    return token(TokenKind.Map, start, offset - 1);
+                case "reduce":
+                    return token(TokenKind.Reduce, start, offset - 1);
+                default:
+                    return token(TokenKind.Identifier, start, offset - 1);
             }
         }
         if (isDigit()) {

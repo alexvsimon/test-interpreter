@@ -328,10 +328,10 @@ import interpretator.Output;
         Value seq = eval(ast.getInputExpression());
         Value start = eval(ast.getStartExpression());
         if (seq.isSequence()) {
-            SequenceValue sequense = (SequenceValue) seq;
+            SequenceValue sequence = (SequenceValue) seq;
             LambdaAST lambda = ast.getLambda();
             if (lambda.getParametersSize() != 2) {
-                throw new InterpreterRuntimeException("Lambda of operator reduse must have 2 parameters", ast);
+                throw new InterpreterRuntimeException("Lambda of operator reduce must have 2 parameters", ast);
             }
             hasRecursiveLambda = true;
             String arg1 = lambda.getParameter(0);
@@ -341,7 +341,7 @@ import interpretator.Output;
                 if(Thread.interrupted()) {
                     throw new CanceledRuntimeException(ast);
                 }
-                Value currentSeq = sequense.getValueAt(i);
+                Value currentSeq = sequence.getValueAt(i);
                 if (currentSeq.isSequence()) {
                     numericSequence = false;
                 }
@@ -358,19 +358,19 @@ import interpretator.Output;
                     if(Thread.interrupted()) {
                         throw new CanceledRuntimeException(ast);
                     }
-                    Value currentSeq = sequense.getValueAt(i);
-                    double currendValue;
+                    Value currentSeq = sequence.getValueAt(i);
+                    double currentValue;
                     switch (currentSeq.getKind()) {
                         case Integer:
-                            currendValue = currentSeq.getInteger();
+                            currentValue = currentSeq.getInteger();
                             break;
                         case Double:
-                            currendValue = currentSeq.getDouble();
+                            currentValue = currentSeq.getDouble();
                             break;
                         default:
                             throw new InterpreterRuntimeException("Sequence has number and sequence elements", ast);
                     }
-                    doubleStart = doubleEval.evalDoubleLambda(new TwoDoubleVarsMap(arg1, doubleStart, arg2, currendValue));
+                    doubleStart = doubleEval.evalDoubleLambda(new TwoDoubleVarsMap(arg1, doubleStart, arg2, currentValue));
                 }
                 start = new DoubleImpl(doubleStart);
             } else {
@@ -379,7 +379,7 @@ import interpretator.Output;
                     if(Thread.interrupted()) {
                         throw new CanceledRuntimeException(ast);
                     }
-                    start = astEval.evalLambda(new TwoVarMap(arg1, start, arg2, sequense.getValueAt(i)));
+                    start = astEval.evalLambda(new TwoVarMap(arg1, start, arg2, sequence.getValueAt(i)));
                 }
             }
             return start;

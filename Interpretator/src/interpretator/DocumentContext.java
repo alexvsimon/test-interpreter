@@ -73,7 +73,7 @@ public final class DocumentContext {
         int lineStart = 0;
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
-            if (text.charAt(i) == '\n') {
+            if (c == '\n') {
                 if (row == line) {
                     return text.substring(lineStart, i);
                 }

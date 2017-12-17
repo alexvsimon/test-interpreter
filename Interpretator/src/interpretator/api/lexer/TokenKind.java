@@ -9,7 +9,7 @@ package interpretator.api.lexer;
  *   <li> stmt ::= var identifier = expr | out expr | print "string"
  *   <li> expr ::= expr op expr | (expr) | identifier | { expr, expr } | number | map(expr, identifier -&gt; expr) | reduce(expr, expr, identifier identifier -&gt; expr)
  *   <li> op ::= + | - | * | / | ^
- *   <li> identifier ::= leter (leter | digit)*
+ *   <li> identifier ::= letter (letter | digit)*
  *   <li> number ::= digit (digit)* | digit (digit)* . (digit)*
  *   <li> keyword ::= var | out | print | map | reduce
  * </ul>

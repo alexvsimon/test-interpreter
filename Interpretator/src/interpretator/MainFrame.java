@@ -1,36 +1,23 @@
 package interpretator;
 
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.AbstractAction;
-import javax.swing.JFileChooser;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.plaf.ComponentUI;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -123,13 +110,13 @@ public class MainFrame extends javax.swing.JFrame {
         jSplitPane1.setResizeWeight(0.5);
         jSplitPane1.setPreferredSize(new java.awt.Dimension(600, 400));
 
-        editorPane.setFont(new java.awt.Font("Monospaced", 0, 15)); // NOI18N
+        editorPane.setFont(new java.awt.Font("Monospaced", Font.PLAIN, 15)); // NOI18N
         jScrollPane1.setViewportView(editorPane);
 
         jSplitPane1.setTopComponent(jScrollPane1);
 
         outputPane.setEditable(false);
-        outputPane.setFont(new java.awt.Font("Monospaced", 0, 15)); // NOI18N
+        outputPane.setFont(new java.awt.Font("Monospaced", Font.PLAIN, 15)); // NOI18N
         jScrollPane2.setViewportView(outputPane);
 
         jSplitPane1.setRightComponent(jScrollPane2);
@@ -327,22 +314,14 @@ public class MainFrame extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new MainFrame().setVisible(true);
-        });
+        java.awt.EventQueue.invokeLater(() -> new MainFrame().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -403,7 +382,7 @@ public class MainFrame extends javax.swing.JFrame {
         public boolean getScrollableTracksViewportWidth() {
             Component parent = getParent();
             ComponentUI ui = getUI();
-            return parent != null ? (ui.getPreferredSize(this).width <= parent.getSize().width) : true;
+            return parent == null || (ui.getPreferredSize(this).width <= parent.getSize().width);
         }
     }
     

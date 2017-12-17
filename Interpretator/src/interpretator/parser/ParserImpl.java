@@ -23,7 +23,7 @@ import java.util.List;
     private int index;
     private Token t;
     private final ProgramImpl program;
-    private List<ParserError> errors = new ArrayList<>();
+    private final List<ParserError> errors = new ArrayList<>();
 
     /*package-local*/  ParserImpl(Lexer lexer) {
         ts = new ArrayList<>();

@@ -36,16 +36,17 @@ import javax.swing.text.ViewFactory;
         public View create(Element elem) {
             String kind = elem.getName();
             if (kind != null) {
-                if (kind.equals(AbstractDocument.ContentElementName)) {
-                    return new LabelView(elem);
-                } else if (kind.equals(AbstractDocument.ParagraphElementName)) {
-                    return new NumberedParagraphView(elem);
-                } else if (kind.equals(AbstractDocument.SectionElementName)) {
-                    return new BoxView(elem, View.Y_AXIS);
-                } else if (kind.equals(StyleConstants.ComponentElementName)) {
-                    return new ComponentView(elem);
-                } else if (kind.equals(StyleConstants.IconElementName)) {
-                    return new IconView(elem);
+                switch (kind) {
+                    case AbstractDocument.ContentElementName:
+                        return new LabelView(elem);
+                    case AbstractDocument.ParagraphElementName:
+                        return new NumberedParagraphView(elem);
+                    case AbstractDocument.SectionElementName:
+                        return new BoxView(elem, View.Y_AXIS);
+                    case StyleConstants.ComponentElementName:
+                        return new ComponentView(elem);
+                    case StyleConstants.IconElementName:
+                        return new IconView(elem);
                 }
             }
             return new LabelView(elem);
@@ -54,7 +55,7 @@ import javax.swing.text.ViewFactory;
 
     private static final class NumberedParagraphView extends ParagraphView {
 
-        // with enougth for line numbers 1-999
+        // with enough for line numbers 1-999
         private static final short NUMBERS_WIDTH = 25;
         private static final Color BACKGROUND_COLOR = new Color(240, 240, 240);
         private static final Color BORDER_COLOR = new Color(224, 224, 224);

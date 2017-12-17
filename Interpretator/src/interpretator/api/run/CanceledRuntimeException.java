@@ -16,7 +16,7 @@ public final class CanceledRuntimeException extends RuntimeException {
     private final int[] rowCol; 
 
     public CanceledRuntimeException(AST ast) {
-        this.message = "Interpretaion canceled";
+        this.message = "Interpretation canceled";
         Token token = ast.getFistToken();
         rowCol = token.getStartRowCol();
         context = token.getTokenLine();
@@ -25,8 +25,8 @@ public final class CanceledRuntimeException extends RuntimeException {
     @Override
     public String getMessage() {
         StringBuilder buf = new StringBuilder();
-        buf.append(""+rowCol[0]+":"+rowCol[1]+": "+message);
-        buf.append("\n"+context);
+        buf.append("").append(rowCol[0]).append(":").append(rowCol[1]).append(": ").append(message);
+        buf.append("\n").append(context);
         buf.append("\n");
         for(int i = 0; i < rowCol[1] - 1; i++){
             buf.append(' ');

@@ -64,7 +64,7 @@ public class RunAction {
     }
 
     private static class RunActionHelper {
-        private static RunAction INSTANCE = new RunAction();
+        private final static RunAction INSTANCE = new RunAction();
 
         private RunActionHelper() {
         }
@@ -105,7 +105,7 @@ public class RunAction {
                 if (parser.getErrors().size() > 0) {
                     ParserError error = parser.getErrors().get(0);
                     int[] rowCol = error.getRowCol();
-                    ErrorHighlighter.getInstance().highlihgt(error.getStartOffset(), error.getEndOffset(), doc.getDocumentVersion());
+                    ErrorHighlighter.getInstance().highlight(error.getStartOffset(), error.getEndOffset(), doc.getDocumentVersion());
                     Output.getInstance().out(""+rowCol[0]+":"+rowCol[1]+": "+error.getMessage());
                     Output.getInstance().out("\n"+error.getContext());
                     StringBuilder buf = new StringBuilder();
@@ -122,7 +122,7 @@ public class RunAction {
                     long delta = System.currentTimeMillis() - startTime;
                     StatusLine.getInstance().out("Successfully finished. Interpretation time is "+delta+"ms.");
                 } catch (InterpreterRuntimeException t) {
-                    ErrorHighlighter.getInstance().highlihgt(t.getStartOffset(), t.getEndOffset(), doc.getDocumentVersion());
+                    ErrorHighlighter.getInstance().highlight(t.getStartOffset(), t.getEndOffset(), doc.getDocumentVersion());
                     Output.getInstance().out(t.getMessage());
                     StatusLine.getInstance().out("Runtime error");
                 } catch (CanceledRuntimeException t) {

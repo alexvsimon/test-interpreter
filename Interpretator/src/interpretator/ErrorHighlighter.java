@@ -40,7 +40,7 @@ public class ErrorHighlighter {
     }
     
     private static class ErrorHighlighterHelper {
-        private static ErrorHighlighter INSTANCE = new ErrorHighlighter();
+        private static final ErrorHighlighter INSTANCE = new ErrorHighlighter();
 
         private ErrorHighlighterHelper() {
         }
@@ -53,7 +53,7 @@ public class ErrorHighlighter {
      * @param end end offset of program.
      * @param documentVersion document version to highlight
      */
-    public void highlihgt(int start, int end, int documentVersion) {
+    public void highlight(int start, int end, int documentVersion) {
         SwingUtilities.invokeLater(() -> {
             Document doc = editor.getDocument();
             doc.render(() -> {
@@ -96,7 +96,7 @@ public class ErrorHighlighter {
                     int[] xArray = new int[waveLength + 1];
                     int[] yArray = new int[waveLength + 1];
 
-                    int yBase = (int) (start.y + start.height - 2);
+                    int yBase = start.y + start.height - 2;
                     for (int i = 0; i <= waveLength; i++) {
                         xArray[i] = start.x + i;
                         yArray[i] = yBase + wf[xArray[i] % 4];

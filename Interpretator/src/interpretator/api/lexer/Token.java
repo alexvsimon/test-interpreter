@@ -35,13 +35,13 @@ public interface Token {
 
     /**
      * 
-     * @return token start row and colum in document.
+     * @return token start row and column in document.
      */
     int[] getStartRowCol();
 
     /**
      * 
-     * @return token end row and colum in document.
+     * @return token end row and column in document.
      */
     int[] getEndRowCol();
 

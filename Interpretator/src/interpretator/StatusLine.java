@@ -27,18 +27,14 @@ public class StatusLine  {
      * @param s printed string.
      */
     public void out(String s){
-        SwingUtilities.invokeLater(() -> {
-            message.setText(s);
-        });
+        SwingUtilities.invokeLater(() -> message.setText(s));
     }
     
     /**
      * Clear status line.
      */
     public void clear() {
-        SwingUtilities.invokeLater(() -> {
-            message.setText("");
-        });
+        SwingUtilities.invokeLater(() -> message.setText(""));
     }
     
     
